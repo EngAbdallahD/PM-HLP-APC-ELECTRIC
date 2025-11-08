@@ -42,171 +42,184 @@
         }
         
         /* --- STYLES FOR NEW PM MODAL --- */
+        
+        /* STYLING FOR NEW PM MODAL ICONS */
         .pm-icon-button {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 70px;
-            height: 70px;
+            width: 80px; /* 5rem */
+            height: 80px; /* 5rem */
             border-radius: 9999px; /* full */
+            color: white;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-            
-            /* Base transparent style */
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 2px solid;
-            
-            /* Ensure icons are on top of animation and motor */
-            z-index: 30;
+            border: 3px solid white;
+            background-color: transparent; /* Transparent fill */
+            position: relative; /* For z-index */
+            z-index: 30; /* On top of image */
         }
         .pm-icon-button:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(5deg);
         }
         .pm-icon-label {
             font-size: 0.75rem; /* 12px */
             font-weight: 600; /* semibold */
-            margin-top: 2px;
-            color: white; /* Make label white */
+            margin-top: 4px; /* Increased margin */
+            display: block; /* Ensure it's always visible */
         }
+        
+        /* Icon Glow and Color States */
+        .pm-icon-button.pending {
+            border-color: #3b82f6; /* blue-500 */
+            color: #3b82f6;
+            box-shadow: 0 0 15px #3b82f6;
+        }
+        .pm-icon-button.pending svg {
+            filter: drop-shadow(0 0 5px #3b82f6);
+        }
+        
+        .pm-icon-button.ok {
+            border-color: #22c55e; /* green-500 */
+            color: #22c55e;
+            box-shadow: 0 0 15px #22c55e;
+        }
+        .pm-icon-button.ok svg {
+            filter: drop-shadow(0 0 5px #22c55e);
+        }
+
+        .pm-icon-button.error {
+            border-color: #ef4444; /* red-500 */
+            color: #ef4444;
+            box-shadow: 0 0 15px #ef4444;
+        }
+        .pm-icon-button.error svg {
+            filter: drop-shadow(0 0 5px #ef4444);
+        }
+        
+        .pm-icon-button.disabled {
+            border-color: #6b7280; /* gray-500 */
+            color: #6b7280;
+            box-shadow: none;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
         /* For mobile */
         @media (max-width: 640px) {
             .pm-icon-button {
                 width: 60px;
                 height: 60px;
+                border-width: 2px;
             }
             .pm-icon-label {
-                font-size: 0.65rem; /* Make labels a bit smaller on mobile */
+                font-size: 0.65rem; /* 10px */
+                margin-top: 2px;
             }
         }
+        
         /* Button style for popup choices */
         .pm-choice-button {
-            /* Use Tailwind @apply directive for utility classes */
-            @apply w-full text-center py-5 px-5 rounded-2xl font-semibold text-xl border-2 cursor-pointer transition-all duration-200 transform hover:scale-[1.03] focus:outline-none focus:ring-4 focus:ring-opacity-50;
+            @apply w-full text-center py-4 px-5 rounded-2xl font-semibold text-lg border-2 cursor-pointer transition-all text-gray-800;
         }
-
-        /* JS will add these classes for icon state */
-        .icon-pending {
-            border-color: #3b82f6; /* blue-500 */
-            color: #3b82f6;
-            box-shadow: 0 0 15px #3b82f6;
-        }
-        .icon-ok {
-            border-color: #22c55e; /* green-500 */
-            color: #22c55e;
-            box-shadow: 0 0 15px #22c55e;
-        }
-        .icon-error {
-            border-color: #ef4444; /* red-500 */
-            color: #ef4444;
-            box-shadow: 0 0 15px #ef4444;
-        }
-        .icon-disabled {
-            border-color: #6b7280; /* gray-500 */
-            color: #6b7280;
-            background-color: rgba(107, 114, 128, 0.2);
-            opacity: 0.4;
-            pointer-events: none;
-            box-shadow: none;
-        }
-
-        /* --- Animated background for motor --- */
-        .motion-circles {
+        
+        /* --- Animated Circles --- */
+        #pm-interactive-container .circles {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            /* Circles go BEHIND the motor image */
-            z-index: 10;
-            overflow: hidden; /* Prevent circles from going outside container */
-            border-radius: 0.5rem; /* Match container rounding */
+            overflow: hidden;
+            z-index: 10; /* Behind image */
         }
-        .motion-circles div {
+        #pm-interactive-container .circles li {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            border: 2px solid rgba(59, 130, 246, 0.3); /* blue-500 with opacity */
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: animate-circles 25s linear infinite;
+            bottom: -150px;
             border-radius: 50%;
-            /* Start invisible and small */
-            transform: translate(-50%, -50%) scale(0.3);
-            opacity: 0;
-            animation: pulse 6s infinite ease-out;
-            /* Use a pseudo-element for box-shadow to avoid scaling issues */
         }
-        .motion-circles div::before {
-            content: '';
-            position: absolute;
-            inset: -5px;
-            border-radius: 50%;
-            box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.3);
-            opacity: 0.7;
-        }
-        
-        .motion-circles div:nth-child(1) {
-            animation-delay: 0s;
-        }
-        .motion-circles div:nth-child(2) {
-            animation-delay: 2s;
-        }
-        .motion-circles div:nth-child(3) {
-            animation-delay: 4s;
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(0.3);
-                opacity: 0;
-            }
-            25% {
-                opacity: 0.7;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1.2);
-                opacity: 0;
-            }
-        }
-        /* Motor image sits ON TOP of circles, but BEHIND icons */
-        #pm-interactive-container img {
-            position: relative;
-            z-index: 20;
-        }
+        #pm-interactive-container .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        #pm-interactive-container .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        #pm-interactive-container .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        #pm-interactive-container .circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        #pm-interactive-container .circles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        #pm-interactive-container .circles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+        #pm-interactive-container .circles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        #pm-interactive-container .circles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        #pm-interactive-container .circles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+        #pm-interactive-container .circles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
 
-        /* --- New Dashboard Background --- */
-        .dashboard-bg {
-            position: relative;
+        @keyframes animate-circles {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+        }
+        
+        /* NEW: Dashboard Backgrounds */
+        .dashboard-main {
             background-image: url('arab-potash-company-banner.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            position: relative;
         }
-        .dashboard-bg::before {
-            content: "";
+        .dashboard-main::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            /* This is a semi-transparent bg-gray-50 */
-            background-color: rgba(249, 250, 251, 0.9); 
-            z-index: 0;
-        }
-        /* Make sure all content in <main> is on top of the overlay */
-        .dashboard-bg > * {
-            position: relative;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
             z-index: 1;
         }
-        /* Make cards slightly transparent to see the bg */
-        .card-transparent {
-             /* 95% opacity white */
-             background-color: rgba(255, 255, 255, 0.95);
-             backdrop-filter: blur(2px);
+        .dashboard-content {
+            position: relative;
+            z-index: 2;
         }
-        .card-transparent-less {
-             /* 98% opacity white for better readability */
-             background-color: rgba(255, 255, 255, 0.98);
-             backdrop-filter: blur(1px);
+        .content-card {
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white card */
+        }
+        
+        /* Dark mode for admin cards */
+        .admin-dashboard-main {
+            background-image: url('arab-potash-company-banner.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .admin-dashboard-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(20, 20, 30, 0.7); /* Darker overlay for admin */
+            z-index: 1;
+        }
+        .admin-dashboard-content {
+            position: relative;
+            z-index: 2;
+        }
+        .admin-content-card {
+            background-color: rgba(255, 255, 255, 0.98); /* Almost opaque cards */
+        }
+        .admin-stat-card {
+            background-color: rgba(240, 245, 255, 0.95); /* Light-blueish stat cards */
+            transition: all 0.2s ease-in-out;
+        }
+        .admin-stat-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
     </style>
@@ -220,53 +233,41 @@
 
     <div id="app" class="h-screen w-screen">
 
+        <!-- NEW LOGIN SCREEN -->
         <div id="login-screen" class="flex flex-col items-center justify-center h-full w-full bg-image">
             <div class="bg-white bg-opacity-90 p-8 rounded-2xl shadow-2xl text-center w-full max-w-md">
-                <img src="arab_potash_logo.png" alt="Logo" class="mx-auto mb-6 h-24">
+                <img src="arab_potash_logo.png" alt="Logo" class="mx-auto mb-6 h-24" onerror="this.src='https://placehold.co/150x100/FFFFFF/333333?text=Logo+Not+Found'">
                 <h1 class="text-3xl font-bold text-gray-800 mb-6">PM Application</h1>
-                <div id="user-selection">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Select User</h2>
-                    <div id="user-buttons-container" class="grid grid-cols-2 gap-4">
-                        <!-- User buttons will be injected here -->
-                    </div>
+                
+                <div id="user-login">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">User Login</h2>
+                    <input type="password" id="user-password-input" placeholder="Enter Your Password" class="w-full p-3 border border-gray-300 rounded-lg text-center text-lg">
+                    <button onclick="loginUserWithPassword()" class="w-full mt-4 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition">Login</button>
                     <button onclick="showAdminLogin()" class="mt-6 text-gray-600 hover:text-blue-600 font-medium">Login as Admin</button>
                 </div>
+                
                 <div id="admin-login" class="hidden">
                     <h2 class="text-xl font-semibold text-gray-700 mb-2">Admin Login</h2>
                     <p class="text-md text-gray-500 mb-4">Eng. Osama Al-Samirat</p>
                     <input type="password" id="admin-password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded-lg">
                     <div class="flex items-center justify-start my-4">
                         <input id="admin-remember-me" type="checkbox" class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
-                        <label for="admin-remember-me" class="ml-2 block text-sm text-gray-900">Remember me on this device</label>
+                        <label for="admin-remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
                     </div>
                     <button onclick="loginAdmin()" class="w-full bg-red-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-red-700 transition">Login</button>
-                    <button onclick="showUserSelection()" class="mt-4 text-gray-600 hover:text-blue-600 font-medium">Back to User Selection</button>
+                    <button onclick="showUserSelection()" class="mt-4 text-gray-600 hover:text-blue-600 font-medium">Back to User Login</button>
                 </div>
             </div>
-             <p class="text-white text-center mt-4 text-sm font-light absolute bottom-4">Design by: Eng.Abdallah Dmour</p>
+            <p class="text-white text-center mt-4 text-sm font-light absolute bottom-4">Design by: Eng.Abdallah Dmour</p>
         </div>
 
-        <div id="user-password-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl w-11/12 max-w-sm text-center">
-                <h2 class="text-xl font-bold mb-4">Login as <span id="user-password-title" class="text-blue-600"></span></h2>
-                <input type="password" id="user-password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded-lg mb-4">
-                
-                <div class="flex items-center justify-start mb-4">
-                    <input id="remember-me-checkbox" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                    <label for="remember-me-checkbox" class="ml-2 block text-sm text-gray-900">Remember me on this device</label>
-                </div>
-
-                <div class="flex justify-center space-x-4">
-                    <button onclick="closeUserPasswordModal()" class="bg-gray-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-600 transition">Cancel</button>
-                    <button onclick="loginUserWithPassword()" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition">Login</button>
-                </div>
-            </div>
-        </div>
+        <!-- This modal is no longer used for login, but kept for "remember me" logic -->
+        <div id="user-password-modal" class="hidden"></div>
 
         <div id="user-interface" class="hidden h-full flex flex-col">
-            <header class="bg-white shadow-md p-4 flex justify-between items-center z-10"> <!-- Add z-10 to header -->
+            <header class="bg-white shadow-md p-4 flex justify-between items-center z-10">
                 <div class="flex items-center">
-                    <img src="arab_potash_logo.png" alt="Logo" class="h-12 mr-4">
+                    <img src="arab_potash_logo.png" alt="Logo" class="h-12 mr-4" onerror="this.src='https://placehold.co/100x50/FFFFFF/333333?text=Logo'">
                     <h1 class="text-2xl font-bold text-gray-800">User Dashboard</h1>
                 </div>
                 <div>
@@ -274,57 +275,56 @@
                     <button onclick="logout()" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition">Logout</button>
                 </div>
             </header>
-            <!-- USER INTERFACE MAIN: Added .dashboard-bg -->
-            <main class="flex-grow p-4 md:p-6 overflow-y-auto dashboard-bg">
-                <div class="mb-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-2xl font-bold text-gray-800">Select a Task</h2>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Added .card-transparent -->
-                        <div class="p-6 rounded-lg shadow-md card-transparent">
-                            <h3 class="font-bold text-xl mb-4">Preventive Maintenance (PM)</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <button onclick="selectZone('HLP')" class="bg-yellow-500 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-yellow-600 transition-transform transform hover:scale-105 text-xl">HLP</button>
-                                <button onclick="selectZone('SCREEN')" class="bg-teal-500 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-teal-600 transition-transform transform hover:scale-105 text-xl">SCREEN</button>
-                                <button onclick="selectZone('COMPACTION')" class="bg-indigo-500 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-indigo-600 transition-transform transform hover:scale-105 text-xl">COMPACTION</button>
+            <main class="flex-grow p-4 md:p-6 overflow-y-auto dashboard-main">
+                <div class="dashboard-content">
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-2xl font-bold text-white">Select a Task</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="content-card p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-xl text-gray-900 mb-4">Preventive Maintenance (PM)</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <button onclick="selectZone('HLP')" class="bg-yellow-500 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-yellow-600 transition-transform transform hover:scale-105 text-xl">HLP</button>
+                                    <button onclick="selectZone('SCREEN')" class="bg-teal-500 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-teal-600 transition-transform transform hover:scale-105 text-xl">SCREEN</button>
+                                    <button onclick="selectZone('COMPACTION')" class="bg-indigo-500 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-indigo-600 transition-transform transform hover:scale-105 text-xl">COMPACTION</button>
+                                </div>
+                            </div>
+                            <div id="grease-task-card" class="content-card p-6 rounded-lg shadow-md flex flex-col">
+                                <h3 class="font-bold text-xl text-gray-900 mb-4">Motor Greasing</h3>
+                                <button onclick="showGreaseSearch()" class="bg-green-600 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 text-xl h-full">Log Motor Grease</button>
                             </div>
                         </div>
-                        <!-- Added .card-transparent -->
-                        <div id="grease-task-card" class="p-6 rounded-lg shadow-md flex flex-col card-transparent">
-                            <h3 class="font-bold text-xl mb-4">Motor Greasing</h3>
-                            <button onclick="showGreaseSearch()" class="bg-green-600 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 text-xl h-full">Log Motor Grease</button>
-                        </div>
                     </div>
-                </div>
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-2xl font-bold text-gray-800">Recent PM Activities</h2>
-                        <div class="flex space-x-2">
-                            <button onclick="scrollRecentActivities(-200)" aria-label="Scroll Up" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition card-transparent">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
-                            </button>
-                            <button onclick="scrollRecentActivities(200)" aria-label="Scroll Down" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition card-transparent">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-2xl font-bold text-white">Recent PM Activities</h2>
+                            <div class="flex space-x-2">
+                                <button onclick="scrollRecentActivities(-200)" aria-label="Scroll Up" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                </button>
+                                <button onclick="scrollRecentActivities(200)" aria-label="Scroll Down" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div id="recent-activities-container" class="">
-                        <div id="recent-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            <!-- Recent activities will be injected here (JS will add card-transparent) -->
+                        <div id="recent-activities-container" class="max-h-96 overflow-y-auto pr-2">
+                            <div id="recent-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                                <!-- Recent activities will be populated here -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </main>
-             <footer class="bg-gray-200 text-center p-4 z-10"> <!-- Add z-10 to footer -->
+             <footer class="bg-gray-200 text-center p-4 z-10">
                  <p class="text-sm text-gray-600">Design by: Eng.Abdallah Dmour</p>
              </footer>
         </div>
 
         <div id="admin-interface" class="hidden h-full flex flex-col">
-             <header class="bg-white shadow-md p-4 flex justify-between items-center z-10"> <!-- Add z-10 to header -->
+             <header class="bg-white shadow-md p-4 flex justify-between items-center z-10">
                  <div class="flex items-center">
-                     <img src="arab_potash_logo.png" alt="Logo" class="h-12 mr-4">
+                     <img src="arab_potash_logo.png" alt="Logo" class="h-12 mr-4" onerror="this.src='https://placehold.co/100x50/FFFFFF/333333?text=Logo'">
                      <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
                  </div>
                  <div>
@@ -332,117 +332,134 @@
                      <button onclick="logout()" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition">Logout</button>
                  </div>
              </header>
-             <!-- ADMIN INTERFACE MAIN: Added .dashboard-bg -->
-             <main class="flex-grow p-4 md:p-6 overflow-y-auto dashboard-bg">
-                 <div class="mb-6">
-                     <h2 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Analytics</h2>
-                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                         <!-- Added .card-transparent to analytics boxes -->
-                         <div onclick="filterHistoryByAnalytics('today')" class="bg-blue-100 p-4 rounded-lg shadow cursor-pointer hover:scale-105 transition-transform duration-200 card-transparent">
-                             <h3 class="font-bold text-3xl text-blue-800" id="analytics-total-today">0</h3>
-                             <p class="text-blue-600">Tasks Logged Today</p>
-                         </div>
-                         <div onclick="filterHistoryByAnalytics('week')" class="bg-green-100 p-4 rounded-lg shadow cursor-pointer hover:scale-105 transition-transform duration-200 card-transparent">
-                             <h3 class="font-bold text-3xl text-green-800" id="analytics-total-week">0</h3>
-                             <p class="text-green-600">Tasks This Week</p>
-                         </div>
-                         <div onclick="filterHistoryByAnalytics('unresolved')" class="bg-red-100 p-4 rounded-lg shadow cursor-pointer hover:scale-105 transition-transform duration-200 card-transparent">
-                             <h3 class="font-bold text-3xl text-red-800" id="analytics-unresolved-errors">0</h3>
-                             <p class="text-red-600">Unresolved Errors</p>
-                         </div>
-                         <div onclick="filterHistoryByAnalytics('active_users')" class="bg-yellow-100 p-4 rounded-lg shadow cursor-pointer hover:scale-105 transition-transform duration-200 card-transparent">
-                             <h3 class="font-bold text-3xl text-yellow-800" id="analytics-users-active">0</h3>
-                             <p class="text-yellow-600">Users Active Today</p>
-                         </div>
+             <main class="flex-grow p-4 md:p-6 admin-dashboard-main overflow-y-auto">
+                  <div class="admin-dashboard-content">
+                     <div class="mb-6">
+                         <h2 class="text-2xl font-bold text-white mb-4">Dashboard Analytics</h2>
+                         <!-- NEW KPI GRID -->
+                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <!-- Row 1 -->
+                            <div onclick="filterHistoryByAnalytics('pm_today')" class="admin-stat-card p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-blue-800" id="analytics-pm-today">0</h3>
+                                <p class="text-blue-600 font-medium">PM Tasks Today</p>
+                            </div>
+                            <div onclick="filterHistoryByAnalytics('grease_today')" class="admin-stat-card bg-green-50 p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-green-800" id="analytics-grease-today">0</h3>
+                                <p class="text-green-600 font-medium">Grease Tasks Today</p>
+                            </div>
+                            <div onclick="filterHistoryByAnalytics('unresolved')" class="admin-stat-card bg-red-50 p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-red-800" id="analytics-unresolved-errors">0</h3>
+                                <p class="text-red-600 font-medium">Unresolved Errors</p>
+                            </div>
+                            <div onclick="filterHistoryByAnalytics('active_users')" class="admin-stat-card bg-yellow-50 p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-yellow-800" id="analytics-users-active">0</h3>
+                                <p class="text-yellow-600 font-medium">Users Active Today</p>
+                            </div>
+                            <!-- Row 2 -->
+                            <div onclick="filterHistoryByAnalytics('pm_week')" class="admin-stat-card p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-blue-800" id="analytics-pm-week">0</h3>
+                                <p class="text-blue-600 font-medium">PM Tasks This Week</p>
+                            </div>
+                            <div onclick="filterHistoryByAnalytics('grease_week')" class="admin-stat-card bg-green-50 p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-green-800" id="analytics-grease-week">0</h3>
+                                <p class="text-green-600 font-medium">Grease Tasks This Week</p>
+                            </div>
+                            <div onclick="filterHistoryByAnalytics('total_tasks_week')" class="admin-stat-card bg-indigo-50 p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-indigo-800" id="analytics-total-tasks-week">0</h3>
+                                <p class="text-indigo-600 font-medium">Total Tasks This Week</p>
+                            </div>
+                            <div onclick="filterHistoryByAnalytics('total_errors_week')" class="admin-stat-card bg-red-50 p-4 rounded-lg shadow cursor-pointer">
+                                <h3 class="font-bold text-3xl text-red-800" id="analytics-total-errors-week">0</h3>
+                                <p class="text-red-600 font-medium">Total Errors This Week</p>
+                            </div>
+                        </div>
                      </div>
-                 </div>
 
-                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                     <!-- Added .card-transparent-less for better readability on main cards -->
-                     <div class="p-6 rounded-lg shadow-md card-transparent-less">
-                         <h2 class="text-2xl font-bold text-gray-800 mb-4">Live PM Activities</h2>
-                         <div id="admin-live-activities" class="space-y-4">
-                             <!-- Live activities will be injected here (JS will add card-transparent) -->
+                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                         <div class="admin-content-card p-6 rounded-lg shadow-md">
+                             <h2 class="text-2xl font-bold text-gray-800 mb-4">Live PM Activities</h2>
+                             <div id="admin-live-activities" class="space-y-4 max-h-screen overflow-y-auto">
+                                 <!-- Live activities will be populated here -->
+                             </div>
                          </div>
-                     </div>
-                     <!-- Added .card-transparent-less -->
-                     <div class="p-6 rounded-lg shadow-md space-y-6 card-transparent-less">
-                       <div>
-                         <h2 class="text-2xl font-bold text-gray-800">History & Reports</h2>
-                         <div class="border-b border-gray-200">
-                             <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                                 <button onclick="switchAdminView('pm')" id="tab-pm" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
-                                     PM History
-                                 </button>
-                                 <button onclick="switchAdminView('grease')" id="tab-grease" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                     Grease History
-                                 </button>
-                             </nav>
-                         </div>
-     
-                         <div id="pm-view">
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border card-transparent">
-                                 <input type="text" id="history-search-text" placeholder="Search PM by User or TAG..." class="p-2 border rounded-lg w-full">
-                                 <input type="date" id="history-search-date" class="p-2 border rounded-lg w-full">
-                             </div>
-                             <div class="flex space-x-4 my-4">
-                                 <button onclick="exportToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export PM to Excel</button>
-                                 <button onclick="exportToPDF()" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">Export PM to PDF</button>
-                             </div>
-                             <div id="admin-history" class="h-80 overflow-y-auto border rounded-lg p-2 card-transparent"></div>
-                         </div>
-     
-                         <div id="grease-view" class="hidden">
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border card-transparent">
-                                 <input type="text" id="grease-search-text" placeholder="Search Grease by User or TAG..." class="p-2 border rounded-lg w-full">
-                                 <input type="date" id="grease-search-date" class="p-2 border rounded-lg w-full">
-                             </div>
-                             <div class="flex space-x-4 my-4">
-                                 <button onclick="exportGreaseToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export Grease to Excel</button>
-                             </div>
-                             <div id="admin-grease-history" class="h-80 overflow-y-auto border rounded-lg p-2 card-transparent"></div>
-                         </div>
-                       </div>
-                       
-                         <div class="space-y-6 border-t pt-6">
-                             <div id="data-management" class="space-y-4 border p-4 rounded-lg card-transparent">
-                                 <h3 class="font-semibold text-lg text-gray-700">Automated Archiving Schedule</h3>
-                                 <p class="text-sm text-gray-600">Set the schedule for automatically deleting old PM records. This cycle runs when the admin logs in.</p>
-                                  <div class="flex items-center space-x-4">
-                                       <label for="interval-duration" class="font-semibold">Interval:</label>
-                                       <select id="interval-duration" class="p-2 border rounded-lg">
-                                           <option value="daily">Daily</option>
-                                           <option value="weekly" selected>Weekly</option>
-                                           <option value="monthly">Monthly</option>
-                                       </select>
-                                  </div>
-                                 <div class="grid grid-cols-1 gap-4">
-                                      <div>
-                                           <label for="start-date" class="font-semibold">Cycle Start Date:</label>
-                                           <input type="date" id="start-date" class="w-full p-2 border rounded-lg">
-                                      </div>
-                                      <div class="bg-gray-100 p-2 rounded-lg text-center card-transparent">
-                                           <p class="text-sm font-medium">Next cycle ends on: <strong id="end-date-display" class="text-blue-600"></strong></p>
-                                      </div>
-                                </div>
-                                  <div class="flex flex-wrap gap-4">
-                                      <button onclick="runCycleManually()" class="bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition">Run Archive Cycle Now</button>
-                                      <button onclick="confirmClearAllData()" class="bg-red-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-900 transition">Clear ALL History</button>
-                                  </div>
-                             </div>
-
-                             <div id="user-management" class="space-y-4 border p-4 rounded-lg card-transparent">
-                                 <h3 class="font-semibold text-lg text-gray-700">Manage Users</h3>
-                                 <div id="user-editor-container" class="space-y-4">
-                                     <!-- User editor will be injected here -->
+                         <div class="admin-content-card p-6 rounded-lg shadow-md space-y-6">
+                             <div>
+                                 <h2 class="text-2xl font-bold text-gray-800">History & Reports</h2>
+                                 <div class="border-b border-gray-200">
+                                     <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                                         <button onclick="switchAdminView('pm')" id="tab-pm" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
+                                             PM History
+                                         </button>
+                                         <button onclick="switchAdminView('grease')" id="tab-grease" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                             Grease History
+                                         </button>
+                                     </nav>
                                  </div>
-                                 <button onclick="saveUsers()" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Users</button>
+        
+                                 <div id="pm-view">
+                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
+                                         <input type="text" id="history-search-text" placeholder="Search PM by User or TAG..." class="p-2 border rounded-lg w-full">
+                                         <input type="date" id="history-search-date" class="p-2 border rounded-lg w-full">
+                                     </div>
+                                     <div class="flex space-x-4 my-4">
+                                         <button onclick="exportToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export PM to Excel</button>
+                                         <button onclick="exportToPDF()" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">Export PM to PDF</button>
+                                     </div>
+                                     <div id="admin-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
+                                 </div>
+        
+                                 <div id="grease-view" class="hidden">
+                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
+                                         <input type="text" id="grease-search-text" placeholder="Search Grease by User or TAG..." class="p-2 border rounded-lg w-full">
+                                         <input type="date" id="grease-search-date" class="p-2 border rounded-lg w-full">
+                                     </div>
+                                     <div class="flex space-x-4 my-4">
+                                         <button onclick="exportGreaseToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export Grease to Excel</button>
+                                     </div>
+                                     <div id="admin-grease-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
+                                 </div>
                              </div>
+                            
+                              <div class="space-y-6 border-t pt-6">
+                                  <div id="data-management" class="space-y-4 border p-4 rounded-lg bg-white">
+                                      <h3 class="font-semibold text-lg text-gray-700">Automated Archiving Schedule</h3>
+                                      <p class="text-sm text-gray-600">Set the schedule for automatically deleting old PM records. This cycle runs when the admin logs in.</p>
+                                      <div class="flex items-center space-x-4">
+                                          <label for="interval-duration" class="font-semibold">Interval:</label>
+                                          <select id="interval-duration" class="p-2 border rounded-lg">
+                                              <option value="daily">Daily</option>
+                                              <option value="weekly" selected>Weekly</option>
+                                              <option value="monthly">Monthly</option>
+                                          </select>
+                                      </div>
+                                      <div class="grid grid-cols-1 gap-4">
+                                          <div>
+                                              <label for="start-date" class="font-semibold">Cycle Start Date:</label>
+                                              <input type="date" id="start-date" class="w-full p-2 border rounded-lg">
+                                          </div>
+                                          <div class="bg-gray-100 p-2 rounded-lg text-center">
+                                              <p class="text-sm font-medium">Next cycle ends on: <strong id="end-date-display" class="text-blue-600"></strong></p>
+                                          </div>
+                                      </div>
+                                      <div class="flex flex-wrap gap-4">
+                                          <button onclick="runCycleManually()" class="bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition">Run Archive Cycle Now</button>
+                                          <button onclick="confirmClearAllData()" class="bg-red-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-900 transition">Clear ALL History</button>
+                                      </div>
+                                  </div>
+
+                                  <div id="user-management" class="space-y-4 border p-4 rounded-lg bg-white">
+                                      <h3 class="font-semibold text-lg text-gray-700">Manage Users</h3>
+                                      <div id="user-editor-container" class="space-y-4 max-h-96 overflow-y-auto pr-2">
+                                          <!-- User editor will be populated here -->
+                                      </div>
+                                      <button onclick="saveUsers()" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Users</button>
+                                  </div>
+                              </div>
                          </div>
                      </div>
-                 </div>
+                  </div>
              </main>
-              <footer class="bg-gray-200 text-center p-4 z-10"> <!-- Add z-10 to footer -->
+              <footer class="bg-gray-200 text-center p-4 z-10">
                   <p class="text-sm text-gray-600">Design by: Eng.Abdallah Dmour</p>
               </footer>
         </div>
@@ -462,7 +479,7 @@
                             </tr>
                         </thead>
                         <tbody id="equipment-table-body" class="bg-white divide-y divide-gray-200">
-                            <!-- Equipment table rows will be injected here -->
+                            <!-- Equipment table will be populated here -->
                         </tbody>
                     </table>
                 </div>
@@ -479,80 +496,71 @@
                 <!-- HEADER: Title and OFF MODE Toggle -->
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-100">Motor Inspection</h2>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Motor Inspection</h2>
                         <p class="text-sm md:text-lg text-gray-400">TAG: <span id="pm-tag-number" class="font-semibold text-blue-400"></span></p>
                     </div>
-                    <button id="pm-off-mode-button" onclick="togglePmOffMode()" class="bg-gray-600 text-gray-100 font-semibold py-2 px-5 rounded-lg transition hover:bg-gray-500">
+                    <button id="pm-off-mode-button" onclick="togglePmOffMode()" class="bg-gray-600 text-white font-semibold py-2 px-5 rounded-lg transition hover:bg-gray-500">
                         OFF MODE
                     </button>
                 </div>
 
                 <!-- WARNING MESSAGE (for duplicate PM) -->
-                <div id="pm-warning-message" class="hidden bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg relative mb-4" role="alert">
-                    <!-- JS will populate this -->
+                <div id="pm-warning-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4" role="alert">
                 </div>
 
                 <!-- MAIN INTERACTIVE AREA -->
                 <div id="pm-interactive-container" class="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden">
+                    <!-- Animated Circles Background -->
+                    <ul class="circles" style="z-index: 10;">
+                        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+                    </ul>
                     
-                    <!-- Animated Background (z-index-10) -->
-                    <div class="motion-circles" aria-hidden="true" style="z-index: 10;">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-
-                    <!-- Base Motor Image (z-index-20) -->
+                    <!-- Base Motor Image -->
                     <img src="Motor based.png" alt="Motor Diagram" class="w-full h-auto relative" style="z-index: 20;"
-                         onerror="this.src='https://placehold.co/1024x768/374151/E5E7EB?text=Motor+Image+Not+Found%0A(Motor%20based.png)'">
+                         onerror="this.src='https://placehold.co/1024x768/374151/E2E8F0?text=Motor+Image+Not+Found%0A(Motor%20based.png)'">
 
-                    <!-- Inspection Icons (z-index-30) -->
+                    <!-- Inspection Icons (Absolutely Positioned) -->
                     
-                    <!-- 1. Status (Star) -->
-                    <button id="pm-icon-status" onclick="openInspectionPoint('status')" class="pm-icon-button absolute top-1/2 left-4 md:left-10 transform -translate-y-1/2" style="z-index: 30;">
-                        <!-- SVG: Star -->
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.04 10.1c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                    <!-- 1. Status -->
+                    <button id="pm-icon-status" onclick="openInspectionPoint('status')" class="pm-icon-button absolute top-1/2 left-4 md:left-10 transform -translate-y-1/2">
+                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
                         <span class="pm-icon-label">Status</span>
                     </button>
 
                     <!-- 2. Sound -->
-                    <button id="pm-icon-sound" onclick="openInspectionPoint('sound')" class="pm-icon-button absolute top-1/3 left-1/3 md:left-1/4 transform -translate-x-1/2 -translate-y-1/2" style="z-index: 30;">
-                        <!-- SVG: Sound Waves (Speaker) -->
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 4v16m0 0l4-4m-4 4L8 16m8.464-12.464a9 9 0 010 12.728M4.464 15.536a9 9 0 010-12.728"></path></svg>
+                    <button id="pm-icon-sound" onclick="openInspectionPoint('sound')" class="pm-icon-button absolute top-1/4 left-1/3 md:left-1/4 transform -translate-x-1/2 -translate-y-1/2">
+                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                         <span class="pm-icon-label">Sound</span>
                     </button>
 
                     <!-- 3. Vibration -->
-                    <button id="pm-icon-vibration" onclick="openInspectionPoint('vibration')" class="pm-icon-button absolute top-1/3 right-1/4 md:right-1/3 transform translate-x-1/2 -translate-y-1/2" style="z-index: 30;">
-                        <!-- SVG: Line Graph -->
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l4 8 4-16 4 16 4-8"></path></svg>
+                    <button id="pm-icon-vibration" onclick="openInspectionPoint('vibration')" class="pm-icon-button absolute top-1/3 right-1/4 md:right-1/3 transform translate-x-1/2 -translate-y-1/2">
+                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                         <span class="pm-icon-label">Vibration</span>
                     </button>
 
                     <!-- 4. Temp -->
-                    <button id="pm-icon-temp" onclick="openInspectionPoint('temp')" class="pm-icon-button absolute bottom-1/4 right-8 md:right-20 transform translate-x-1/2 translate-y-1/2" style="z-index: 30;">
-                        <!-- SVG: Thermometer -->
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343m11.314 11.314a8 8 0 01-11.314 0m11.314 0L20 20M6.343 7.343L4 4m6 6a3 3 0 11-6 0 3 3 0 016 0zm0 0V3m0 0h.01"></path></svg>
+                    <button id="pm-icon-temp" onclick="openInspectionPoint('temp')" class="pm-icon-button absolute bottom-1/4 right-8 md:right-20 transform translate-x-1/2 translate-y-1/2">
+                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                         <span class="pm-icon-label">Temp</span>
                     </button>
                     
                     <!-- 5. Shelter -->
-                    <button id="pm-icon-shelter" onclick="openInspectionPoint('shelter')" class="pm-icon-button absolute bottom-1/4 left-1/4 md:left-1/3 transform -translate-x-1/2 translate-y-1/2" style="z-index: 30;">
-                        <!-- SVG: Shield Check -->
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <button id="pm-icon-shelter" onclick="openInspectionPoint('shelter')" class="pm-icon-button absolute bottom-1/4 left-1/4 md:left-1/3 transform -translate-x-1/2 translate-y-1/2">
+                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0v-7"></path></svg>
                         <span class="pm-icon-label">Shelter</span>
                     </button>
                 </div>
                 
                 <!-- "Smart" Note Container - Starts Hidden -->
                 <div id="pm-note-container" class="hidden mt-6">
-                    <label for="note" class="font-semibold text-lg text-gray-100">Note (Optional)</label>
-                    <textarea id="note" class="w-full mt-2 p-3 border rounded-lg h-24 bg-gray-700 text-gray-100 border-gray-600 placeholder-gray-400" placeholder="Please describe the issue(s)..."></textarea>
+                    <label for="note" class="font-semibold text-lg text-white">Note (Recommended for "Error" / "Dirty" / "Not")</label>
+                    <textarea id="note" class="w-full mt-2 p-3 border rounded-lg h-24 bg-gray-700 text-white border-gray-600" placeholder="Please describe the issue(s)..."></textarea>
                 </div>
 
                 <!-- FOOTER: Cancel and Submit Buttons -->
                 <div class="mt-8 flex justify-between">
-                    <button onclick="closePmModal()" class="bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-500 transition">
+                    <button onclick="closePmModal()" class="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">
                         Cancel
                     </button>
                     <button onclick="submitPmTask()" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition">
@@ -563,8 +571,8 @@
             </div>
 
             <!-- POPUP for Questions -->
-            <div id="pm-popup" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-[60]">
-                <div id="pm-popup-content" class="bg-gray-800 p-6 rounded-2xl shadow-xl w-full max-w-md">
+            <div id="pm-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
+                <div id="pm-popup-content" class="bg-gray-700 p-6 rounded-2xl shadow-xl w-full max-w-md">
                     <!-- Content will be dynamically injected here by JavaScript -->
                 </div>
             </div>
@@ -578,25 +586,25 @@
             </div>
         </div>
 
-        <!-- Confirmation Modal for skipping note -->
-        <div id="confirm-note-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-[100]">
-            <div class="bg-white p-8 rounded-2xl shadow-2xl w-11/12 max-w-sm text-center">
-                <h2 class="text-xl font-bold mb-4 text-yellow-600">Warning</h2>
-                <p class="text-gray-700 mb-6">You have an "Error" status but did not leave a note. Are you sure you want to continue?</p>
-                <div class="flex justify-center space-x-4">
-                    <button id="confirm-note-button-yes" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition">Yes, Submit</button>
-                    <button onclick="closeConfirmNoteModal()" class="bg-gray-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-600 transition">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="confirm-clear-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+        <div id="confirm-clear-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-[100]">
             <div class="bg-white p-8 rounded-2xl shadow-2xl w-11/12 max-w-sm text-center">
                 <h2 class="text-xl font-bold mb-4 text-red-600">Confirm Action</h2>
                 <p id="confirm-clear-message" class="text-gray-700 mb-6"></p>
                 <div class="flex justify-center space-x-4">
                     <button id="confirm-clear-button-yes" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition">Yes</button>
                     <button onclick="closeConfirmClearModal()" class="bg-gray-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-600 transition">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Note Confirmation Modal -->
+        <div id="confirm-note-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-[100]">
+            <div class="bg-white p-8 rounded-2xl shadow-2xl w-11/12 max-w-sm text-center">
+                <h2 class="text-xl font-bold mb-4 text-yellow-600">No Note Added</h2>
+                <p class="text-gray-700 mb-6">You have an "Error" status but have not left a note. Are you sure you want to continue?</p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="continueSubmitPmTask()" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition">Yes, Continue</button>
+                    <button onclick="closeConfirmNoteModal()" class="bg-gray-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-600 transition">Cancel</button>
                 </div>
             </div>
         </div>
@@ -618,7 +626,7 @@
                         </tr>
                     </thead>
                     <tbody id="grease-search-table-body" class="bg-white divide-y divide-gray-200">
-                        <!-- Grease search table rows will be injected here -->
+                        <!-- Grease search table will be populated here -->
                     </tbody>
                 </table>
             </div>
@@ -685,13 +693,13 @@
 
     // --- FIREBASE CONFIG ---
     const firebaseConfig = {
-     apiKey: "AIzaSyA6g7ovAKrplYS0x_SNag8SUifclz8J4uI",
-     authDomain: "hlp-pm-electric.firebaseapp.com",
-     projectId: "hlp-pm-electric",
-     storageBucket: "hlp-pm-electric.firebasestorage.app",
-     messagingSenderId: "475757068157",
-     appId: "1:475757068157:web:3d5dd04d0164d94f6a1614",
-     measurementId: "G-2S0LCM62GH"
+        apiKey: "AIzaSyA6g7ovAKrplYS0x_SNag8SUifclz8J4uI",
+        authDomain: "hlp-pm-electric.firebaseapp.com",
+        projectId: "hlp-pm-electric",
+        storageBucket: "hlp-pm-electric.firebasestorage.app",
+        messagingSenderId: "475757068157",
+        appId: "1:475757068157:web:3d5dd04d0164d94f6a1614",
+        measurementId: "G-2S0LCM62GH"
     };
 
     // --- INITIALIZE FIREBASE ---
@@ -700,13 +708,13 @@
 
     // --- GLOBAL STATE ---
     let currentUser = null;
-    let userForLogin = null;
     let currentZone = null;
     let selectedEquipment = null;
     let equipmentData = { HLP: [], SCREEN: [], COMPACTION: [] };
     let allTasks = [];
     let allGreaseTasks = [];
     let unsubscribePmTasks = null;
+    let unsubscribeGreaseTasks = null; // Added this
     let unsubscribeUserSettings = null;
     
     let pmState = {}; // Holds data: { status: 'Clean', sound: 'Normal', ... }
@@ -715,13 +723,29 @@
     let submitContinuation = null; // Function to run after note confirmation
 
 
-    // EDITED: Default user settings with unique colors and new permission
+    // NEW: Default user settings from user list.csv
     const defaultUserSettings = {
         users: [
-            { id: 'user1', name: 'Khaled', password: '0000', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'] },
-            { id: 'user2', name: 'Mohammed', password: '0000', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['HLP', 'Motor Grease'] },
-            { id: 'user3', name: 'Moatasem', password: '0000', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['SCREEN', 'COMPACTION', 'Motor Grease'] },
-            { id: 'user4', name: 'User 4', password: '0000', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: [] }
+            { id: 'user1', name: 'Eng. Osama Samirat', password: '7454', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'] },
+            { id: 'user2', name: 'Eng. Saliba Madanat', password: '15486', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['HLP', 'Motor Grease'] },
+            { id: 'user3', name: 'Abdullah Mansour', password: '6453', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['SCREEN', 'COMPACTION', 'Motor Grease'] },
+            { id: 'user4', name: 'Khaled Qawabaa', password: '7526', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: [] },
+            { id: 'user5', name: 'Muhammad Zanoun', password: '15515', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP'] },
+            { id: 'user6', name: "Mutasim Ala'a Al-Din", password: '15529', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['SCREEN'] },
+            { id: 'user7', name: 'Muhammad Qatawneh', password: '6432', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['COMPACTION'] },
+            { id: 'user8', name: 'Anwar Souqi', password: '6325', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['Motor Grease'] },
+            { id: 'user9', name: 'Ibrahim Sharaida', password: '7647', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'SCREEN'] },
+            { id: 'user10', name: 'Isaac Daqas', password: '4853', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['SCREEN', 'COMPACTION'] },
+            { id: 'user11', name: 'Ali Sharshir', password: '7170', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['HLP', 'COMPACTION'] },
+            { id: 'user12', name: 'Omar Abu Taqseerah', password: '15534', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['HLP', 'Motor Grease'] },
+            { id: 'user13', name: 'Wajdi Kaakouri', password: '4888', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['SCREEN', 'Motor Grease'] },
+            { id: 'user14', name: 'Khaled Abu Amr', password: '7658', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['COMPACTION', 'Motor Grease'] },
+            { id: 'user15', name: 'Muhammad Adel', password: '7177', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION'] },
+            { id: 'user16', name: 'Osama Al-Lemon', password: '7202', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['HLP', 'SCREEN', 'Motor Grease'] },
+            { id: 'user17', name: 'Youssef Abu Odeh', password: '15530', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'COMPACTION', 'Motor Grease'] },
+            { id: 'user18', name: 'Ahmed Daqs', password: '1111', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['SCREEN', 'COMPACTION', 'Motor Grease'] },
+            { id: 'user19', name: 'Abdullah Mashaala', password: '1112', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'] },
+            { id: 'user20', name: 'General user', password: '', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'] }
         ],
         archiveSchedule: {
             start: null,
@@ -732,13 +756,23 @@
 
     // --- EMBEDDED CSV DATA ---
     const hlpCsvData = `TAG number,Equipment Description
-13-29-060,DRYER FEED CONVEYOR BELT #60`;
+13-29-060,DRYER FEED CONVEYOR BELT #60
+13-29-061,DRYER FEED CONVEYOR BELT #61
+13-29-062,DRYER FEED CONVEYOR BELT #62
+13-29-063,DRYER FEED CONVEYOR BELT #63
+13-29-064,DRYER FEED CONVEYOR BELT #64
+13-29-065,DRYER FEED CONVEYOR BELT #65`;
 
     const screenCsvData = `TAG number,Equipment Description
-14-75-800 M,DIVERTER UNIT`;
+14-75-800 M,DIVERTER UNIT
+14-75-801 M,DIVERTER UNIT
+14-75-802 M,DIVERTER UNIT
+14-75-803 M,DIVERTER UNIT`;
 
     const compactionCsvData = `TAG number,Equipment Description
-16-85-600M2,de-dusting bag house filter throttle valve actuator`;
+16-85-600M2,de-dusting bag house filter throttle valve actuator
+16-85-601M2,de-dusting bag house filter throttle valve actuator
+16-85-602M2,de-dusting bag house filter throttle valve actuator`;
 
     // --- UI HELPER FUNCTIONS ---
     const showLoader = () => document.getElementById('loader-overlay').classList.remove('hidden');
@@ -785,22 +819,49 @@
             const docSnap = await getDoc(settingsDocRef);
             if (docSnap.exists()) {
                 const firebaseSettings = docSnap.data();
-                userSettings.users = firebaseSettings.users && Array.isArray(firebaseSettings.users) ? firebaseSettings.users.map(fbUser => {
-                    const defaultUser = defaultUserSettings.users.find(du => du.id === fbUser.id);
-                    return { ...defaultUser, ...fbUser, allowedZones: fbUser.allowedZones || [] };
-                }) : defaultUserSettings.users;
+                
+                // NEW MERGE LOGIC:
+                // Use default users as the base, preserving names and passwords from CSV.
+                let mergedUsers = defaultUserSettings.users.map(defaultUser => {
+                    // Find the corresponding user saved in Firebase (if any)
+                    const firebaseUser = firebaseSettings.users?.find(fu => fu.id === defaultUser.id);
+                    
+                    if (firebaseUser) {
+                        // User exists in Firebase. Use default name/password, but saved permissions.
+                        return {
+                            ...defaultUser, // Default id, name, password, color
+                            allowedZones: firebaseUser.allowedZones || [] // Saved permissions
+                        };
+                    } else {
+                        // User is new (not in Firebase). Use default settings.
+                        return defaultUser;
+                    }
+                });
+
+                // Ensure we have exactly 20 users, in case Firebase has fewer/more
+                if (mergedUsers.length !== 20) {
+                     // If something is wrong, just reset to defaults
+                    mergedUsers = defaultUserSettings.users;
+                }
+
+                userSettings.users = mergedUsers;
                 userSettings.archiveSchedule = firebaseSettings.archiveSchedule || defaultUserSettings.archiveSchedule;
+                
                 if (!userSettings.archiveSchedule.start) {
                     userSettings.archiveSchedule.start = new Date().toISOString().split('T')[0];
-                    await saveSettings();
+                    await saveSettings(); // Save the updated start date
                 }
+                
+                // Force save the merged user list back to Firebase to sync names/passwords
+                await saveSettings(); 
+                
             } else {
                 console.warn("No 'global_settings' document found. Creating with defaults.");
                 defaultUserSettings.archiveSchedule.start = new Date().toISOString().split('T')[0];
                 userSettings = { ...defaultUserSettings };
                 await setDoc(settingsDocRef, userSettings);
             }
-            renderUserButtons();
+            // renderUserButtons() is removed
         } catch (error) {
             console.error("Error loading settings:", error);
             showAlert('Failed to load application settings.', 'Error');
@@ -823,19 +884,45 @@
 
     window.saveUsers = async () => {
         showLoader();
-        userSettings.users.forEach((user, index) => {
-            const nameInput = document.getElementById(`user-name-edit-${index}`);
-            const passwordInput = document.getElementById(`user-password-edit-${index}`);
+        
+        // 1. Read all new values from the DOM
+        userSettings.users.forEach((user) => {
+            const nameInput = document.getElementById(`user-name-edit-${user.id}`);
+            const passwordInput = document.getElementById(`user-password-edit-${user.id}`);
             if (nameInput) user.name = nameInput.value;
             if (passwordInput) user.password = passwordInput.value;
+            
             const selectedZones = [];
             document.querySelectorAll(`.zone-checkbox[data-user-id="${user.id}"]:checked`).forEach(checkbox => {
                 selectedZones.push(checkbox.value);
             });
             user.allowedZones = selectedZones;
         });
+
+        // 2. NEW: Validate for duplicate passwords
+        const passwordSet = new Set();
+        let duplicatePassword = null;
+        for (const user of userSettings.users) {
+            // Allow one blank password for "General user"
+            if (user.password === "") continue; 
+            
+            if (passwordSet.has(user.password)) {
+                duplicatePassword = user.password;
+                break;
+            }
+            passwordSet.add(user.password);
+        }
+
+        // 3. If duplicate found, show interrupt alert and stop
+        if (duplicatePassword) {
+            hideLoader();
+            showAlert(`Duplicate password found: "${duplicatePassword}". Please ensure all passwords are unique.`, "Save Error");
+            return; // Stop the function before saving
+        }
+
+        // 4. If no duplicates, proceed with saving
         await saveSettings();
-        renderUserButtons();
+        // renderUserButtons() is removed
         hideLoader();
         showAlert('User settings saved!', 'Success');
     };
@@ -854,10 +941,10 @@
                     <span class="ml-2">${zone}</span>
                 </label>`).join('');
             div.innerHTML = `
-                <label for="user-name-edit-${index}" class="font-semibold text-sm">${user.id}:</label>
-                <input type="text" id="user-name-edit-${index}" value="${user.name}" class="w-full p-2 border rounded-lg mt-1 mb-2">
-                <label for="user-password-edit-${index}" class="font-semibold text-sm">Password:</label>
-                <input type="text" id="user-password-edit-${index}" value="${user.password}" class="w-full p-2 border rounded-lg mt-1 mb-2">
+                <label for="user-name-edit-${user.id}" class="font-semibold text-sm">${user.id}:</label>
+                <input type="text" id="user-name-edit-${user.id}" value="${user.name}" class="w-full p-2 border rounded-lg mt-1 mb-2">
+                <label for="user-password-edit-${user.id}" class="font-semibold text-sm">Password:</label>
+                <input type="text" id="user-password-edit-${user.id}" value="${user.password}" class="w-full p-2 border rounded-lg mt-1 mb-2">
                 <label class="font-semibold text-sm mt-2 block">Allowed Zones:</label>
                 <div class="flex flex-wrap gap-2 mt-1">${zoneCheckboxesHTML}</div>
             `;
@@ -865,19 +952,14 @@
         });
     }
     
+    // This function is no longer used to render buttons, but is kept for compatibility
     function renderUserButtons() {
-        const container = document.getElementById('user-buttons-container');
-        container.innerHTML = '';
-        userSettings.users.forEach(user => {
-            const button = document.createElement('button');
-            button.innerText = user.name;
-            button.className = `${user.color} text-white font-semibold py-3 px-4 rounded-lg shadow-md ${user.hover} transition-transform transform hover:scale-105`;
-            button.onclick = () => showUserPasswordPrompt(user);
-            container.appendChild(button);
-        });
+       // No longer needed
     }
 
     // --- LOGIN/LOGOUT & UI FLOW ---
+    
+    // This function is no longer used, but we keep the "remember me" logic
     window.showUserPasswordPrompt = (user) => {
         const savedCreds = getSavedUserCredentials(user.id);
         const latestUser = userSettings.users.find(u => u.id === user.id);
@@ -894,42 +976,27 @@
         if(savedCreds) {
              clearUserCredentials(user.id);
         }
-
-        userForLogin = user;
-        document.getElementById('user-password-title').innerText = user.name;
-        document.getElementById('user-password-modal').classList.remove('hidden');
-        document.getElementById('user-password').focus();
-        document.getElementById('remember-me-checkbox').checked = false;
     };
 
-    window.closeUserPasswordModal = () => {
-        document.getElementById('user-password-modal').classList.add('hidden');
-        document.getElementById('user-password').value = '';
-        userForLogin = null;
-    };
+    // This function is no longer used
+    window.closeUserPasswordModal = () => {};
 
     window.loginUserWithPassword = () => {
-        const password = document.getElementById('user-password').value;
-        if (!userForLogin) {
-            showAlert('An unexpected error occurred. Please select a user again.', 'Error');
-            closeUserPasswordModal();
+        const password = document.getElementById('user-password-input').value;
+        if (!password) {
+            showAlert('Please enter a password.');
             return;
         }
-        const latestUser = userSettings.users.find(u => u.id === userForLogin.id);
-        if (latestUser && password === latestUser.password) {
-            const rememberMe = document.getElementById('remember-me-checkbox').checked;
-            if (rememberMe) {
-                saveUserCredentials(latestUser.id, password);
-            } else {
-                clearUserCredentials(latestUser.id);
-            }
-            const userNameToLogin = latestUser.name;
-            closeUserPasswordModal();
-            showUserDashboard(userNameToLogin);
+
+        const foundUser = userSettings.users.find(u => u.password === password);
+        
+        if (foundUser) {
+            // We don't use "remember me" in this flow, but we could add it
+            showUserDashboard(foundUser.name);
         } else {
             showAlert('Incorrect password.');
-            document.getElementById('user-password').value = '';
-            document.getElementById('user-password').focus();
+            document.getElementById('user-password-input').value = '';
+            document.getElementById('user-password-input').focus();
         }
     };
 
@@ -961,14 +1028,15 @@
     }
 
     window.showAdminLogin = () => {
-        document.getElementById('user-selection').classList.add('hidden');
+        document.getElementById('user-login').classList.add('hidden');
         document.getElementById('admin-login').classList.remove('hidden');
         document.getElementById('admin-password').focus();
     };
 
     window.showUserSelection = () => {
         document.getElementById('admin-login').classList.add('hidden');
-        document.getElementById('user-selection').classList.remove('hidden');
+        document.getElementById('user-login').classList.remove('hidden');
+        document.getElementById('user-password-input').focus();
     };
 
     window.loginAdmin = async () => {
@@ -999,8 +1067,8 @@
     
     window.logout = () => {
         currentUser = null;
-        userForLogin = null;
         if (unsubscribePmTasks) unsubscribePmTasks();
+        if (unsubscribeGreaseTasks) unsubscribeGreaseTasks();
         if (unsubscribeUserSettings) unsubscribeUserSettings();
         
         localStorage.removeItem('admin-remembered');
@@ -1009,7 +1077,8 @@
         document.getElementById('admin-interface').classList.add('hidden');
         document.getElementById('login-screen').classList.remove('hidden');
         document.getElementById('admin-password').value = '';
-        renderUserButtons();
+        document.getElementById('user-password-input').value = '';
+        showUserSelection(); // Go back to user password input
     };
 
     // --- ADMIN UI & AUTOMATED DATE LOGIC ---
@@ -1036,6 +1105,7 @@
     function updateArchiveScheduleDisplay() {
         const startDateInput = document.getElementById('start-date');
         const intervalSelect = document.getElementById('interval-duration');
+        if (!startDateInput || !intervalSelect) return;
         let startDate = new Date(startDateInput.value + "T00:00:00");
         if (isNaN(startDate.getTime())) return;
         let endDate = calculateEndDate(startDate, intervalSelect.value);
@@ -1060,16 +1130,31 @@
         unsubscribeUserSettings = onSnapshot(settingsDocRef, (docSnap) => {
             if (docSnap.exists()) {
                 const firebaseSettings = docSnap.data();
-                userSettings.users = firebaseSettings.users && Array.isArray(firebaseSettings.users) ? firebaseSettings.users.map(fbUser => {
-                    const defaultUser = defaultUserSettings.users.find(du => du.id === fbUser.id);
-                    return { ...defaultUser, ...fbUser, allowedZones: fbUser.allowedZones || [] };
-                }) : defaultUserSettings.users;
+
+                // Use default users as the base
+                let mergedUsers = defaultUserSettings.users.map(defaultUser => {
+                    // Find the corresponding user saved in Firebase (if any)
+                    const firebaseUser = firebaseSettings.users?.find(fu => fu.id === defaultUser.id);
+                    
+                    if (firebaseUser) {
+                        // User exists in Firebase. Use default name/password, but saved permissions.
+                        return {
+                            ...defaultUser,
+                            allowedZones: firebaseUser.allowedZones || defaultUser.allowedZones
+                        };
+                    } else {
+                        // User is new (not in Firebase). Use default settings.
+                        return defaultUser;
+                    }
+                });
+
+                userSettings.users = mergedUsers;
                 userSettings.archiveSchedule = firebaseSettings.archiveSchedule || defaultUserSettings.archiveSchedule;
 
                 if (currentUser === 'Admin') {
                     renderUserEditor();
                 }
-                renderUserButtons();
+                // renderUserButtons() removed
                 updateArchiveScheduleDisplay();
                 if (currentUser && currentUser !== 'Admin') {
                     showUserDashboard(currentUser);
@@ -1089,11 +1174,11 @@
     };
 
     window.closeAlertModal = () => document.getElementById('alert-modal').classList.add('hidden');
+    
     window.closeConfirmNoteModal = () => {
         document.getElementById('confirm-note-modal').classList.add('hidden');
-        submitContinuation = null; // Clear continuation if cancelled
+        submitContinuation = null;
     }
-
 
     window.selectZone = (zone) => {
         if (currentUser !== 'Admin') {
@@ -1116,18 +1201,14 @@
         document.getElementById('tag-search').value = '';
     };
 
-    // ** MODIFIED selectEquipment **
     window.selectEquipment = async (tag, description) => {
         selectedEquipment = { tag, description };
         const warningDiv = document.getElementById('pm-warning-message');
-        
-        // --- REMOVED THE ENTIRE try...catch BLOCK that was failing ---
-        // We will no longer check for duplicate tasks to prevent the Firestore error.
-        
-        // Always hide the warning div since we are no longer checking
-        warningDiv.classList.add('hidden'); 
 
-        // This code was previously in the 'finally' block, now it's the main function body
+        // Clear previous warning
+        warningDiv.classList.add('hidden');
+        warningDiv.innerHTML = '';
+        
         document.getElementById('pm-tag-number').innerText = tag;
         closeEquipmentModal();
         
@@ -1137,13 +1218,11 @@
         document.getElementById('pm-modal').classList.remove('hidden');
     };
 
-    // ** MODIFIED closePmModal **
     window.closePmModal = () => {
         document.getElementById('pm-modal').classList.add('hidden');
         resetPmModalState(); // Use the reset function
         closePopup(); // Ensure popup is also closed
     };
-
 
     function populateEquipmentTable(zone) {
         const tableBody = document.getElementById('equipment-table-body');
@@ -1258,33 +1337,29 @@
         pmState = {};
         isOfflineMode = false;
         activeInspectionPoint = null;
-        submitContinuation = null;
         document.getElementById('note').value = '';
         document.getElementById('pm-note-container').classList.add('hidden');
-        
+        updateIconStates();
         const offModeButton = document.getElementById('pm-off-mode-button');
         offModeButton.classList.remove('bg-red-600', 'text-white');
-        offModeButton.classList.add('bg-gray-600', 'text-gray-100');
+        offModeButton.classList.add('bg-gray-600', 'text-white');
         offModeButton.innerText = "OFF MODE";
-        
-        updateIconStates(); // This will reset icons to 'icon-pending' or 'icon-disabled'
     }
 
     window.togglePmOffMode = () => {
         isOfflineMode = !isOfflineMode;
         const offModeButton = document.getElementById('pm-off-mode-button');
         if (isOfflineMode) {
-            offModeButton.classList.remove('bg-gray-600', 'text-gray-100');
-            offModeButton.classList.add('bg-red-600', 'text-white');
+            offModeButton.classList.remove('bg-gray-600');
+            offModeButton.classList.add('bg-red-600');
             offModeButton.innerText = "OFFLINE";
             // Clear any data that is now disabled
             delete pmState.sound;
-            delete pmState.sound_abnormal_source;
             delete pmState.vibration;
             delete pmState.temp;
         } else {
-            offModeButton.classList.remove('bg-red-600', 'text-white');
-            offModeButton.classList.add('bg-gray-600', 'text-gray-100');
+            offModeButton.classList.remove('bg-red-600');
+            offModeButton.classList.add('bg-gray-600');
             offModeButton.innerText = "OFF MODE";
         }
         updateIconStates();
@@ -1299,31 +1374,26 @@
             if (!iconElement) return;
 
             // Reset styles
-            iconElement.classList.remove('icon-pending', 'icon-ok', 'icon-error', 'icon-disabled');
+            iconElement.classList.remove('pending', 'ok', 'error', 'disabled');
 
             // 1. Check if it should be disabled by OFFLINE mode
             if (isOfflineMode && iconsToDisable.includes(iconName)) {
-                iconElement.classList.add('icon-disabled');
+                iconElement.classList.add('disabled');
             } 
             // 2. Check its data state
             else if (pmState[iconName]) {
                 // It has data, check if it's an "error" state
                 const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
-                let isError = errorStates.includes(pmState[iconName]);
-                
-                // Check secondary states
-                if (pmState.status_dirty_action === 'Not') isError = true;
-                if (pmState.sound_abnormal_source) isError = true; // Any source selected is an 'error'
-                
+                const isError = errorStates.includes(pmState[iconName]) || errorStates.includes(pmState[`${iconName}_action`]) || errorStates.includes(pmState[`${iconName}_source`]) || errorStates.includes(pmState['status_dirty_action']) || errorStates.includes(pmState['sound_abnormal_source']);
                 if (isError) {
-                    iconElement.classList.add('icon-error'); // Completed with error
+                    iconElement.classList.add('error'); // Completed with error
                 } else {
-                    iconElement.classList.add('icon-ok'); // Completed OK
+                    iconElement.classList.add('ok'); // Completed OK
                 }
             } 
             // 3. It's active and not completed
             else {
-                iconElement.classList.add('icon-pending'); // Pending
+                iconElement.classList.add('pending'); // Pending
             }
         });
         checkSmartNote();
@@ -1360,59 +1430,59 @@
 
         switch (step) {
             case 'status':
-                html = `<h3 class="text-2xl font-bold text-center mb-6 text-gray-100">Motor Status</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="handlePopupChoice('status', 'Clean')" class="pm-choice-button bg-green-900 bg-opacity-50 text-green-300 border-green-500 hover:bg-green-800 focus:ring-green-400">Clean</button>
-                            <button onclick="handlePopupChoice('status', 'Dirty')" class="pm-choice-button bg-red-900 bg-opacity-50 text-red-300 border-red-500 hover:bg-red-800 focus:ring-red-400">Dirty</button>
-                        </div>`;
+                html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Motor Status</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="handlePopupChoice('status', 'Clean')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Clean</button>
+                        <button onclick="handlePopupChoice('status', 'Dirty')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Dirty</button>
+                    </div>`;
                 break;
             case 'status_dirty_action':
-                html = `<h3 class="text-2xl font-bold text-center mb-6 text-gray-100">Action for "Dirty"</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="handlePopupChoice('status_dirty_action', 'Done')" class="pm-choice-button bg-green-900 bg-opacity-50 text-green-300 border-green-500 hover:bg-green-800 focus:ring-green-400">Done</button>
-                            <button onclick="handlePopupChoice('status_dirty_action', 'Not')" class="pm-choice-button bg-red-900 bg-opacity-50 text-red-300 border-red-500 hover:bg-red-800 focus:ring-red-400">Not</button>
-                        </div>`;
+                html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Action for "Dirty"</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="handlePopupChoice('status_dirty_action', 'Done')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Done</button>
+                        <button onclick="handlePopupChoice('status_dirty_action', 'Not')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Not</button>
+                    </div>`;
                 break;
             case 'sound':
-                html = `<h3 class="text-2xl font-bold text-center mb-6 text-gray-100">Sound</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="handlePopupChoice('sound', 'Normal')" class="pm-choice-button bg-green-900 bg-opacity-50 text-green-300 border-green-500 hover:bg-green-800 focus:ring-green-400">Normal</button>
-                            <button onclick="handlePopupChoice('sound', 'Abnormal')" class="pm-choice-button bg-red-900 bg-opacity-50 text-red-300 border-red-500 hover:bg-red-800 focus:ring-red-400">Abnormal</button>
-                        </div>`;
+                html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Sound</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="handlePopupChoice('sound', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
+                        <button onclick="handlePopupChoice('sound', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
+                    </div>`;
                 break;
             case 'sound_abnormal_source':
-                html = `<h3 class="text-2xl font-bold text-center mb-6 text-gray-100">"Abnormal" Sound Source</h3>
-                        <div class="grid grid-cols-1 gap-4">
-                            <button onclick="handlePopupChoice('sound_abnormal_source', 'Front Bearing')" class="pm-choice-button bg-blue-900 bg-opacity-50 text-blue-300 border-blue-500 hover:bg-blue-800 focus:ring-blue-400">Front Bearing</button>
-                            <button onclick="handlePopupChoice('sound_abnormal_source', 'Rear Bearing')" class="pm-choice-button bg-blue-900 bg-opacity-50 text-blue-300 border-blue-500 hover:bg-blue-800 focus:ring-blue-400">Rear Bearing</button>
-                            <button onclick="handlePopupChoice('sound_abnormal_source', 'Other')" class="pm-choice-button bg-gray-700 bg-opacity-50 text-gray-300 border-gray-500 hover:bg-gray-600 focus:ring-gray-400">Other</button>
-                        </div>`;
+                html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">"Abnormal" Sound Source</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button onclick="handlePopupChoice('sound_abnormal_source', 'Front Bearing')" class="pm-choice-button bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200">Front Bearing</button>
+                        <button onclick="handlePopupChoice('sound_abnormal_source', 'Rear Bearing')" class="pm-choice-button bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200">Rear Bearing</button>
+                        <button onclick="handlePopupChoice('sound_abnormal_source', 'Other')" class="pm-choice-button bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200">Other</button>
+                    </div>`;
                 break;
             case 'vibration':
-                html = `<h3 class="text-2xl font-bold text-center mb-6 text-gray-100">Vibration</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="handlePopupChoice('vibration', 'Normal')" class="pm-choice-button bg-green-900 bg-opacity-50 text-green-300 border-green-500 hover:bg-green-800 focus:ring-green-400">Normal</button>
-                            <button onclick="handlePopupChoice('vibration', 'Abnormal')" class="pm-choice-button bg-red-900 bg-opacity-50 text-red-300 border-red-500 hover:bg-red-800 focus:ring-red-400">Abnormal</button>
-                        </div>`;
+                html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Vibration</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="handlePopupChoice('vibration', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
+                        <button onclick="handlePopupChoice('vibration', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
+                    </div>`;
                 break;
             case 'temp':
-                html = `<h3 class="text-2xl font-bold text-center mb-6 text-gray-100">Temperature</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="handlePopupChoice('temp', 'Normal')" class="pm-choice-button bg-green-900 bg-opacity-50 text-green-300 border-green-500 hover:bg-green-800 focus:ring-green-400">Normal</button>
-                            <button onclick="handlePopupChoice('temp', 'Abnormal')" class="pm-choice-button bg-red-900 bg-opacity-50 text-red-300 border-red-500 hover:bg-red-800 focus:ring-red-400">Abnormal</button>
-                        </div>`;
+                html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Temperature</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="handlePopupChoice('temp', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
+                        <button onclick="handlePopupChoice('temp', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
+                    </div>`;
                 break;
             case 'shelter':
-                html = `<h3 class="text-2xl font-bold text-center mb-6 text-gray-100">Shelter</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="handlePopupChoice('shelter', 'Exist')" class="pm-choice-button bg-green-900 bg-opacity-50 text-green-300 border-green-500 hover:bg-green-800 focus:ring-green-400">Exist</button>
-                            <button onclick="handlePopupChoice('shelter', 'Not Exist')" class="pm-choice-button bg-red-900 bg-opacity-50 text-red-300 border-red-500 hover:bg-red-800 focus:ring-red-400">Not Exist</button>
-                        </div>`;
+                html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Shelter</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="handlePopupChoice('shelter', 'Exist')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Exist</button>
+                        <button onclick="handlePopupChoice('shelter', 'Not Exist')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Not Exist</button>
+                    </div>`;
                 break;
         }
         container.innerHTML = html;
     }
-
+    
     window.handlePopupChoice = (step, choice) => {
         // Save the choice
         if (step === 'status_dirty_action') {
@@ -1440,7 +1510,7 @@
         closePopup();
     }
     
-    // ** MODIFIED submitPmTask **
+    // --- DATA HANDLING AND SUBMISSION ---
     window.submitPmTask = async () => {
         // --- VALIDATION ---
         const requiredPoints = isOfflineMode ? ['status', 'shelter'] : ['status', 'sound', 'vibration', 'temp', 'shelter'];
@@ -1454,39 +1524,23 @@
         // Check if note is required but empty
         const noteContainer = document.getElementById('pm-note-container');
         const note = document.getElementById('note').value;
-        
-        // Check if any error state is active
-        const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
-        let hasError = false;
-        for (const key in pmState) {
-            if (errorStates.includes(pmState[key])) {
-                hasError = true;
-                break;
-            }
-        }
-
-        if (hasError && !note.trim()) {
+        if (!noteContainer.classList.contains('hidden') && !note.trim()) {
             // Show confirmation modal instead of blocking
-            const confirmModal = document.getElementById('confirm-note-modal');
-            confirmModal.classList.remove('hidden');
-            
-            // Set up the "Yes" button to call the final submit function
-            submitContinuation = () => {
-                closeConfirmNoteModal();
-                executePmSubmit(true); // true = submitted without note
-            };
-            document.getElementById('confirm-note-button-yes').onclick = submitContinuation;
-            return; // Stop here and wait for user confirmation
+            document.getElementById('confirm-note-modal').classList.remove('hidden');
+            return;
         }
-
-        // If no note warning is needed, submit directly
-        executePmSubmit(false); // false = note was not skipped
+        
+        // If validation passes (or no note is needed), continue
+        continueSubmitPmTask();
     };
     
-    // New function that contains the actual submission logic
-    async function executePmSubmit(skippedNote = false) {
-        const note = document.getElementById('note').value;
+    window.continueSubmitPmTask = async () => {
+        // Close the note confirmation modal if it was open
+        closeConfirmNoteModal();
+        showLoader();
 
+        const note = document.getElementById('note').value;
+        
         // Build the new task object
         const task = {
             user: currentUser,
@@ -1505,16 +1559,15 @@
             vibration: pmState.vibration || 'N/A',
             temp: pmState.temp || 'N/A',
             shelter: pmState.shelter || 'N/A',
-            note: note || (skippedNote ? "Note skipped by user" : ""),
+            note: note,
             
             // --- Deprecated Simple Fields (for backwards compatibility) ---
             // We can set a general "status" for the old admin view
             status: (pmState.status === 'Dirty' || pmState.sound === 'Abnormal' || pmState.vibration === 'Abnormal' || pmState.temp === 'Abnormal' || pmState.shelter === 'Not Exist' || pmState.status_dirty_action === 'Not') ? 'Error' : 'OK',
-            // Simple sound/vibration/heat/motor_umbrella
-            sound: pmState.sound || 'N/A',
-            vibration: pmState.vibration || 'N/A',
-            heat: pmState.temp || 'N/A',
-            motor_umbrella: pmState.shelter || 'N/A' 
+            sound: pmState.sound || 'N/A', // Keep simple sound
+            vibration: pmState.vibration || 'N/A', // Keep simple vibration
+            heat: pmState.temp || 'N/A', // Map temp to heat
+            motor_umbrella: pmState.shelter || 'N/A' // Map shelter to motor_umbrella
         };
 
         // --- SUBMIT TO FIREBASE ---
@@ -1528,22 +1581,45 @@
             console.error("Error adding document: ", error);
             showAlert('Failed to save PM task.', 'Error');
         } finally {
-            submitContinuation = null; // Clear the continuation function
+            hideLoader();
         }
-    }
-
+    };
+    
+    window.closeConfirmNoteModal = () => {
+        document.getElementById('confirm-note-modal').classList.add('hidden');
+    };
 
     window.markPmTaskAsResolved = async (taskId, currentStatus) => {
-        if (currentStatus !== 'Error') {
-            showAlert('Only PM tasks with an "Error" status can be marked as resolved.', 'Invalid Action');
+        const taskRef = doc(db, "pm_tasks", taskId);
+        
+        // Check the full task data to determine if it's truly an "Error"
+        const docSnap = await getDoc(taskRef);
+        if (!docSnap.exists()) {
+             showAlert('Task not found.', 'Error');
+             return;
+        }
+        const taskData = docSnap.data();
+        
+        const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
+        let isError = taskData.status === 'Error' || // Old logic
+                      errorStates.includes(taskData.status) ||
+                      errorStates.includes(taskData.sound) ||
+                      errorStates.includes(taskData.vibration) ||
+                      errorStates.includes(taskData.temp) ||
+                      errorStates.includes(taskData.shelter) ||
+                      errorStates.includes(taskData.status_dirty_action) ||
+                      errorStates.includes(taskData.sound_abnormal_source);
+                      
+        if (!isError) {
+            showAlert('Only PM tasks with an error can be marked as resolved.', 'Invalid Action');
             return;
         }
+        
         document.getElementById('confirm-clear-message').innerHTML = `Are you sure you want to mark this PM task as <strong class="text-green-700">resolved by admin</strong>? This will allow users to perform PM on this equipment again.`;
         const yesButton = document.getElementById('confirm-clear-button-yes');
         yesButton.onclick = async () => {
             closeConfirmClearModal();
             showLoader();
-            const taskRef = doc(db, "pm_tasks", taskId);
             try {
                 await updateDoc(taskRef, { resolvedByAdmin: true });
                 showAlert('PM Task marked as resolved successfully!', 'Success');
@@ -1564,7 +1640,7 @@
         unsubscribePmTasks = onSnapshot(q, (snapshot) => {
             allTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             if (currentUser === 'Admin') {
-                updateAdminAnalytics(allTasks);
+                updateAdminAnalytics(); // Update with new PM tasks
                 const textFilter = document.getElementById('history-search-text')?.value || '';
                 const dateFilter = document.getElementById('history-search-date')?.value || '';
                 displayAdminHistory(textFilter, dateFilter);
@@ -1586,14 +1662,26 @@
 
     function displayRecentActivities(tasks) {
         const container = document.getElementById('recent-activities');
+        if (!container) return;
         container.innerHTML = '';
         const userTasks = tasks.filter(task => task.user === currentUser);
         userTasks.slice(0, 20).forEach(task => {
             const card = document.createElement('div');
-            const borderClass = task.status === 'Error' && !task.resolvedByAdmin ? 'border-l-4 border-red-500' : 'border-l-4 border-blue-500';
-            const statusIndicator = task.status === 'Error' && !task.resolvedByAdmin ? '<span class="text-red-600 font-bold ml-2">(Error - Unresolved)</span>' : '';
-            // Added .card-transparent
-            card.className = `p-4 rounded-lg shadow-md ${borderClass} card-transparent`;
+            
+            const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
+            let isError = task.status === 'Error' || // Old logic
+                          errorStates.includes(task.status) ||
+                          errorStates.includes(task.sound) ||
+                          errorStates.includes(task.vibration) ||
+                          errorStates.includes(task.temp) ||
+                          errorStates.includes(task.shelter) ||
+                          errorStates.includes(task.status_dirty_action) ||
+                          errorStates.includes(task.sound_abnormal_source);
+                          
+            const borderClass = isError && !task.resolvedByAdmin ? 'border-l-4 border-red-500' : 'border-l-4 border-blue-500';
+            const statusIndicator = isError && !task.resolvedByAdmin ? '<span class="text-red-600 font-bold ml-2">(Error - Unresolved)</span>' : '';
+            
+            card.className = `bg-white p-4 rounded-lg shadow-md ${borderClass}`;
             card.innerHTML = `
                 <h3 class="font-bold text-lg">${task.tag}${statusIndicator}</h3>
                 <p class="text-gray-600">${task.description}</p>
@@ -1607,21 +1695,50 @@
 
     function displayAdminLive(tasks) {
         const container = document.getElementById('admin-live-activities');
+        if (!container) return;
         container.innerHTML = '';
         tasks.slice(0, 10).forEach(task => {
-            const resolutionStatusText = task.status === 'Error' && !task.resolvedByAdmin
+            
+            const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
+            let isError = task.status === 'Error' || // Old logic
+                          errorStates.includes(task.status) ||
+                          errorStates.includes(task.sound) ||
+                          errorStates.includes(task.vibration) ||
+                          errorStates.includes(task.temp) ||
+                          errorStates.includes(task.shelter) ||
+                          errorStates.includes(task.status_dirty_action) ||
+                          errorStates.includes(task.sound_abnormal_source);
+            
+            const resolutionStatusText = isError && !task.resolvedByAdmin
                 ? `<span class="text-red-600 font-bold">Error (Unresolved)</span>`
                 : (task.resolvedByAdmin ? `<span class="text-green-600 font-bold">Resolved by Admin</span>` : `<span class="text-green-600 font-bold">OK</span>`);
-            const resolveButton = task.status === 'Error' && !task.resolvedByAdmin
+            
+            const resolveButton = isError && !task.resolvedByAdmin
                 ? `<button onclick="markPmTaskAsResolved('${task.id}', '${task.status}')" class="ml-4 bg-green-500 text-white text-xs px-3 py-1 rounded hover:bg-green-600 transition">Mark Resolved</button>`
                 : '';
+                
             const card = document.createElement('div');
-            // Added .card-transparent
-            card.className = 'p-4 rounded-lg shadow border card-transparent';
-            // Simple display for admin. Can be expanded to show all new fields.
+            card.className = 'bg-white p-4 rounded-lg shadow border';
+            
+            // Build details string
+            let details = `<strong>Status:</strong> ${task.status || 'N/A'}`;
+            if (task.status_dirty_action && task.status_dirty_action !== 'N/A') details += ` (${task.status_dirty_action})`;
+            details += `, <strong>Shelter:</strong> ${task.shelter || 'N/A'}`;
+            
+            if (task.inspectionMode === 'Offline') {
+                 details += `, <strong class="text-gray-500">Sound:</strong> (Offline)`;
+                 details += `, <strong class="text-gray-500">Vibration:</strong> (Offline)`;
+                 details += `, <strong class="text-gray-500">Temp:</strong> (Offline)`;
+            } else {
+                details += `, <strong>Sound:</strong> ${task.sound || 'N/A'}`;
+                if (task.sound_abnormal_source && task.sound_abnormal_source !== 'N/A') details += ` (${task.sound_abnormal_source})`;
+                details += `, <strong>Vibration:</strong> ${task.vibration || 'N/A'}`;
+                details += `, <strong>Temp:</strong> ${task.temp || 'N/A'}`;
+            }
+
             card.innerHTML = `
                 <h3 class="font-bold text-lg text-blue-700">${task.tag} - ${task.description}</h3>
-                <p class="text-gray-700">Status: <span class="font-semibold">${task.status}</span>, Sound: <span class="font-semibold">${task.sound}</span>, Vibration: <span class="font-semibold">${task.vibration}</span>, Heat: <span class="font-semibold">${task.heat}</span>, Motor Umbrella: <span class="font-semibold">${task.motor_umbrella}</span></p>
+                <p class="text-gray-700 text-sm">${details}</p>
                 <p class="text-gray-700"><strong>Overall Status:</strong> ${resolutionStatusText}</p>
                 <p class="text-gray-700 text-sm">Note: ${task.note || 'N/A'}</p>
                 <div class="mt-2 text-sm text-gray-500 flex items-center">
@@ -1656,28 +1773,40 @@
         }
 
         let tableHTML = `<table class="min-w-full divide-y divide-gray-200">
-                           <thead class="bg-gray-50"><tr>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Done By</th>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Zone</th>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tag</th>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Resolved</th>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Timestamp</th>
-                               <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                           </tr></thead><tbody class="divide-y divide-gray-200">`; // Removed bg-white
+                            <thead class="bg-gray-50"><tr>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Done By</th>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Zone</th>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tag</th>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Resolved</th>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Timestamp</th>
+                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
         filteredTasks.forEach(task => {
-            const isErrorAndUnresolved = task.status === 'Error' && !task.resolvedByAdmin;
+            const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
+            let isError = task.status === 'Error' || // Old logic
+                          errorStates.includes(task.status) ||
+                          errorStates.includes(task.sound) ||
+                          errorStates.includes(task.vibration) ||
+                          errorStates.includes(task.temp) ||
+                          errorStates.includes(task.shelter) ||
+                          errorStates.includes(task.status_dirty_action) ||
+                          errorStates.includes(task.sound_abnormal_source);
+                          
+            const isErrorAndUnresolved = isError && !task.resolvedByAdmin;
             const resolveButton = isErrorAndUnresolved
                 ? `<button onclick="markPmTaskAsResolved('${task.id}', '${task.status}')" class="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600 transition">Mark Resolved</button>`
                 : '';
-            // Added transparent class to row
-            tableHTML += `<tr class="card-transparent">
+            
+            const statusText = isError ? 'Error' : 'OK';
+                
+            tableHTML += `<tr>
                                 <td class="px-2 py-2 whitespace-nowrap">${task.user}</td>
                                 <td class="px-2 py-2 whitespace-nowrap">${task.zone || 'N/A'}</td>
                                 <td class="px-2 py-2 whitespace-nowrap">${task.tag}</td>
                                 <td class="px-2 py-2 whitespace-nowrap max-w-xs truncate">${task.description}</td>
-                                <td class="px-2 py-2 whitespace-nowrap">${task.status || 'N/A'}</td>
+                                <td class="px-2 py-2 whitespace-nowrap">${statusText}</td>
                                 <td class="px-2 py-2 whitespace-nowrap">${task.resolvedByAdmin ? 'Yes' : 'No'}</td>
                                 <td class="px-2 py-2 whitespace-nowrap">${task.timestamp ? task.timestamp.toDate().toLocaleString() : ''}</td>
                                 <td class="px-2 py-2 whitespace-nowrap">${resolveButton}</td>
@@ -1688,23 +1817,55 @@
     }
     
     // --- ADMIN ANALYTICS, FILTERS, AND REPORTS ---
-    function updateAdminAnalytics(tasks) {
-        if (!tasks || tasks.length === 0 || !document.getElementById('analytics-total-today')) return;
+    function updateAdminAnalytics() {
+        if (!allTasks || !allGreaseTasks || !document.getElementById('analytics-pm-today')) return;
+        
         const now = new Date();
         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay());
         startOfWeek.setHours(0,0,0,0);
 
-        const tasksToday = tasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfToday);
-        const tasksWeek = tasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
-        const unresolvedErrors = tasks.filter(t => t.status === 'Error' && !t.resolvedByAdmin);
-        const activeUsersToday = new Set(tasksToday.map(t => t.user)).size;
+        // --- PM Tasks ---
+        const pmTasksToday = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfToday);
+        const pmTasksWeek = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
+        
+        // --- Grease Tasks ---
+        const greaseTasksToday = allGreaseTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfToday);
+        const greaseTasksWeek = allGreaseTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
 
-        document.getElementById('analytics-total-today').textContent = tasksToday.length;
-        document.getElementById('analytics-total-week').textContent = tasksWeek.length;
+        // --- Combined ---
+        const totalTasksWeek = pmTasksWeek.length + greaseTasksWeek.length;
+        const allActiveUsersToday = new Set([...pmTasksToday.map(t => t.user), ...greaseTasksToday.map(t => t.user)]);
+
+        // --- Error States ---
+        const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
+        const isPmTaskError = (t) => {
+            return t.status === 'Error' || // Old logic
+                   errorStates.includes(t.status) ||
+                   errorStates.includes(t.sound) ||
+                   errorStates.includes(t.vibration) ||
+                   errorStates.includes(t.temp) ||
+                   errorStates.includes(t.shelter) ||
+                   errorStates.includes(t.status_dirty_action) ||
+                   errorStates.includes(t.sound_abnormal_source);
+        };
+
+        const unresolvedErrors = allTasks.filter(t => isPmTaskError(t) && !t.resolvedByAdmin);
+        const totalErrorsWeek = pmTasksWeek.filter(isPmTaskError); // Includes resolved and unresolved
+
+        // --- Update DOM ---
+        document.getElementById('analytics-pm-today').textContent = pmTasksToday.length;
+        document.getElementById('analytics-grease-today').textContent = greaseTasksToday.length;
         document.getElementById('analytics-unresolved-errors').textContent = unresolvedErrors.length;
-        document.getElementById('analytics-users-active').textContent = activeUsersToday;
+        document.getElementById('analytics-users-active').textContent = allActiveUsersToday.size;
+        
+        document.getElementById('analytics-pm-week').textContent = pmTasksWeek.length;
+        document.getElementById('analytics-grease-week').textContent = greaseTasksWeek.length;
+        document.getElementById('analytics-total-tasks-week').textContent = totalTasksWeek;
+        document.getElementById('analytics-total-errors-week').textContent = totalErrorsWeek.length;
     }
+
 
     function setupAdminFilters() {
         const textFilter = document.getElementById('history-search-text');
@@ -1718,42 +1879,91 @@
     
     window.filterHistoryByAnalytics = (filterType) => {
         const historyContainer = document.getElementById('admin-history');
+        const greaseHistoryContainer = document.getElementById('admin-grease-history');
         const textFilter = document.getElementById('history-search-text');
         const dateFilter = document.getElementById('history-search-date');
+        const greaseTextFilter = document.getElementById('grease-search-text');
+        const greaseDateFilter = document.getElementById('grease-search-date');
 
         textFilter.value = '';
         dateFilter.value = '';
+        greaseTextFilter.value = '';
+        greaseDateFilter.value = '';
 
-        let filteredTasks = [];
+        let filteredPmTasks = [];
+        let filteredGreaseTasks = [];
+        const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const startOfWeek = new Date();
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const isPmTaskError = (t) => {
+            return t.status === 'Error' || errorStates.includes(t.status) || errorStates.includes(t.sound) ||
+                   errorStates.includes(t.vibration) || errorStates.includes(t.temp) ||
+                   errorStates.includes(t.shelter) || errorStates.includes(t.status_dirty_action) ||
+                   errorStates.includes(t.sound_abnormal_source);
+        };
+
         switch (filterType) {
-            case 'today':
-                filteredTasks = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= new Date().setHours(0, 0, 0, 0));
-                break;
-            case 'week':
-                const startOfWeek = new Date(new Date().setDate(new Date().getDate() - new Date().getDay()));
-                startOfWeek.setHours(0, 0, 0, 0);
-                filteredTasks = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
-                break;
+            case 'pm_today':
+                switchAdminView('pm');
+                filteredPmTasks = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfToday);
+                displayAdminHistory('', '', filteredPmTasks);
+                historyContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            case 'grease_today':
+                switchAdminView('grease');
+                filteredGreaseTasks = allGreaseTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfToday);
+                displayAdminGreaseHistory(); // This will use the full list
+                greaseHistoryContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
             case 'unresolved':
-                filteredTasks = allTasks.filter(t => t.status === 'Error' && !t.resolvedByAdmin);
-                break;
+                switchAdminView('pm');
+                filteredPmTasks = allTasks.filter(t => isPmTaskError(t) && !t.resolvedByAdmin);
+                displayAdminHistory('', '', filteredPmTasks);
+                historyContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
             case 'active_users':
-                filteredTasks = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= new Date().setHours(0, 0, 0, 0));
-                break;
+                // This one is just a number, no table filter
+                return;
+            case 'pm_week':
+                switchAdminView('pm');
+                filteredPmTasks = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
+                displayAdminHistory('', '', filteredPmTasks);
+                historyContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            case 'grease_week':
+                switchAdminView('grease');
+                filteredGreaseTasks = allGreaseTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
+                displayAdminGreaseHistory(); // This will use the full list
+                greaseHistoryContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            case 'total_tasks_week':
+                // No specific table, just a number
+                return;
+            case 'total_errors_week':
+                switchAdminView('pm');
+                filteredPmTasks = allTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek && isPmTaskError(t));
+                displayAdminHistory('', '', filteredPmTasks);
+                historyContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
         }
-
-        displayAdminHistory('', '', filteredTasks);
-        historyContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
+
     function getTaskColorCode(task) {
-        // This function now uses the simple fields for compatibility with old reports.
+        // Simplified logic for export
+        const heat = task.temp;
+        const motor_umbrella = task.shelter;
+        
         const checks = {
-            sound: task.sound === 'OK',
-            vibration: task.vibration === 'OK',
-            heat: task.heat === 'OK',
-            motor_umbrella: task.motor_umbrella === 'OK',
-            status: task.status === 'OK'
+            sound: task.sound === 'Normal',
+            vibration: task.vibration === 'Normal',
+            heat: heat === 'Normal',
+            motor_umbrella: motor_umbrella === 'Exist',
+            status: task.status === 'Clean'
         };
 
         if (!checks.sound && !checks.vibration && !checks.heat) {
@@ -1766,7 +1976,7 @@
             return { name: 'Orange', text: 'Warning: Sound/Vibration issue' };
         }
         if (!checks.status) {
-            return { name: 'Yellow', text: 'Attention: Status issue' };
+            return { name: 'Yellow', text: `Attention: Status issue (${task.status})` };
         }
         if (!checks.motor_umbrella) {
             return { name: 'Blue', text: 'Notice: Motor Umbrella issue' };
@@ -1778,26 +1988,19 @@
         const tasksToExport = allTasks;
         if (tasksToExport.length === 0) return showAlert("No data to export.");
         
-        // Headers for new detailed report
-        const detailedHeaders = [
-            "User", "Zone", "TAG", "Description", "Timestamp", "Mode",
-            "Status", "Status Action",
-            "Sound", "Sound Source",
-            "Vibration", "Temp", "Shelter",
-            "Note", "Overall Status (Legacy)", "Resolved"
-        ];
+        const reportHeaders = ["Done by", "Zone", "TAG", "Description", "Mode", "Status", "Status Action", "Sound", "Sound Source", "Vibration", "Temp", "Shelter", "Note", "Timestamp", "Color code"];
         
-        let csvContent = detailedHeaders.join(",") + "\r\n";
+        let csvContent = reportHeaders.join(",") + "\r\n";
         
         tasksToExport.forEach(task => {
+            const colorCode = getTaskColorCode(task);
             const row = [
                 task.user,
                 task.zone || 'N/A',
                 task.tag,
                 `"${(task.description || '').replace(/"/g, '""')}"`,
-                task.timestamp ? `"${task.timestamp.toDate().toLocaleString('en-GB')}"` : '',
                 task.inspectionMode || 'Online',
-                task.status || 'N/A', // This is the new 'status' (Clean/Dirty)
+                task.status || 'N/A',
                 task.status_dirty_action || 'N/A',
                 task.sound || 'N/A',
                 task.sound_abnormal_source || 'N/A',
@@ -1805,17 +2008,26 @@
                 task.temp || 'N/A',
                 task.shelter || 'N/A',
                 `"${(task.note || '').replace(/"/g, '""')}"`,
-                task.status || 'N/A', // This is the simple 'status' (OK/Error)
-                task.resolvedByAdmin ? 'Yes' : 'No'
+                task.timestamp ? `"${task.timestamp.toDate().toLocaleDateString('en-GB')}"` : '',
+                colorCode.name,
             ].join(",");
             csvContent += row + "\r\n";
         });
+
+        csvContent += "\r\n\r\n";
+        csvContent += "Color Code Legend\r\n";
+        csvContent += "Green,OK (All checks are normal)\r\n";
+        csvContent += "Blue,Notice: Motor Umbrella issue\r\n";
+        csvContent += "Yellow,Attention: Status issue\r\n";
+        csvContent += "Orange,Warning: Sound/Vibration issue\r\n";
+        csvContent += "Red,Danger: Heat issue\r\n";
+        csvContent += "Black,Critical: Sound, Vibration, & Heat issues\r\n";
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
         link.setAttribute("href", url);
-        link.setAttribute("download", `pm_report_detailed_${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute("download", `pm_report_all_${new Date().toISOString().split('T')[0]}.csv`);
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
@@ -1828,8 +2040,7 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('landscape');
 
-        // Using simple headers for PDF to fit
-        const reportHeaders = ["Done by", "Zone", "TAG", "Description", "Sound", "Vibration", "Heat", "Shelter", "Status", "Timestamp"];
+        const reportHeaders = ["Done by", "Zone", "TAG", "Description", "Status", "Sound", "Vibration", "Temp", "Shelter", "Timestamp"];
 
         const body = tasksToExport.map(task => {
             return [
@@ -1837,11 +2048,11 @@
                 task.zone || 'N/A',
                 task.tag,
                 task.description,
+                task.status || 'N/A',
                 task.sound || 'N/A',
                 task.vibration || 'N/A',
-                task.heat || 'N/A', // Using 'heat' which is mapped to 'temp'
-                task.motor_umbrella || 'N/A', // Using 'motor_umbrella' which is mapped to 'shelter'
-                task.status || 'N/A', // Using simple 'status'
+                task.temp || 'N/A',
+                task.shelter || 'N/A',
                 task.timestamp ? task.timestamp.toDate().toLocaleDateString('en-GB') : '',
             ];
         });
@@ -1967,9 +2178,13 @@
     
     // --- NEW FUNCTIONS FOR ADMIN GREASE VIEW ---
     function listenForGreaseTasks() {
+        if (unsubscribeGreaseTasks) unsubscribeGreaseTasks(); // Unsubscribe from previous listener
         const q = query(collection(db, "grease_tasks"), orderBy("timestamp", "desc"));
-        onSnapshot(q, (snapshot) => {
+        unsubscribeGreaseTasks = onSnapshot(q, (snapshot) => {
             allGreaseTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (currentUser === 'Admin') {
+                updateAdminAnalytics(); // Update with new grease tasks
+            }
             displayAdminGreaseHistory(); // Call the display function when data changes
         }, (error) => {
             console.error("Firebase snapshot error for grease tasks: ", error);
@@ -1990,21 +2205,18 @@
         });
 
         let tableHTML = `<table class="min-w-full divide-y divide-gray-200 text-sm">
-            <thead class="bg-gray-50 card-transparent">
-                <tr>
-                    <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">User</th>
-                    <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">TAG</th>
-                    <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Front Bearing</th>
-                    <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Rear Bearing</th>
-                    <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Grease (g)</th>
-                    <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Note</th>
-                    <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Timestamp</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">`; // Removed bg-white
+            <thead class="bg-gray-50"><tr>
+                <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">User</th>
+                <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">TAG</th>
+                <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Front Bearing</th>
+                <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Rear Bearing</th>
+                <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Grease (g)</th>
+                <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Note</th>
+                <th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Timestamp</th>
+            </tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
         
         filteredTasks.forEach(task => {
-            tableHTML += `<tr class="card-transparent">
+            tableHTML += `<tr>
                 <td class="px-2 py-2 whitespace-nowrap">${task.user}</td>
                 <td class="px-2 py-2 whitespace-nowrap">${task.tag}</td>
                 <td class="px-2 py-2 whitespace-nowrap">${task.frontBearingCondition}</td>
@@ -2101,7 +2313,7 @@
         console.log("Application initialized successfully.");
     };
 
-    document.getElementById('user-password').addEventListener('keyup', function(event) {
+    document.getElementById('user-password-input').addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
             loginUserWithPassword();
@@ -2128,4 +2340,3 @@
     </script>
 </body>
 </html>
-

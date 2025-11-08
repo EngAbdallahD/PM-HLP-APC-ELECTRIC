@@ -56,7 +56,8 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             border: 3px solid white;
-            background-color: transparent; /* Transparent fill */
+            /* EDITED: Darker background for readability */
+            background-color: rgba(0, 0, 0, 0.7);
             position: relative; /* For z-index */
             z-index: 30; /* On top of image */
         }
@@ -124,44 +125,54 @@
             @apply w-full text-center py-4 px-5 rounded-2xl font-semibold text-lg border-2 cursor-pointer transition-all text-gray-800;
         }
         
-        /* --- Animated Circles --- */
-        #pm-interactive-container .circles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 10; /* Behind image */
+        /* --- Animated Circles (DELETED) --- */
+        
+        /* --- STYLES FOR NEW GREASE MODAL --- */
+        .grease-icon-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100px; /* Larger */
+            height: 100px; /* Larger */
+            border-radius: 9999px; /* full */
+            color: white; /* SVG color */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 3px solid white;
+            background-color: rgba(0, 0, 0, 0.7); /* ADDED: Semi-transparent black background */
+            position: relative; /* For z-index */
+            z-index: 30; /* On top of image */
         }
-        #pm-interactive-container .circles li {
-            position: absolute;
-            display: block;
-            list-style: none;
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: animate-circles 25s linear infinite;
-            bottom: -150px;
-            border-radius: 50%;
+        .grease-icon-button:hover {
+            transform: scale(1.05);
+            border-color: #f59e0b; /* orange-500 */
         }
-        #pm-interactive-container .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
-        #pm-interactive-container .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
-        #pm-interactive-container .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
-        #pm-interactive-container .circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
-        #pm-interactive-container .circles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
-        #pm-interactive-container .circles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
-        #pm-interactive-container .circles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
-        #pm-interactive-container .circles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
-        #pm-interactive-container .circles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
-        #pm-interactive-container .circles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
-
-        @keyframes animate-circles {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
-            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+        .grease-icon-label {
+            font-size: 0.875rem; /* 14px */
+            font-weight: 600; /* semibold */
+            margin-top: 6px;
+            color: #f59e0b; /* orange-500 */
+            text-shadow: 0 0 10px #f59e0b; /* Orange glow */
         }
         
+        /* Grease Icon States */
+        .grease-icon-button.pending {
+            border-color: #f59e0b; /* orange-500 */
+            color: #f59e0b; /* SVG color */
+            box-shadow: 0 0 15px #f59e0b;
+        }
+        .grease-icon-button.ok {
+            border-color: #22c55e; /* green-500 */
+            color: #22c55e;
+            box-shadow: 0 0 15px #22c55e;
+        }
+        .grease-icon-button.error {
+            border-color: #ef4444; /* red-500 */
+            color: #ef4444;
+            box-shadow: 0 0 15px #ef4444;
+        }
+
         /* NEW: Dashboard Backgrounds */
         .dashboard-main {
             background-image: url('arab-potash-company-banner.jpg');
@@ -333,11 +344,11 @@
                  </div>
              </header>
              <main class="flex-grow p-4 md:p-6 admin-dashboard-main overflow-y-auto">
-                  <div class="admin-dashboard-content">
-                     <div class="mb-6">
-                         <h2 class="text-2xl font-bold text-white mb-4">Dashboard Analytics</h2>
-                         <!-- NEW KPI GRID -->
-                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                 <div class="admin-dashboard-content">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-white mb-4">Dashboard Analytics</h2>
+                        <!-- NEW KPI GRID -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                             <!-- Row 1 -->
                             <div onclick="filterHistoryByAnalytics('pm_today')" class="admin-stat-card p-4 rounded-lg shadow cursor-pointer">
                                 <h3 class="font-bold text-3xl text-blue-800" id="analytics-pm-today">0</h3>
@@ -373,91 +384,91 @@
                                 <p class="text-red-600 font-medium">Total Errors This Week</p>
                             </div>
                         </div>
-                     </div>
+                    </div>
 
-                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                         <div class="admin-content-card p-6 rounded-lg shadow-md">
-                             <h2 class="text-2xl font-bold text-gray-800 mb-4">Live PM Activities</h2>
-                             <div id="admin-live-activities" class="space-y-4 max-h-screen overflow-y-auto">
-                                 <!-- Live activities will be populated here -->
-                             </div>
-                         </div>
-                         <div class="admin-content-card p-6 rounded-lg shadow-md space-y-6">
-                             <div>
-                                 <h2 class="text-2xl font-bold text-gray-800">History & Reports</h2>
-                                 <div class="border-b border-gray-200">
-                                     <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                                         <button onclick="switchAdminView('pm')" id="tab-pm" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
-                                             PM History
-                                         </button>
-                                         <button onclick="switchAdminView('grease')" id="tab-grease" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                             Grease History
-                                         </button>
-                                     </nav>
-                                 </div>
-        
-                                 <div id="pm-view">
-                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
-                                         <input type="text" id="history-search-text" placeholder="Search PM by User or TAG..." class="p-2 border rounded-lg w-full">
-                                         <input type="date" id="history-search-date" class="p-2 border rounded-lg w-full">
-                                     </div>
-                                     <div class="flex space-x-4 my-4">
-                                         <button onclick="exportToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export PM to Excel</button>
-                                         <button onclick="exportToPDF()" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">Export PM to PDF</button>
-                                     </div>
-                                     <div id="admin-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
-                                 </div>
-        
-                                 <div id="grease-view" class="hidden">
-                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
-                                         <input type="text" id="grease-search-text" placeholder="Search Grease by User or TAG..." class="p-2 border rounded-lg w-full">
-                                         <input type="date" id="grease-search-date" class="p-2 border rounded-lg w-full">
-                                     </div>
-                                     <div class="flex space-x-4 my-4">
-                                         <button onclick="exportGreaseToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export Grease to Excel</button>
-                                     </div>
-                                     <div id="admin-grease-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
-                                 </div>
-                             </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="admin-content-card p-6 rounded-lg shadow-md">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Live PM Activities</h2>
+                            <div id="admin-live-activities" class="space-y-4 max-h-screen overflow-y-auto">
+                                <!-- Live activities will be populated here -->
+                            </div>
+                        </div>
+                        <div class="admin-content-card p-6 rounded-lg shadow-md space-y-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">History & Reports</h2>
+                                <div class="border-b border-gray-200">
+                                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                                        <button onclick="switchAdminView('pm')" id="tab-pm" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
+                                            PM History
+                                        </button>
+                                        <button onclick="switchAdminView('grease')" id="tab-grease" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                            Grease History
+                                        </button>
+                                    </nav>
+                                </div>
+    
+                                <div id="pm-view">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
+                                        <input type="text" id="history-search-text" placeholder="Search PM by User or TAG..." class="p-2 border rounded-lg w-full">
+                                        <input type="date" id="history-search-date" class="p-2 border rounded-lg w-full">
+                                    </div>
+                                    <div class="flex space-x-4 my-4">
+                                        <button onclick="exportToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export PM to Excel</button>
+                                        <button onclick="exportToPDF()" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">Export PM to PDF</button>
+                                    </div>
+                                    <div id="admin-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
+                                </div>
+    
+                                <div id="grease-view" class="hidden">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
+                                        <input type="text" id="grease-search-text" placeholder="Search Grease by User or TAG..." class="p-2 border rounded-lg w-full">
+                                        <input type="date" id="grease-search-date" class="p-2 border rounded-lg w-full">
+                                    </div>
+                                    <div class="flex space-x-4 my-4">
+                                        <button onclick="exportGreaseToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export Grease to Excel</button>
+                                    </div>
+                                    <div id="admin-grease-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
+                                </div>
+                            </div>
                             
-                              <div class="space-y-6 border-t pt-6">
-                                  <div id="data-management" class="space-y-4 border p-4 rounded-lg bg-white">
-                                      <h3 class="font-semibold text-lg text-gray-700">Automated Archiving Schedule</h3>
-                                      <p class="text-sm text-gray-600">Set the schedule for automatically deleting old PM records. This cycle runs when the admin logs in.</p>
-                                      <div class="flex items-center space-x-4">
-                                          <label for="interval-duration" class="font-semibold">Interval:</label>
-                                          <select id="interval-duration" class="p-2 border rounded-lg">
-                                              <option value="daily">Daily</option>
-                                              <option value="weekly" selected>Weekly</option>
-                                              <option value="monthly">Monthly</option>
-                                          </select>
-                                      </div>
-                                      <div class="grid grid-cols-1 gap-4">
-                                          <div>
-                                              <label for="start-date" class="font-semibold">Cycle Start Date:</label>
-                                              <input type="date" id="start-date" class="w-full p-2 border rounded-lg">
-                                          </div>
-                                          <div class="bg-gray-100 p-2 rounded-lg text-center">
-                                              <p class="text-sm font-medium">Next cycle ends on: <strong id="end-date-display" class="text-blue-600"></strong></p>
-                                          </div>
-                                      </div>
-                                      <div class="flex flex-wrap gap-4">
-                                          <button onclick="runCycleManually()" class="bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition">Run Archive Cycle Now</button>
-                                          <button onclick="confirmClearAllData()" class="bg-red-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-900 transition">Clear ALL History</button>
-                                      </div>
-                                  </div>
+                            <div class="space-y-6 border-t pt-6">
+                                <div id="data-management" class="space-y-4 border p-4 rounded-lg bg-white">
+                                    <h3 class="font-semibold text-lg text-gray-700">Automated Archiving Schedule</h3>
+                                    <p class="text-sm text-gray-600">Set the schedule for automatically deleting old PM records. This cycle runs when the admin logs in.</p>
+                                    <div class="flex items-center space-x-4">
+                                        <label for="interval-duration" class="font-semibold">Interval:</label>
+                                        <select id="interval-duration" class="p-2 border rounded-lg">
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly" selected>Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                        </select>
+                                    </div>
+                                    <div class="grid grid-cols-1 gap-4">
+                                        <div>
+                                            <label for="start-date" class="font-semibold">Cycle Start Date:</label>
+                                            <input type="date" id="start-date" class="w-full p-2 border rounded-lg">
+                                        </div>
+                                        <div class="bg-gray-100 p-2 rounded-lg text-center">
+                                            <p class="text-sm font-medium">Next cycle ends on: <strong id="end-date-display" class="text-blue-600"></strong></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-4">
+                                        <button onclick="runCycleManually()" class="bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition">Run Archive Cycle Now</button>
+                                        <button onclick="confirmClearAllData()" class="bg-red-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-900 transition">Clear ALL History</button>
+                                    </div>
+                                </div>
 
-                                  <div id="user-management" class="space-y-4 border p-4 rounded-lg bg-white">
-                                      <h3 class="font-semibold text-lg text-gray-700">Manage Users</h3>
-                                      <div id="user-editor-container" class="space-y-4 max-h-96 overflow-y-auto pr-2">
-                                          <!-- User editor will be populated here -->
-                                      </div>
-                                      <button onclick="saveUsers()" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Users</button>
-                                  </div>
-                              </div>
-                         </div>
-                     </div>
-                  </div>
+                                <div id="user-management" class="space-y-4 border p-4 rounded-lg bg-white">
+                                    <h3 class="font-semibold text-lg text-gray-700">Manage Users</h3>
+                                    <div id="user-editor-container" class="space-y-4 max-h-96 overflow-y-auto pr-2">
+                                        <!-- User editor will be populated here -->
+                                    </div>
+                                    <button onclick="saveUsers()" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Users</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
              </main>
               <footer class="bg-gray-200 text-center p-4 z-10">
                   <p class="text-sm text-gray-600">Design by: Eng.Abdallah Dmour</p>
@@ -499,8 +510,9 @@
                         <h2 class="text-xl md:text-2xl font-bold text-white">Motor Inspection</h2>
                         <p class="text-sm md:text-lg text-gray-400">TAG: <span id="pm-tag-number" class="font-semibold text-blue-400"></span></p>
                     </div>
-                    <button id="pm-off-mode-button" onclick="togglePmOffMode()" class="bg-gray-600 text-white font-semibold py-2 px-5 rounded-lg transition hover:bg-gray-500">
-                        OFF MODE
+                    <!-- EDITED: Button default state -->
+                    <button id="pm-off-mode-button" onclick="togglePmOffMode()" class="bg-green-600 text-white font-semibold py-2 px-5 rounded-lg transition hover:bg-green-500">
+                        RUN MODE
                     </button>
                 </div>
 
@@ -510,10 +522,7 @@
 
                 <!-- MAIN INTERACTIVE AREA -->
                 <div id="pm-interactive-container" class="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden">
-                    <!-- Animated Circles Background -->
-                    <ul class="circles" style="z-index: 10;">
-                        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
-                    </ul>
+                    <!-- Animated Circles Background (DELETED) -->
                     
                     <!-- Base Motor Image -->
                     <img src="Motor based.png" alt="Motor Diagram" class="w-full h-auto relative" style="z-index: 20;"
@@ -636,56 +645,71 @@
         </div>
     </div>
 
-    <div id="grease-task-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-start justify-center overflow-y-auto py-12 z-50">
-        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl w-11/12 max-w-lg">
-            <h2 class="text-2xl font-bold mb-2">Motor Grease for <span id="grease-tag-number" class="text-blue-600"></span></h2>
-            <p class="text-lg text-gray-600 mb-6" id="grease-equipment-description"></p>
+    <!-- NEW INTERACTIVE GREASE MODAL -->
+    <div id="grease-task-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center overflow-y-auto p-4 z-50">
+        <div class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-4xl relative">
             
-            <div class="space-y-6">
-                <div class="p-3 bg-gray-50 rounded-lg">
-                    <div class="flex items-center">
-                        <input id="front-bearing-available" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="front-bearing-available" class="ml-3 block font-semibold text-lg text-gray-900">Front Bearing Available?</label>
-                    </div>
-                    <div id="front-bearing-condition-block" class="hidden mt-4 pl-8">
-                        <label class="font-semibold text-md">Condition:</label>
-                        <div class="mt-2">
-                            <input type="radio" name="front-bearing-condition" value="OK" class="form-radio h-5 w-5 text-green-600"><span class="ml-2 mr-4">OK</span>
-                            <input type="radio" name="front-bearing-condition" value="Error" class="form-radio h-5 w-5 text-red-600"><span class="ml-2">Error</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-3 bg-gray-50 rounded-lg">
-                    <div class="flex items-center">
-                        <input id="rear-bearing-available" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="rear-bearing-available" class="ml-3 block font-semibold text-lg text-gray-900">Rear Bearing Available?</label>
-                    </div>
-                    <div id="rear-bearing-condition-block" class="hidden mt-4 pl-8">
-                        <label class="font-semibold text-md">Condition:</label>
-                        <div class="mt-2">
-                            <input type="radio" name="rear-bearing-condition" value="OK" class="form-radio h-5 w-5 text-green-600"><span class="ml-2 mr-4">OK</span>
-                            <input type="radio" name="rear-bearing-condition" value="Error" class="form-radio h-5 w-5 text-red-600"><span class="ml-2">Error</span>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- HEADER: Title -->
+            <div class="flex justify-between items-center mb-4">
                 <div>
-                    <label for="grease-amount" class="font-semibold text-lg">Total Grease Amount (grams)</label>
-                    <input type="number" id="grease-amount" class="w-full mt-2 p-3 border rounded-lg" placeholder="e.g., 50">
-                </div>
-
-                <div>
-                    <label for="grease-note" class="font-semibold text-lg">Note</label>
-                    <textarea id="grease-note" class="w-full mt-2 p-3 border rounded-lg h-24" placeholder="Add extra information here..."></textarea>
+                    <h2 class="text-xl md:text-2xl font-bold text-white">Motor Greasing</h2>
+                    <p class="text-sm md:text-lg text-gray-400">TAG: <span id="grease-tag-number" class="font-semibold text-blue-400"></span></p>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end space-x-4">
-                <button onclick="closeGreaseTaskModal()" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition">Cancel</button>
-                <button onclick="submitGreaseTask()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Greasing Finished</button>
+
+            <!-- MAIN INTERACTIVE AREA -->
+            <div id="grease-interactive-container" class="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden">
+                <!-- Base Motor Image -->
+                <img src="motor grease.png" alt="Motor Diagram" class="w-full h-auto relative" style="z-index: 20;"
+                     onerror="this.src='https://placehold.co/1024x768/374151/E2E8F0?text=Motor+Image+Not+Found%0A(motor%20grease.png)'">
+
+                <!-- Inspection Icons (Absolutely Positioned) -->
+                
+                <!-- 1. Front Bearing -->
+                <button id="grease-icon-front" onclick="openGreasePoint('front')" class="grease-icon-button absolute top-1/2 left-4 md:left-10 transform -translate-y-1/2">
+                    <svg class="w-8 h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span class="grease-icon-label">Front Nibble</span>
+                </button>
+
+                <!-- 2. Rear Bearing -->
+                <button id="grease-icon-rear" onclick="openGreasePoint('rear')" class="grease-icon-button absolute top-1/2 right-4 md:right-10 transform -translate-y-1/2">
+                    <svg class="w-8 h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span class="grease-icon-label">Rear Nibble</span>
+                </button>
+            </div>
+            
+            <!-- Data Entry Fields -->
+            <div class="mt-6 space-y-4">
+                <div>
+                    <label for="grease-amount" class="font-semibold text-lg text-white">Total Grease Amount (grams)</label>
+                    <input type="number" id="grease-amount" class="w-full mt-2 p-3 border rounded-lg bg-gray-700 text-white border-gray-600" placeholder="e.g., 50">
+                </div>
+                <div>
+                    <label for="grease-note" class="font-semibold text-lg text-white">Note</label>
+                    <textarea id="grease-note" class="w-full mt-2 p-3 border rounded-lg h-24 bg-gray-700 text-white border-gray-600" placeholder="Add extra information here..."></textarea>
+                </div>
+            </div>
+
+            <!-- FOOTER: Cancel and Submit Buttons -->
+            <div class="mt-8 flex justify-between">
+                <button onclick="closeGreaseTaskModal()" class="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">
+                    Cancel
+                </button>
+                <button onclick="submitGreaseTask()" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition">
+                    Greasing Finished
+                </button>
+            </div>
+
+        </div>
+
+        <!-- POPUP for Grease Questions -->
+        <div id="grease-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
+            <div id="grease-popup-content" class="bg-gray-700 p-6 rounded-2xl shadow-xl w-full max-w-md">
+                <!-- Content will be dynamically injected here by JavaScript -->
             </div>
         </div>
     </div>
+
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -714,13 +738,19 @@
     let allTasks = [];
     let allGreaseTasks = [];
     let unsubscribePmTasks = null;
-    let unsubscribeGreaseTasks = null; // Added this
+    let unsubscribeGreaseTasks = null;
     let unsubscribeUserSettings = null;
     
-    let pmState = {}; // Holds data: { status: 'Clean', sound: 'Normal', ... }
+    // PM Modal State
+    let pmState = {};
     let isOfflineMode = false;
-    let activeInspectionPoint = null; // 'status', 'sound', etc.
-    let submitContinuation = null; // Function to run after note confirmation
+    let activeInspectionPoint = null;
+    let submitContinuation = null;
+    
+    // Grease Modal State
+    let selectedGreaseEquipment = null;
+    let greaseState = {};
+    let activeGreasePoint = null;
 
 
     // NEW: Default user settings from user list.csv
@@ -752,27 +782,667 @@
             interval: 'weekly'
         }
     };
-    let userSettings = { ...defaultUserSettings };
+    let userSettings = { users: [], archiveSchedule: { start: null, interval: 'weekly' } }; // Start with empty users
 
     // --- EMBEDDED CSV DATA ---
     const hlpCsvData = `TAG number,Equipment Description
-13-29-060,DRYER FEED CONVEYOR BELT #60
-13-29-061,DRYER FEED CONVEYOR BELT #61
-13-29-062,DRYER FEED CONVEYOR BELT #62
-13-29-063,DRYER FEED CONVEYOR BELT #63
-13-29-064,DRYER FEED CONVEYOR BELT #64
-13-29-065,DRYER FEED CONVEYOR BELT #65`;
+13-01-015,1ST STAGE DECOMPOSTION THICKNER DISCHARGE PUMP #15
+13-01-016,1ST STAGE DECOMPOSTION THICKNER DISCHARGE PUMP #16
+13-01-017 (VFD),CARNALITE RE-PULP TANK PUMP #17
+13-01-018 (VFD),CARNALITE RE-PULP TANK PUMP #18
+13-01-031 (VFD),WASH THECKENER U/F #31 (VFD)
+13-01-032,WASH THICKNER U/F PUMP #32
+13-01-033 (VFD),CARNALITE THICKNER U/F PUMP #33 (VFD)
+13-01-034,CARNALITE THICKNER U/F PUMP #34
+13-01-035,1ST STAGE DECOMPOSTION THICKNER U/F PUMP #35
+13-01-036,1ST STAGE DECOMPOSTION THICKNER U/F PUMP #36
+13-01-037 (VFD),WASH THECKENER U/F #37 (VFD)
+13-01-038 (VFD),CARNALITE THICKNER U/F PUMP #38 (VFD)
+13-01-039,1ST STAGE DECOMPOSTION THICKNER U/F PUMP #39
+13-01-044,1ST STAGE DECOMPOSTION THICKNER O/F PUMP #44
+13-01-045,1ST STAGE DECOMPOSTION THICKNER O/F PUMP #45
+13-01-046,WASH THICKNER O/F PUMP #46
+13-01-047,WASH THICKNER O/F PUMP #47
+13-01-051,SYLVNITE THICKNER U/F PUMP #51
+13-01-052,SYLVNITE THICKNER U/F PUMP #52
+13-01-061,SYLVNITE THICKNER O/F PUMP #61
+13-01-062,SYLVNITE THICKNER O/F PUMP #62
+13-01-071,SYLVANITE FILTER FEED PUMP #71
+13-01-072,SYLVANITE FILTER FEED PUMP #72
+13-01-073 (VFD),SYLVANITE FILTER FEED PUMP #73 (VFD)
+13-01-074 (VFD),SYLVANITE FILTER FEED PUMP #74 (VFD)
+13-01-075,VIBRATING SCREEN FEED PUMP #75
+13-01-076,VIBRATING SCREEN FEED PUMP #76
+13-01-077 (VFD),VIBRATING SCREEN OVERSIZE PUMP #77 (VFD)
+13-01-078 (VFD),VIBRATING SCREEN OVERSIZE PUMP #78 (VFD)
+13-01-082 (VFD),WASH THICKENER REPULP PUMP #82
+13-01-083 (VFD),WASH THICKENER REPULP PUMP #83
+13-01-084,FLUSHING WATER PUMP AT DEWATRING CENTRIFUGE AREA
+13-01-093 (VFD),SYLVANITE 2 ND FILTRATE PUMP #93 (VFD)
+13-01-094 (VFD),SYLVANITE 2 ND FILTRATE PUMP #94 (VFD)
+13-01-103,SUMP PUMP #103
+13-01-104,SUMP PUMP #104
+13-01-105,SUMP PUMP #105
+13-01-106,SUMP PUMP #106
+13-01-111 (VFD),CARNALLITE SURGE TANK PUMP #111
+13-01-112 (VFD),CARNALLITE SURGE TANK PUMP #112
+13-01-113 (VFD),CARNALLITE SURGE TANK PUMP #113
+13-01-114 (VFD),CARNALLITE SURGE TANK PUMP #114
+13-01-115,STONE REMOVAL REPULP TANK PUMP #115
+13-01-116,STONE REMOVAL REPULP TANK PUMP #116
+13-01-117,STONE REMOVAL REPULP TANK PUMP #117
+13-01-141 (VFD),BUFFER TANK PUMP MOTOR #141
+13-01-142 (VFD),BUFFER TANK PUMP MOTOR #142
+13-01-143 (VFD),THICKENER PUMP MOTOR #143
+13-01-144 (VFD),THICKENER PUMP MOTOR #144
+13-01-145 (VFD),HOTWELL#2 PUMP MOTOR #145
+13-01-146 (VFD),HOTWELL#2 PUMP MOTOR #146
+13-01-147 (VFD),HOTWELL#2 PUMP MOTOR #147
+13-01-151 (VFD),HOT BRINE PUMP #151 (VFD)
+13-01-152 (VFD),HOT BRINE PUMP #152 (VFD)
+13-01-161,TAIL DESPOSAL PUMP #161
+13-01-162,TAIL DESPOSAL PUMP #162
+13-01-171,BRINE HEATER CONDENSATE PUMP #171
+13-01-172,BRINE HEATER CONDENSATE PUMP #172
+13-01-181,NO.1 BAROMETRIC CONDENCER PUMP #181
+13-01-182,NO.1 BAROMETRIC CONDENCER PUMP #182
+13-01-183,GLAND PACKING COOLING PUMP #183
+13-01-184,GLAND PACKING COOLING PUMP #184
+13-01-210,1ST STAGE CRYST.TRANSFEER PUMP #210
+13-01-220,1ST STAGE CRYST.O/F TRANSFEER PUMP #220
+13-01-230 (VFD),NO.2 BAROMETRIC CONDENCER PUMP #230 (VFD)
+13-01-250,2ND STAGE CRYST.TRANSFEER PUMP # 250
+13-01-260,2SD STAGE CRYST.O/F TRANSFEER PUMP #260
+13-01-270 (VFD),NO.3 BAROMETRIC CONDENCER PUMP #270 (VFD)
+13-01-271 (VFD),NO.6 BAROMETRIC CONDENCER PUMP #271 (VFD)
+13-01-290 (VFD),3 RD STAGE CRYST.TRANSFEER PUMP #290 (VFD)
+13-01-291 (VFD),6 TH STAGE CRYST.TRANSFEER PUMP #291 (VFD)
+13-01-300,3 RD STAGE CRYST.O/F TRANSFEER PUMP #300
+13-01-301,6 TH STAGE CRYST.O/F TRANSFEER PUMP #301
+13-01-310 (VFD),4 TH STAGE CRYST.TRANSFEER PUMP #310 (VFD)
+13-01-320,4 TH STAGE CRYST.O/F TRANSFEER PUMP #320
+13-01-331,5 TH STAGE CRYST.TRANSFEER PUMP #331
+13-01-332,6 TH STAGE CRYST.TRANSFEER PUMP #332
+13-01-341 (VFD),5 TH STAGE CRYST. TRANSFER PUMP #341 (VFD)
+13-01-342 (VFD),6 TH STAGE CRYST. TRANSFER PUMP #342 (VFD)
+13-01-351,NO.5 BAROMETRIC CONDENCER PUMP #351
+13-01-352,NO.5 BAROMETRIC CONDENCER PUMP #352
+13-01-361,CRYSTALLIZER WATER ADDITION PUMP #361
+13-01-362,CRYSTALLIZER WATER ADDITION PUMP #362
+13-01-363,HOT THICKENER WATER ADDITION PUMP #363
+13-01-370,CRYSTALLIZER WASH TANK PUMP #370
+13-01-371,CRYSTALLIZER WASH TANK PUMP #371
+13-01-403,NEW PRODUCT CENTRIFUGE CENTRATE PUMP #403
+13-01-404,NEW PRODUCT CENTRIFUGE CENTRATE PUMP #404
+13-01-405 (VFD),MOTHER LIQUOR THICKENER OVERFLOW PUMP #01 MOTOR (VFD)
+13-01-406 (VFD),MOTHER LIQUOR THICKENER OVERFLOW PUMP #02 MOTOR (VFD)
+13-01-407,MOTHER LIQUOR THICKENER GSW BOOSTER PUMP #01 MOTOR
+13-01-408,MOTHER LIQUOR THICKENER GSW BOOSTER PUMP #02 MOTOR
+13-01-409 (VFD),MOTHER LIQUOR THICKENER UNDERFLOW PUMP #01 MOTOR (VFD)
+13-01-410 (VFD),MOTHER LIQUOR THICKENER UNDERFLOW PUMP #02 MOTOR (VFD)
+13-01-432,#12 CENTRIFUGE LUBE OIL MOTOR
+13-01-433,#13 CENTRIFUGE LUBE OIL MOTOR
+13-01-434,#14 CENTRIFUGE LUBE OIL MOTOR
+13-01-435,#15 CENTRIFUGE LUBE OIL MOTOR
+13-01-436,#16 CENTRIFUGE LUBE OIL MOTOR
+13-01-442,#22 CENTRIFUGE LUBE OIL MOTOR
+13-01-443,#23 CENTRIFUGE LUBE OIL MOTOR
+13-01-444,#24 CENTRIFUGE LUBE OIL MOTOR
+13-01-445,#25 CENTRIFUGE LUBE OIL MOTOR
+13-01-446,#26 CENTRIFUGE LUBE OIL MOTOR
+13-01-447,#27 CENTRIFUGE LUBE OIL MOTOR
+13-01-451,#31 CENTRIFUGE LUBE OIL MOTOR
+13-01-452,#32 CENTRIFUGE LUBE OIL MOTOR
+13-01-453,#33 CENTRIFUGE LUBE OIL MOTOR
+13-01-454,#34 CENTRIFUGE LUBE OIL MOTOR
+13-01-462,#42 CENTRIFUGE LUBE OIL MOTOR
+13-01-463,#43 CENTRIFUGE LUBE OIL COOLING FAN / CENTRIFUGE #43
+13-01-464,#44 CENTRIFUGE LUBE OIL COOLING FAN / CENTRIFUGE #44
+13-01-471,#51 CENTRIFUGE LUBE OIL MOTOR
+13-01-472,#52 CENTRIFUGE LUBE OIL MOTOR
+13-01-473,#53 CENTRIFUGE LUBE OIL MOTOR
+13-01-474,#54 CENTRIFUGE LUBE OIL MOTOR
+13-01-475,#55 CENTRIFUGE LUBE OIL MOTOR
+13-01-541,TAILS CYCLONE FEED PUMP #541
+13-01-542,TAILS CYCLONE FEED PUMP #542
+13-01-555,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #01
+13-01-556,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #02
+13-01-557,PACKING PUMP FOR NEW HOT-WELL PUMP #01
+13-01-558,PACKING PUMP FOR NEW HOT-WELL PUMP #02
+13-01-559,PACKING PUMP #590
+13-01-560,PACKING PUMP #560
+13-01-561 (VFD),HOT THEKENER UNDER FLOW #561 (VFD)
+13-01-562 (VFD),HOT THEKENER UNDER FLOW #562 (VFD)
+13-01-571 (VFD),NEW HOT THICKENER O/F PUMP #571 (VFD)
+13-01-572 (VFD),NEW HOT THICKENER O/F PUMP #572 (VFD)
+13-01-573,NEW HOT BRINE THICKNER SUMP PUMP # 573
+13-01-574,NEW HOT BRINE THICKNER SUMP PUMP #574
+13-01-610,FLUSHING PUMP FOR PRODUCT CENTRIFUGE
+13-01-611,FLUSHING PUMP FOR CARNALITE CENTRIFUGE
+13-02-011,VACUUM PUMP #11
+13-02-012,VACUUM PUMP #12
+13-02-013,VACUUM PUMP #13 (ROOTS BLOWER PUMP)
+13-02-014,VACUUM PUMP #14 (ROOTS BLOWER PUMP)
+13-03-011,SYLVANITE BELT FILTER #11 BLOWER MOTOR
+13-03-012,SYLVANITE BELT FILTER #12 BLOWER MOTOR
+13-03-013,SYLVANITE BELT FILTER #13 BLOWER MOTOR
+13-03-015,ROOT COOLING FAN #15 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
+13-03-016,ROOT COOLING FAN #16 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
+13-03-017,ROOT COOLING FAN #17 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
+13-03-018,ROOT COOLING FAN #18 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
+13-03-141,RADIATOR COOLING FAN MOTOR #141
+13-03-142,RADIATOR COOLING FAN MOTOR #142
+13-03-143,RADIATOR COOLING FAN MOTOR #143
+13-03-144,RADIATOR COOLING FAN MOTOR #144
+13-03-145,RADIATOR COOLING FAN MOTOR #145
+13-03-146,RADIATOR COOLING FAN MOTOR #146
+13-03-147,RADIATOR COOLING FAN MOTOR #147
+13-03-432,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #12
+13-03-433,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #13
+13-03-434,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #14
+13-03-435,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #15
+13-03-436,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #16
+13-03-442,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #22
+13-03-443,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #23
+13-03-444,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #24
+13-03-445,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #25
+13-03-446,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #26
+13-03-447,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #27
+13-03-451,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #31
+13-03-452,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #32
+13-03-453,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #33
+13-03-454,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #34
+13-03-462,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #42
+13-03-463,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #43
+13-03-464,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #44
+13-03-471,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #51
+13-03-472,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #52
+13-03-473,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #53
+13-03-474,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #54
+13-03-475,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #55
+13-01-541,TAILS CYCLONE FEED PUMP #541
+13-01-542,TAILS CYCLONE FEED PUMP #542
+13-01-555,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #01
+13-01-556,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #02
+13-01-557,PACKING PUMP FOR NEW HOT-WELL PUMP #01
+13-01-558,PACKING PUMP FOR NEW HOT-WELL PUMP #02
+13-01-559,PACKING PUMP #590
+13-01-560,PACKING PUMP #560
+13-01-561 (VFD),HOT THEKENER UNDER FLOW #561 (VFD)
+13-01-562 (VFD),HOT THEKENER UNDER FLOW #562 (VFD)
+13-01-571 (VFD),NEW HOT THICKENER O/F PUMP #571 (VFD)
+13-01-572 (VFD),NEW HOT THICKENER O/F PUMP #572 (VFD)
+13-01-573,NEW HOT BRINE THICKNER SUMP PUMP # 573
+13-01-574,NEW HOT BRINE THICKNER SUMP PUMP #574
+13-01-610,FLUSHING PUMP FOR PRODUCT CENTRIFUGE
+13-01-611,FLUSHING PUMP FOR CARNALITE CENTRIFUGE
+13-02-011,VACUUM PUMP #11
+13-02-012,VACUUM PUMP #12
+13-02-013,VACUUM PUMP #13 (ROOTS BLOWER PUMP)
+13-02-014,VACUUM PUMP #14 (ROOTS BLOWER PUMP)
+13-03-011,SYLVANITE BELT FILTER #11 BLOWER MOTOR
+13-03-012,SYLVANITE BELT FILTER #12 BLOWER MOTOR
+13-03-013,SYLVANITE BELT FILTER #13 BLOWER MOTOR
+13-03-015,ROOT COOLING FAN #15 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
+13-03-016,ROOT COOLING FAN #16 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
+13-03-017,ROOT COOLING FAN #17 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
+13-03-018,ROOT COOLING FAN #18 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
+13-03-141,RADIATOR COOLING FAN MOTOR #141
+13-03-142,RADIATOR COOLING FAN MOTOR #142
+13-03-143,RADIATOR COOLING FAN MOTOR #143
+13-03-144,RADIATOR COOLING FAN MOTOR #144
+13-03-145,RADIATOR COOLING FAN MOTOR #145
+13-03-146,RADIATOR COOLING FAN MOTOR #146
+13-03-147,RADIATOR COOLING FAN MOTOR #147
+13-03-432,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #12
+13-03-433,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #13
+13-03-434,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #14
+13-03-435,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #15
+13-03-436,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #16
+13-03-442,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #22
+13-03-443,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #23
+13-03-444,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #24
+13-03-445,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #25
+13-03-446,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #26
+13-03-447,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #27
+13-03-451,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #31
+13-03-452,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #32
+13-03-453,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #33
+13-03-454,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #34
+13-03-462,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #42
+13-03-463,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #43
+13-03-464,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #44
+13-03-471,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #51
+13-03-472,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #52
+13-03-473,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #53
+13-03-474,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #54
+13-03-475,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #55
+13-04-010-01,"CARN. WASH THICKENER RAKE MOTOR ""NORTH"" PUMP #01"
+13-04-010-02,"CARN. WASH THICKENER RAKE MOTOR ""SOUTH"" PUMP#02"
+13-04-010-03,"CARN. WASH THICKENER RAKE MOTOR ""LIFTTING"" PUMP#01"
+13-04-010-04,"CARN. WASH THICKENER RAKE MOTOR ""LIFTTING"" PUMP#02"
+13-04-010-05,CARN. WASH THICKENER RAKE OIL TANK COOLANT FAN
+13-04-010-CONTROL PANEL,CARN. WASH THICKENER RAKE LOCAL CONTROL PANEL 230V
+13-04-010-HEATER PANEL,CARN. WASH THICKENER RAKE LOCAL HEATER PANEL 400V
+13-04-011-01,CAR. THICKENER HYD.DRIVE PUMP #01 MOTOR
+13-04-011-02,CAR. THICKENER HYD.DRIVE PUMP #02 MOTOR
+13-04-011-03 (A),"CARN. THICKENER RAKE ""HYD LIFTTING PUMP A"""
+13-04-011-03 (B),"CARN. THICKENER RAKE ""HYD LIFTTING PUMP B"""
+13-04-011-LOCAL PANEL,CARNLITE THICKENER 230V LOCAL CONTROL PANEL
+13-04-012-01,"1ST STAGE THICKENER RAKE "" NORTH"""
+13-04-012-02,"1ST STAGE THICKENER RAKE "" SOUTH"""
+13-04-012-03,"1ST STAGE THICKENER RAKE "" LIFTTING"""
+13-04-020-01,"SULV. THICKENER RAKE MOTOR ""NORTH"""
+13-04-020-02,"SULV. THICKENER RAKE MOTOR ""SOUTH"""
+13-04-020-03,"SULV. THICKENER RAKE MOTOR ""LIFTTING"""
+13-04-031-01,NEW HOT BRINE THICKNER RAKE MOTOR #01
+13-04-031-02,NEW HOT BRINE THICKNER RAKE MOTOR #02
+13-04-031-03,NEW HOT BRINE THICKNER RAKE LIFTTING MOTOR #03
+13-04-031-04,NEW HOT BRINE THICKNER RAKE LIFTTING MOTOR #04
+13-04-031-05,NEW HOT BRINE THICKNER OIL COOLING FAN MOTOR #01
+13-04-031-06,NEW HOT BRINE THICKNER OIL COOLING FAN MOTOR #02
+13-04-031-LOCAL PANEL,NEW HOT BRINE THICKNER  LOCAL PANEL FEEDER
+13-04-051-01,MOTHER LIQUOR THICKENER DRIVE RAKE PUMP #01 MOTOR
+13-04-051-02,MOTHER LIQUOR THICKENER DRIVE RAKE PUMP #02 MOTOR
+13-04-051-03,MOTHER LIQUOR THICKENER RAKE LIFT MOTOR
+13-04-051-04,MOTHER LIQUOR THICKENER OIL COOLING FAN MOTOR #01
+13-04-051-05,MOTHER LIQUOR THICKENER OIL COOLING FAN MOTOR #02
+13-04-051-06,MOTHER LIQUOR THICKENER OIL TANK HEATER WITH THERMOSTAT
+13-05-007(81),DECOMPOSTION TANK #07 AGITATOR MOTOR
+13-05-008(82),DECOMPOSTION TANK #08 AGITATOR MOTOR
+13-05-011,CARNALLITE SURGE TANK #01
+13-05-012,CARNALLITE SURGE TANK #02
+13-05-013,CARNALLITE SURGE TANK #03
+13-05-014(90),CARNALLITE SURGE TANK #04
+13-05-015,REACTOR TNK. AGITATOR
+13-05-016-01,STONE REMOVAL REPULP TANK AGITATOR #016
+13-05-016-02,STONE REMOVAL REPULP TANK AGITATOR #016 LUBRICANT PUMP
+13-05-026,WASH THICKENER REPULP TANK AGITATOR #26
+13-05-030,DECOMPOSTION TANK #01 AGITATOR MOTOR
+13-05-040,DECOMPOSTION TANK #02 AGITATOR MOTOR
+13-05-050,DECOMPOSTION TANK #03 AGITATOR MOTOR
+13-05-060,DECOMPOSTION TANK #04 AGITATOR MOTOR
+13-05-070,DECOMPOSTION TANK #05 AGITATOR MOTOR
+13-05-077,NEW UPGRADING SCREEN TANK AGITATOR
+13-05-080,DECOMPOSTION TANK #06 AGITATOR MOTOR
+13-05-091,SYLV. SURGE TNK. AGITATOR #91
+13-05-095,CARNALITE RE-PULP TANK AGITATOR #95
+13-05-100,HOT LEACH TANK #01 AGITATOR MOTOR
+13-05-110,HOT LEACH TANK #02 AGITATOR MOTOR
+13-05-120,HOT LEACH TANK #03 AGITATOR MOTOR
+13-05-130,HOT LEACH TANK #04 AGITATOR MOTOR
+13-05-131,HOT LEACH TANK #05 AGITATOR MOTOR
+13-05-132,HOT LEACH TANK #06 AGITATOR MOTOR
+13-05-150,TAIL REPULP TANK #150 AGITATOR MOTOR
+13-05-160,CRYSTALLIZER #01 AGITATOR MOTOR
+13-05-170,CRYSTALLIZER #02 AGITATOR MOTOR
+13-05-180,CRYSTALLIZER #03 AGITATOR MOTOR
+13-05-181,CRYSTALLIZER #06 AGITATOR MOTOR
+13-05-190,CRYSTALLIZER #04 AGITATOR MOTOR
+13-05-200,CRYSTALLIZER #05 AGITATOR MOTOR
+13-05-240,PRODUCT TNK. AGITATOR MOTOR #240
+13-21-012,CARNALITE CENTRIFUGE #12
+13-21-013,CARNALITE CENTRIFUGE #13
+13-21-014,CARNALITE CENTRIFUGE #14
+13-21-015,CARNALITE CENTRIFUGE #15
+13-21-016,CARNALITE CENTRIFUGE #16
+13-21-022,CARNALITE CENTRIFUGE #22
+13-21-023,CARNALITE CENTRIFUGE #23
+13-21-024,CARNALITE CENTRIFUGE #24
+13-21-025,CARNALITE CENTRIFUGE #25
+13-21-026,CARNALITE CENTRIFUGE #26
+13-21-027,CARNALITE CENTRIFUGE #27
+13-21-031,TAILS CENTRIFUGE #31
+13-21-032,TAILS CENTRIFUGE #32
+13-21-033,TAILS CENTRIFUGE #33
+13-21-034,TAILS CENTRIFUGE #34
+13-21-042,PRODUCT CENTRIFUGE #42
+13-21-043,PRODUCT CENTRIFUGE #43
+13-21-044,PRODUCT CENTRIFUGE #44
+13-21-051,WASH THICKENER CENTRIFUGE #51
+13-21-052,WASH THICKENER CENTRIFUGE #52
+13-21-053,WASH THICKENER CENTRIFUGE #53
+13-21-054,WASH THICKENER CENTRIFUGE #54
+13-21-055,WASH THICKENER CENTRIFUGE #55
+13-22-011 (VFD),DRIVE SYESTEM FOR BELT FILTER #11 (VFD)
+13-22-012 (VFD),DRIVE SYESTEM FOR BELT FILTER #12 (VFD)
+13-22-013 (VFD),DRIVE SYESTEM FOR BELT FILTER #13 (VFD)
+13-28-100,SYLVANITE UP GRADING SCREEN #100
+13-28-101,SYLVANITE UP GRADING SCREEN #101
+13-28-102,SYLVANITE UP GRADING SCREEN #102
+13-28-103,STONE REMOVAL REPULP TANK SCREEN #103
+13-28-104,STONE REMOVAL REPULP TANK SCREEN #104
+13-29-011,CARNALITE CONVEYOR BELT #11
+13-29-012,CARNALITE CONVEYOR BELT #12
+13-29-020,NEW CARNALITE CONVEYOR BELT #20
+13-29-040,SYLVANITE CONVEYOR BELT #40
+13-29-050,WASH THICKENER REPULP BELT CONVEYOR
+13-29-060,DRYER FEED CONVEYOR BELT #60`;
 
     const screenCsvData = `TAG number,Equipment Description
-14-75-800 M,DIVERTER UNIT
-14-75-801 M,DIVERTER UNIT
-14-75-802 M,DIVERTER UNIT
-14-75-803 M,DIVERTER UNIT`;
+14-01-001A (VFD),NEW COOLER PUMP #01A (VFD)
+14-01-001B (VFD),NEW COOLER PUMP #02B (VFD)
+14-01-071,SCREEN SUMP PUMP
+14-01-201,DUST WATER DILUTION TANK PUMP #01
+14-01-301,DUST WATER DILUTION TANK PUMP #02
+14-02-501,AIR COMPRESSOR FOR NEW COOLER SYSTEM #01
+14-02-502,AIR COMPRESSOR FOR NEW COOLER SYSTEM #02
+14-02-503,AIR COMPRESSOR FOR NEW COOLER SYSTEM #03
+14-02-511,AIR COMPRESSOR FOR NEW DRYER DE DUSTING SYSTEM #01
+14-02-512,AIR COMPRESSOR FOR NEW DRYER DE DUSTING SYSTEM #02
+14-03-020-01 (VFD),ID FAN MOTOR #01 (VFD)
+14-03-020-02 (VFD),ID FAN MOTOR #02 (VFD)
+14-03-031 (VFD),DRYER DILUTION FAN #31 (VFD)
+14-03-032 (VFD),DRYER DILUTION FAN #32 (VFD)
+14-03-050,SCRUBER FAN #50
+14-03-060,EXHAUST FAN #01 (MO1) / SCREEN
+14-03-070,EXHAUST FAN #02 (MO2) / COMPACTION
+14-03-080,EXHAUST FAN #01  (MO6) / SHIPPING
+14-03-090, EXHAUST FAN #01 / WAREHOUSE
+14-03-100,EXHAUST FAN #02 / WAREHOUSE
+14-03-202-01,COOLER BAGHOUSE EXHAUST FAN #01
+14-03-202-02,COOLER BAGHOUSE EXHAUST FAN #02
+14-03-501, NEW COMBUSTION AIR FAN #501
+14-03-502, NEW COMBUSTION AIR FAN #502
+14-03-601,COOLER SUPPLY AIR FAN #601
+14-03-602,COOLER SUPPLY AIR FAN #602
+14-03-603,COOLER SUPPLY AIR FAN #603
+14-05-010,NEW DISSOLVING TANK AT LOADING DE-DUSTING SYSTEM
+14-05-201,DUST WATER DILUTION TANK - AGITATORS #201
+14-05-301,DUST WATER DILUTION TANK - AGITATORS #301
+14-15-020-01(STARTER),VIBRATORSB AND LIVE BOTTOMS
+14-15-080-01(STARTER),VIBRATORSB AND LIVE BOTTOMS
+14-15-080-02(STARTER),VIBRATORSB AND LIVE BOTTOMS
+14-15-090-01,VIBRATORSB AND LIVE BOTTOMS
+14-15-090-02,VIBRATORSB AND LIVE BOTTOMS
+14-15-100,"SHIPPING BIN CHUTE ""TELESCOPING SYSTEM"" ""EAST"""
+14-15-100-01,#01 SHIPPING BIN CHUTE - Vibrator#01
+14-15-100-02,#01 SHIPPING BIN CHUTE - Vibrator#02
+14-15-100-03,#01 SHIPPING BIN CHUTE - Vibrator#03
+14-15-110,"SHIPPING BIN CHUTE ""TELESCOPING SYSTEM"" ""MIDDLE"""
+14-15-110-01,#02 SHIPPING BIN CHUTE - Vibrator#01
+14-15-110-02,#02 SHIPPING BIN CHUTE - Vibrator#02
+14-15-110-03,#02 SHIPPING BIN CHUTE - Vibrator#03
+14-15-120,"SHIPPING BIN CHUTE ""TELESCOPING SYSTEM"" ""WEST"""
+14-15-120-01,#03 SHIPPING BIN CHUTE - Vibrator#01
+14-15-120-02,#03 SHIPPING BIN CHUTE - Vibrator#02
+14-15-120-03,#03 SHIPPING BIN CHUTE - Vibrator#03
+14-15-390,DISSOLVING MAIN HOPPER VIBRATOR
+14-15-400,DISSOLVING SCREEN SHUTE VIBRATOR
+14-25-001,PRIMARY FUEL SKID PUMP #01
+14-25-002,PRIMARY FUEL SKID PUMP #02
+14-25-003,SECONDARY FUEL SKID PUMP #01
+14-25-004,SECONDARY FUEL SKID PUMP #02
+14-25-510-01,ROTARY DRYER DRIVE
+14-25-510-02,AUX. DRYER MOTOR
+14-25-510-03,BURNER CARRIAGE (TROLLEY) MOTOR
+14-25-510-04,DRYER THRUSTER RELEASED DRUM BREAK
+14-26-014,NEW CRUSHER SCREEN MOTOR
+14-28-001,ROTEX SCREEN #01
+14-28-002,ROTEX SCREEN #02
+14-28-003,ROTEX SCREEN #03
+14-28-010,DISSOLVING SCREEN
+14-29-010,COLLECTING CONVEYOR BELT #10 MOTOR
+14-29-020,SHIPPING CONVEYOR BELT #20
+14-29-030,STORAGE CONVEYOR BELT#30
+14-29-040,RECLAIM CONVEYOR BELT #40
+14-29-050,RECLAIM CONVEYOR BELT #50
+14-29-060,RECLAIM CONVEYOR BELT #60
+14-29-070,RECLAIM CONVEYOR BELT #70
+14-29-081,TRIPPER DRIVE MOTOR
+14-29-081-TROLLEY,TRIPPER DRIVE MOTOR
+14-29-081-WHEEL,TRIPPER DRIVE MOTOR
+14-29-090,DISSOLVING BELT CONEYOR #02 / MOBILE BELT
+14-29-100,DISSOLVING BELT CONEYOR #01 / LONG BELT
+14-29-120M1,Fresh feed KCL fines/dust belt conveyor main drive
+14-29-120M2,Fresh feed KCL fines/dust belt conveyor cleaning drive
+14-29-200M1,Fresh feed KCL fines/dust belt conveyor main drive
+14-29-200M2,Fresh feed KCL fines/dust belt conveyor cleaning drive
+14-30-001,ANTICACKING MIXER
+14-30-002,NEW SCREW CONVEYOR OF WAREHOUSE & SHIPPING DE-DUSTING BAGHOUSES.
+14-30-040,COOLER CHAIN CONVYOR WITH SCLAPING SCREEN #60
+14-30-050,SCREW CONVEYOR #50
+14-30-170,FINE PRODUCT SCREW CONVEYOR #170
+14-30-180,COMPACTION FEED BIN SCREW CONVEYOR #180
+14-30-181 (VFD) AC (YARA),COMPACTION FEED BIN SCREW CONVEYOR ANTICAKING SYSTEM #181 (VFD) AC
+14-30-181 (VFD) DC (YARA SPARE),COMPACTION FEED BIN SCREW CONVEYOR ANTICAKING SYSTEM #181 (VFD) DC
+14-30-190,DUST SCREW CONVEYOR #190
+14-30-191,NEW DUST SCREW AT BUCKET ELEVATOR #20 OUTLET CHUTE
+14-30-192,NEW DUST SCREW UNDER GRANULAR BIN
+14-30-200M,Fresh feed KCL fines/dust screw feeder main drive
+14-30-200VFD,Fresh feed KCL fines/dust screw feeder main drive
+14-30-201,Integrated screw conveyor below BAG HOUSE 1 #201
+14-30-202,Integrated screw conveyor below BAG HOUSE 1 #202
+14-30-203,Integrated screw conveyor below BAG HOUSE 1 #203
+14-30-204,Integrated screw conveyor below BAG HOUSE 1 #204
+14-30-210,Screw conveyor (Gathering below BAG HOUSE 1) #210
+14-30-220,SCREW CONVEYOR (GATHERING BELOW BAG HOUSE 1) #220
+14-30-290,Screw conveyor below cyclone hopper #01
+14-30-301,Integrated screw conveyor below BAG HOUSE 2 #301
+14-30-302,Integrated screw conveyor below BAG HOUSE 2 #302
+14-30-303,Integrated screw conveyor below BAG HOUSE 2 #303
+14-30-304,Integrated screw conveyor below BAG HOUSE 2 #304
+14-30-310,Screw conveyor (Gathering below BAG HOUSE 2) #310
+14-30-320,Screw conveyor (Gathering below BAG HOUSE 2) #320
+14-30-403,COOLER SCREW TO STANDARD BIN
+14-30-450,SCREW CONVEYOR MO3 / SCREEN
+14-30-460,SCREW CONVEYOR MO4 / COMPACTION
+14-30-470,SCREW ( MO3)/ WAREHOUSE
+14-31-010-01,BUCKET ELEVATOR #10
+14-31-010-02,BUCKET ELEVATOR #10 / MAINTENANCE
+14-31-020,DUST BUCKET ELEVATOR #20
+14-31-060-01,COOLER BUCKET ELEVATOR MAIN MOTOR
+14-31-060-02,COOLER BUCKET ELEVATOR MAINTENANCE MOTOR
+14-31-070M,Fresh feed KCL fines/dust bucket elevator main drive
+14-33-021-01,STRORAGE PAN FEEDER #21
+14-33-021-02,STRORAGE PAN FEEDER #21
+14-33-022-01,STRORAGE PAN FEEDER #22
+14-33-022-02,STRORAGE PAN FEEDER #22
+14-33-023-01,STRORAGE PAN FEEDER #23
+14-33-023-02,STRORAGE PAN FEEDER #23
+14-33-024-01,STRORAGE PAN FEEDER #24
+14-33-024-02,STRORAGE PAN FEEDER #24
+14-33-025-01,STRORAGE PAN FEEDER #25
+14-33-025-02,STRORAGE PAN FEEDER #25
+14-33-026-01,STRORAGE PAN FEEDER #26
+14-33-026-02,STRORAGE PAN FEEDER #26
+14-33-027-01,STRORAGE PAN FEEDER #27
+14-33-027-02,STRORAGE PAN FEEDER #27
+14-33-028-01,STRORAGE PAN FEEDER #28
+14-33-028-02,STRORAGE PAN FEEDER #28
+14-36-020-01,Isolating damper ID fan 20  inlet/ electromechanical #01
+14-36-020-02,Isolating damper ID Fan 20 outlet/ electromechanical #01
+14-36-021-01,Isolating damper ID fan 21 inlet/ electromechanical #02
+14-36-021-02,Isolating damper ID Fan 21 outlet/ electromechanical #02
+14-36-201,WATER DILUTION TANK DAMPER
+14-36-211,BAG HOUSE 1 Filter inlet DUMPER #211
+14-36-301,WATER DILUTION TANK DAMPER
+14-36-311,BAG HOUSE 2 Filter inlet DUMPER #311
+14-36-410,Cyclone inlet damper #410
+14-36-510,Cyclone inlet damper #510
+14-36-720,DIVERTER #720
+14-36-730,DIVERTER #730
+14-36-740,DIVERTER #740
+14-54-201,Rotary valve below filter SCREW 201 trough #201
+14-54-202,Rotary valve below filter SCREW 202 trough #202
+14-54-203,Rotary valve below filter SCREU 203 trough #203
+14-54-204,Rotary valve below filter SCREW 204 trough #204
+14-54-301,Rotary valve below filter SCREW 301 trough #301
+14-54-302,Rotary valve below filter SCREW 302 trough #302
+14-54-303,Rotary valve below filter SCREW 303 trough #303
+14-54-304,Rotary valve below filter SCREW 304 trough #304
+14-54-400 (VFD),COOLER PRODUCT OUTLET ROTARY VALVE #400
+14-54-410,Rotary valves below cyclones hopper #410
+14-54-501,ROTARY AIR LOCK VALVE (BCYCLON)
+14-54-502,ROTARY AIR LOCK VALVE (NEW COOLER BAGFILTER) #502
+14-54-510,Rotary valves below cyclones hopper #510
+14-54-650,ROTARY VALVE (MO6)/ COMPACTION
+14-54-660,ROTARY VALVE  (MO4)/ WAREHOUSE
+14-54-670,ROTARY VALVE (MO8) / SHIPPING
+14-54-680,ROTary VALVE (MO5)/SCREEN
+14-75-800 M,DIVERTER UNIT`;
 
     const compactionCsvData = `TAG number,Equipment Description
-16-85-600M2,de-dusting bag house filter throttle valve actuator
-16-85-601M2,de-dusting bag house filter throttle valve actuator
-16-85-602M2,de-dusting bag house filter throttle valve actuator`;
+16-01-213M,post treatment water pump main drive
+16-01-214M,post treatment water pump main drive
+16-01-216M,grease lubrication roller press compaction circuit 1&2 redundant grease pump A
+16-01-217 M,PRESSURE GAUGES
+16-01-218 M,PRESSURE GAUGES
+16-01-219 M,End Suction Centrifugal Pump
+16-01-220 M,End Suction Centrifugal Pump
+16-01-221 M,End Suction Centrifugal Pump
+16-01-223M,post treatment oil / amin pump main drive
+16-01-224M,post treatment oil / amin pump main drive
+16-01-226M,grease lubrication roller press compaction circuit 1&2 redundant grease pump B
+16-01-227 M,Rotary Lobe Pump
+16-01-228 M,Rotary Lobe Pump
+16-03-310M,post treatment Cooling Air fan main drive
+16-03-320M,Fan - Pre-Heater External Feed Combustion Air main drive
+16-03-700M,Fan - External Feed Pre-Heater Recirculation Air main drive
+16-03-710M,post treatment Cooling Air fan main drive
+16-03-720M,post treatment mixing air fan main drive
+16-03-730M,post treatment de-dusting exhaust air fan main drive
+16-03-740M,de-dusting exhaust air fan
+16-03-750M2,Fan - External Feed Pre-Heater Exhaust Air throttle valve actuator / motor valve
+16-03-760M,Fan - External Feed Equipment De-Dusting main drive
+16-05-125M,post treatment oil / amin tank agitator main drive
+16-05-135M,post treatment oil / amin dosing tank agitator motor control
+16-05-145 M,Mixing Agitator
+16-08-160M1,NATUS SPARE FEEDER
+16-08-160M2,NATUS SPARE FEEDER
+16-08-160M3,NATUS SPARE FEEDER
+16-20-070M,Compaction feed drag conveyor main drive
+16-20-080M,crushed compaction product circuit 1 drag conveyor main drive
+16-20-090M,crushed compaction product circuit 2 drag conveyor main drive
+16-20-100M,recycle drag conveyor main drive
+16-25-400M,post treatment dryer/cooler main drive
+16-25-500M1,Pre-Heater - External Feed weir dryer cold area flap
+16-25-500M2,Pre-Heater - External Feed bypass flap dryer
+16-25-815M1,Hot Gas Generator - Pre-Heater External Feed Diesel pump motor 1
+16-25-815M2,Hot Gas Generator - Pre-Heater External Feed Diesel pump motor 2
+16-26-010M,Fresh feed oversize crusher main drive
+16-26-017M1,compaction circuit 1 flake breaker main drive 1
+16-26-017M2,compaction circuit 1 flake breaker main drive 2
+16-26-027M1,compaction circuit 2 flake breaker main drive 1
+16-26-027M2,compaction circuit 2 flake breaker main drive 2
+16-26-031M,compaction circuit 1 oversize crusher main drive 1
+16-26-032M,compaction circuit 2 oversize crusher main drive 1
+16-26-033M1,compaction circuit 1 secondary screen oversize product crusher main drive fixed roller
+16-26-033M2,compaction circuit 1 secondary screen oversize product crusher main drive floating roller
+16-26-034M1,compaction circuit 1 secondary screen oversize product crusher main drive floating roller
+16-26-034M2,compaction circuit 1 secondary screen oversize product crusher main drive fixed roller
+16-26-035M1,compaction circuit 2 secondary screen oversize product crusher main drive floating roller
+16-26-035M2,compaction circuit 2 secondary screen oversize product crusher main drive fixed roller
+16-26-036M1,compaction circuit 2 secondary screen oversize product crusher main drive fixed roller
+16-26-036M2,compaction circuit 2 secondary screen oversize product crusher main drive fixed roller
+16-27-016M3,compaction circuit 1 roller press screw feeder drive side
+16-27-016M4,compaction circuit 1 roller press screw feeder non-drive side
+16-27-016M5,compaction circuit 1 roller press gear box fixed roller oil cooling pump
+16-27-016M6,compaction circuit 1 roller press gear box floating roller oil cooling pump
+16-27-016M7,compaction circuit 1 roller press hydraulic pump
+16-27-027M3,compaction circuit 2 roller press screw feeder drive side
+16-27-027M4,compaction circuit 2 roller press screw feeder non-drive side
+16-27-027M5,compaction circuit 2 roller press gear box floating roller oil cooling pump
+16-27-027M6,compaction circuit 2 roller press gear box fixed roller oil cooling pump
+16-27-027M7,compaction circuit 2 roller press hydraulic pump
+16-28-020M,Fresh feed KCL fines/dust screen main drive
+16-28-031M,compaction circuit 1 primary screen main drive
+16-28-032M,compaction circuit 2 primary screen main drive
+16-28-041M,compaction circuit 1 secondary screen main drive
+16-28-042M,compaction circuit 1 secondary screen main drive
+16-28-043M,compaction circuit 2 secondary screen main drive
+16-28-044M,compaction circuit 2 secondary screen main drive
+16-28-050M,post treatment dryer/cooler product screen main drive
+16-28-100M,CONTAINER LOADING ROTEX PAN FEEDER
+16-29-140M1,compaction product belt conveyor main drive
+16-29-140M2,compaction product belt conveyor cleaning drive
+16-29-160M1,post treatment compaction product storage bin weigh feeder main drive
+16-29-180M,post treatment compaction product storage bin weigh feeder main drive
+16-29-200M1,post treatment final granulate belt conveyor main drive
+16-29-200M2,post treatment final granulate belt conveyor cleaning drive
+16-29-220M1,belt conveyor external fresh feed KCl Product main drive
+16-29-220M2,belt conveyor external fresh feed KCl Product cleaning drive
+16-29-300 M,BELT CONVEYORS
+16-29-300TRM1,TRIPPER CAR TROLLEY MOTOR
+16-29-300TRM2,TELESCOPIC CHUTE MOTOR
+16-29-300TRM3,REELING SYSTEM MOTOR
+16-29-400 M,TRUCK LOADING MOTRIDAL BELT CONVEYER
+16-29-500M,CONTAINER LOADING MOTRIDAL BELT CONVEYER
+16-29-520M,CONTAINER LOADING MOTRIDAL BELT CONVEYER
+16-29-540M1,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
+16-29-540M2,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
+16-29-540M3,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
+16-29-540M4,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
+16-29-600M1,NATUS SPARE FEEDER
+16-29-600M2,NATUS SPARE FEEDER
+16-30-161M1,compaction circuit 1 secondary screen oversize product vibration feeder main drive
+16-30-161M2,compaction circuit 1 secondary screen oversize product vibration feeder main drive
+16-30-162M1,compaction circuit 2 secondary screen oversize product vibration feeder main drive
+16-30-162M2,compaction circuit 2 secondary screen oversize product vibration feeder main drive
+16-30-171M1,compaction circuit 1 secondary screen oversize product vibration feeder main drive
+16-30-171M2,compaction circuit 1 secondary screen oversize product vibration feeder main drive
+16-30-172M1,compaction circuit 2 secondary screen oversize product vibration feeder main drive
+16-30-172M2,compaction circuit 2 secondary screen oversize product vibration feeder main drive
+16-30-205M1,Iron oxide loss-in-weight feeder/M1 Screw Motor VFD
+16-30-205M2,Iron oxide loss-in-weight feeder/M2 Agitator Motor
+16-30-205M3,Iron oxide loss-in-weight feeder/M3 Air Blower
+16-30-205M4,Iron oxide loss-in-weight feeder/M4 Vibrating Motor
+16-30-210M1,Iron oxide loss-in-weight feeder/M1 Screw Motor VFD
+16-30-210M2,Iron oxide loss-in-weight feeder/M2 Agitator Motor
+16-30-210M3,Iron oxide loss-in-weight feeder/M3 Air Blower
+16-30-210M4,Iron oxide loss-in-weight feeder/M4 Vibrating Motor
+16-30-215M1,post treatment amine feed loss-in-weight feeder/M1 Screw Motor VFD
+16-30-215M2,post treatment amine feed loss-in-weight feeder/M2 Agitator Motor
+16-30-215M3,post treatment amine feed loss-in-weight feeder/M3 Air Blower
+16-30-215M4,post treatment amine feed loss-in-weight feeder/M4 Vibrating Motor
+16-30-220M,Fresh feed storage bin screw conveyor main drive
+16-30-222M,post treatment compaction product moisture mixer main drive
+16-30-240M,de-dusting bag house filter screw feeder main drive
+16-30-250M,Screw Feeder - Bag House Filter Pre-Heater External Feed main drive
+16-30-255M,post treatment oil / amin mixer main drive
+16-30-260M,Compaction feed overflow screw conveyor main drive
+16-30-270M,Screw Conveyor - External Feed to Pre-Heater main drive
+16-30-270M2,Screw Conveyor - External Feed to Pre-Heater main drive / Motor Fan
+16-30-275M,Screw Conveyor - External Feed from Filter main drive
+16-30-280M,post treatment de-dusting bag house filter drying zone screw feeder main drive
+16-30-290M,post treatment de-dusting bag house filter cooling zone screw feeder main drive
+16-31-070M1,Bucket Elevator - External Feed to Pre-Heater main drive
+16-31-070M2,Bucket Elevator - External Feed to Pre-Heater maintenance drive
+16-31-080M,Fresh feed crusher product bucket elevator main drive
+16-31-090M1,Compaction feed bucket elevator main drive
+16-31-090M2,Compaction feed bucket elevator maintenance drive
+16-31-100M1,crushed compaction product circuit 1 bucket elevator main drive
+16-31-100M2,crushed compaction product circuit 1 bucket elevator maintenance drive
+16-31-110M1,crushed compaction product circuit 2 bucket elevator main drive
+16-31-110M2,crushed compaction product circuit 2 bucket elevator maintenance drive
+16-31-120M1,post treatment compaction product bucket elevator main drive
+16-31-120M2,post treatment compaction product bucket elevator maintenance drive
+16-31-130M1,post treatment product bucket elevator main drive
+16-31-130M2,post treatment product bucket elevator maintenance drive
+16-31-140M1, bucket elevator external fresh feed KCL  main drive
+16-31-140M2, bucket elevator external fresh feed KCL  maintenance drive
+16-35-801 M,Motor for TLS (Hopper)
+16-35-802 M,Motor for TLS (Hopper)
+16-35-803 M,Motor for TLS (Hopper)
+16-54-600M,de-dusting bag house filter rotary valve main drive
+16-54-700M,post treatment de-dusting bag house filter drying zone rotary valve main drive
+16-54-701M,post treatment de-dusting bag house filter cooling zone rotary valve main drive
+16-54-750M,Rotary Valve - Pre-Heater External Feed main drive
+16-54-800 M,200T/h Rotary Valve
+16-54-850M,external feed de-dusting bag house filter drying zone rotary valve main drive
+16-54-900M,0
+16-54-910M,0
+16-54-950M,Rotary Valve - External Feed Equipment De-Dusting main drive
+16-60-5100 M,Electrical motorized Slide Gate
+16-60-5200 M,Electrical motorized Slide Gate
+16-60-5300 M,Electrical motorized Slide Gate
+16-60-745M,de-dusting exhaust air fan flap main drive
+16-60-750M,de-dusting exhaust air fan flap bypass flap dryer
+16-75-0750M,Fresh feed KCL fines/dust diverter gate main drive
+16-75-0755M,Compaction feed overflow diverter gate main drive
+16-75-850M,NATUS SPARE FEEDER
+16-85-600M1,de-dusting bag house filter throttle valve actuator
+16-85-600M2,de-dusting bag house filter throttle valve actuator`;
 
     // --- UI HELPER FUNCTIONS ---
     const showLoader = () => document.getElementById('loader-overlay').classList.remove('hidden');
@@ -817,65 +1487,79 @@
         const settingsDocRef = doc(db, "app_settings", "global_settings");
         try {
             const docSnap = await getDoc(settingsDocRef);
-            if (docSnap.exists()) {
+            if (docSnap.exists() && docSnap.data().users && docSnap.data().users.length > 0) {
                 const firebaseSettings = docSnap.data();
                 
-                // NEW MERGE LOGIC:
-                // Use default users as the base, preserving names and passwords from CSV.
-                let mergedUsers = defaultUserSettings.users.map(defaultUser => {
-                    // Find the corresponding user saved in Firebase (if any)
-                    const firebaseUser = firebaseSettings.users?.find(fu => fu.id === defaultUser.id);
-                    
-                    if (firebaseUser) {
-                        // User exists in Firebase. Use default name/password, but saved permissions.
-                        return {
-                            ...defaultUser, // Default id, name, password, color
-                            allowedZones: firebaseUser.allowedZones || [] // Saved permissions
-                        };
-                    } else {
-                        // User is new (not in Firebase). Use default settings.
-                        return defaultUser;
+                // **BUG FIX**: Load directly from Firebase.
+                // Merge with defaults only to add *new* users from default list
+                // or to add new *properties* (like color) to existing users.
+                
+                let firebaseUsers = firebaseSettings.users;
+                
+                // Create a map of default users for easy lookup
+                const defaultUserMap = new Map(defaultUserSettings.users.map(u => [u.id, u]));
+                
+                let mergedUsers = firebaseUsers.map(fbUser => {
+                    const defaultUser = defaultUserMap.get(fbUser.id);
+                    if (defaultUser) {
+                        // User exists in both. Use saved data (fbUser)
+                        // but ensure all default properties (like color) exist.
+                        return { ...defaultUser, ...fbUser };
+                    }
+                    // User only exists in Firebase (admin might have created one? - unlikely with current code)
+                    // Or user ID is old/invalid, just return it.
+                    return fbUser; 
+                });
+                
+                // Now, add any *new* users from the default list that aren't in Firebase yet
+                defaultUserSettings.users.forEach(defaultUser => {
+                    if (!mergedUsers.some(mu => mu.id === defaultUser.id)) {
+                        mergedUsers.push(defaultUser);
                     }
                 });
-
-                // Ensure we have exactly 20 users, in case Firebase has fewer/more
-                if (mergedUsers.length !== 20) {
-                     // If something is wrong, just reset to defaults
-                    mergedUsers = defaultUserSettings.users;
-                }
 
                 userSettings.users = mergedUsers;
                 userSettings.archiveSchedule = firebaseSettings.archiveSchedule || defaultUserSettings.archiveSchedule;
                 
                 if (!userSettings.archiveSchedule.start) {
                     userSettings.archiveSchedule.start = new Date().toISOString().split('T')[0];
-                    await saveSettings(); // Save the updated start date
                 }
                 
-                // Force save the merged user list back to Firebase to sync names/passwords
-                await saveSettings(); 
+                // Save settings back IF we had to merge in new default users
+                if (userSettings.users.length > firebaseUsers.length) {
+                    await saveSettings();
+                }
                 
             } else {
-                console.warn("No 'global_settings' document found. Creating with defaults.");
+                console.warn("No 'global_settings' document found or users array empty. Creating with defaults.");
                 defaultUserSettings.archiveSchedule.start = new Date().toISOString().split('T')[0];
                 userSettings = { ...defaultUserSettings };
                 await setDoc(settingsDocRef, userSettings);
             }
-            // renderUserButtons() is removed
         } catch (error) {
             console.error("Error loading settings:", error);
             showAlert('Failed to load application settings.', 'Error');
+            // Fallback to defaults if load fails
+            userSettings = { ...defaultUserSettings };
         } finally {
             hideLoader();
         }
     }
 
     async function saveSettings() {
-        userSettings.archiveSchedule.start = document.getElementById('start-date')?.value || userSettings.archiveSchedule.start;
-        userSettings.archiveSchedule.interval = document.getElementById('interval-duration')?.value || userSettings.archiveSchedule.interval;
+        // Ensure schedule is captured from DOM if admin is logged in
+        const startDateInput = document.getElementById('start-date');
+        const intervalSelect = document.getElementById('interval-duration');
+        if (startDateInput && intervalSelect) {
+             userSettings.archiveSchedule.start = startDateInput.value || userSettings.archiveSchedule.start;
+             userSettings.archiveSchedule.interval = intervalSelect.value || userSettings.archiveSchedule.interval;
+        }
+
         const settingsDocRef = doc(db, "app_settings", "global_settings");
         try {
-            await setDoc(settingsDocRef, userSettings);
+            // Create a deep copy to save, removing any runtime properties if needed
+            const settingsToSave = JSON.parse(JSON.stringify(userSettings));
+            await setDoc(settingsDocRef, settingsToSave);
         } catch (error) {
             console.error("Error saving settings:", error);
             showAlert('Failed to save settings.', 'Error');
@@ -886,23 +1570,32 @@
         showLoader();
         
         // 1. Read all new values from the DOM
-        userSettings.users.forEach((user) => {
+        const newUsers = userSettings.users.map((user) => {
             const nameInput = document.getElementById(`user-name-edit-${user.id}`);
             const passwordInput = document.getElementById(`user-password-edit-${user.id}`);
-            if (nameInput) user.name = nameInput.value;
-            if (passwordInput) user.password = passwordInput.value;
+            const newName = nameInput ? nameInput.value : user.name;
+            const newPassword = passwordInput ? passwordInput.value : user.password;
             
             const selectedZones = [];
             document.querySelectorAll(`.zone-checkbox[data-user-id="${user.id}"]:checked`).forEach(checkbox => {
                 selectedZones.push(checkbox.value);
             });
-            user.allowedZones = selectedZones;
+            
+            // Return a *new* object, preserving color/hover from original defaults
+            const defaultUser = defaultUserSettings.users.find(u => u.id === user.id) || {};
+            return {
+                ...defaultUser, // Gets color, hover
+                id: user.id,
+                name: newName,
+                password: newPassword,
+                allowedZones: selectedZones
+            };
         });
 
         // 2. NEW: Validate for duplicate passwords
         const passwordSet = new Set();
         let duplicatePassword = null;
-        for (const user of userSettings.users) {
+        for (const user of newUsers) {
             // Allow one blank password for "General user"
             if (user.password === "") continue; 
             
@@ -920,11 +1613,14 @@
             return; // Stop the function before saving
         }
 
-        // 4. If no duplicates, proceed with saving
+        // 4. If no duplicates, update global state and save
+        userSettings.users = newUsers;
         await saveSettings();
-        // renderUserButtons() is removed
+        
         hideLoader();
         showAlert('User settings saved!', 'Success');
+        // Re-render editor to reflect saved state
+        renderUserEditor();
     };
 
     function renderUserEditor() {
@@ -932,12 +1628,20 @@
         if(!container) return;
         container.innerHTML = '';
         const allZones = ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'];
-        userSettings.users.forEach((user, index) => {
+        
+        // Ensure users are sorted by id (user1, user2, ...)
+        const sortedUsers = [...userSettings.users].sort((a, b) => {
+             const aNum = parseInt(a.id.replace('user', ''));
+             const bNum = parseInt(b.id.replace('user', ''));
+             return aNum - bNum;
+        });
+
+        sortedUsers.forEach((user) => {
             const div = document.createElement('div');
             div.className = 'p-3 border rounded-lg bg-gray-50';
             let zoneCheckboxesHTML = allZones.map(zone => `
                 <label class="inline-flex items-center mr-4">
-                    <input type="checkbox" value="${zone}" ${user.allowedZones.includes(zone) ? 'checked' : ''} class="form-checkbox h-5 w-5 text-blue-600 zone-checkbox" data-user-id="${user.id}">
+                    <input type="checkbox" value="${zone}" ${user.allowedZones && user.allowedZones.includes(zone) ? 'checked' : ''} class="form-checkbox h-5 w-5 text-blue-600 zone-checkbox" data-user-id="${user.id}">
                     <span class="ml-2">${zone}</span>
                 </label>`).join('');
             div.innerHTML = `
@@ -952,7 +1656,7 @@
         });
     }
     
-    // This function is no longer used to render buttons, but is kept for compatibility
+    // This function is no longer used
     function renderUserButtons() {
        // No longer needed
     }
@@ -1007,7 +1711,7 @@
         document.getElementById('user-interface').classList.remove('hidden');
 
         const loggedInUser = userSettings.users.find(u => u.name === currentUser);
-        const userAllowedZones = loggedInUser ? loggedInUser.allowedZones : [];
+        const userAllowedZones = (loggedInUser && loggedInUser.allowedZones) ? loggedInUser.allowedZones : [];
 
         // --- PM Zone Buttons ---
         const hlpButton = document.querySelector('button[onclick="selectZone(\'HLP\')"]');
@@ -1025,6 +1729,7 @@
         }
 
         listenForTasks();
+        listenForGreaseTasks(); // Also listen for grease tasks as a user
     }
 
     window.showAdminLogin = () => {
@@ -1128,23 +1833,24 @@
     function listenForUserSettingsChanges() {
         const settingsDocRef = doc(db, "app_settings", "global_settings");
         unsubscribeUserSettings = onSnapshot(settingsDocRef, (docSnap) => {
-            if (docSnap.exists()) {
+            if (docSnap.exists() && docSnap.data().users && docSnap.data().users.length > 0) {
                 const firebaseSettings = docSnap.data();
-
-                // Use default users as the base
-                let mergedUsers = defaultUserSettings.users.map(defaultUser => {
-                    // Find the corresponding user saved in Firebase (if any)
-                    const firebaseUser = firebaseSettings.users?.find(fu => fu.id === defaultUser.id);
-                    
-                    if (firebaseUser) {
-                        // User exists in Firebase. Use default name/password, but saved permissions.
-                        return {
-                            ...defaultUser,
-                            allowedZones: firebaseUser.allowedZones || defaultUser.allowedZones
-                        };
-                    } else {
-                        // User is new (not in Firebase). Use default settings.
-                        return defaultUser;
+                
+                // **BUG FIX**: Load directly from Firebase.
+                let firebaseUsers = firebaseSettings.users;
+                const defaultUserMap = new Map(defaultUserSettings.users.map(u => [u.id, u]));
+                
+                let mergedUsers = firebaseUsers.map(fbUser => {
+                    const defaultUser = defaultUserMap.get(fbUser.id);
+                    if (defaultUser) {
+                        return { ...defaultUser, ...fbUser };
+                    }
+                    return fbUser; 
+                });
+                
+                defaultUserSettings.users.forEach(defaultUser => {
+                    if (!mergedUsers.some(mu => mu.id === defaultUser.id)) {
+                        mergedUsers.push(defaultUser);
                     }
                 });
 
@@ -1154,15 +1860,21 @@
                 if (currentUser === 'Admin') {
                     renderUserEditor();
                 }
-                // renderUserButtons() removed
                 updateArchiveScheduleDisplay();
                 if (currentUser && currentUser !== 'Admin') {
                     showUserDashboard(currentUser);
+                }
+            } else {
+                // No settings in FB, or users array is empty, use defaults
+                userSettings = { ...defaultUserSettings };
+                if (currentUser === 'Admin') {
+                    renderUserEditor();
                 }
             }
         }, (error) => {
             console.error("Firebase settings snapshot error: ", error);
             showAlert("Error syncing settings from database.", "Database Error");
+            userSettings = { ...defaultUserSettings }; // Fallback on error
         });
     }
 
@@ -1183,7 +1895,7 @@
     window.selectZone = (zone) => {
         if (currentUser !== 'Admin') {
             const loggedInUser = userSettings.users.find(u => u.name === currentUser);
-            if (!loggedInUser || !loggedInUser.allowedZones.includes(zone)) {
+            if (!loggedInUser || !loggedInUser.allowedZones || !loggedInUser.allowedZones.includes(zone)) {
                 showAlert(`You do not have permission to access the ${zone} zone.`, 'Permission Denied');
                 return;
             }
@@ -1250,8 +1962,6 @@
     
     // --- NEW FUNCTIONS FOR MOTOR GREASING TASK ---
 
-    let selectedGreaseEquipment = null;
-
     function populateGreaseSearchTable(equipmentList) {
         const tableBody = document.getElementById('grease-search-table-body');
         const searchInput = document.getElementById('grease-tag-search');
@@ -1287,40 +1997,106 @@
     window.selectGreaseEquipment = (tag, description) => {
         selectedGreaseEquipment = { tag, description };
         document.getElementById('grease-tag-number').innerText = tag;
-        document.getElementById('grease-equipment-description').innerText = description;
         document.getElementById('grease-search-modal').classList.add('hidden');
+        
+        resetGreaseModalState(); // Reset state
+        
         document.getElementById('grease-task-modal').classList.remove('hidden');
     };
 
     window.closeGreaseTaskModal = () => {
         document.getElementById('grease-task-modal').classList.add('hidden');
-        // Reset form
-        document.getElementById('front-bearing-available').checked = false;
-        document.getElementById('rear-bearing-available').checked = false;
-        document.getElementById('front-bearing-condition-block').classList.add('hidden');
-        document.getElementById('rear-bearing-condition-block').classList.add('hidden');
+        resetGreaseModalState();
+    };
+    
+    function resetGreaseModalState() {
+        greaseState = {};
+        activeGreasePoint = null;
         document.getElementById('grease-amount').value = '';
         document.getElementById('grease-note').value = '';
-        selectedGreaseEquipment = null;
-    };
+        updateGreaseIconStates();
+    }
+    
+    function updateGreaseIconStates() {
+        const allIcons = ['front', 'rear'];
+        allIcons.forEach(iconName => {
+            const iconElement = document.getElementById(`grease-icon-${iconName}`);
+            if (!iconElement) return;
+
+            iconElement.classList.remove('pending', 'ok', 'error');
+
+            if (greaseState[iconName]) {
+                const isError = (greaseState[iconName] === 'Not Exists');
+                if (isError) {
+                    iconElement.classList.add('error');
+                } else {
+                    iconElement.classList.add('ok');
+                }
+            } else {
+                iconElement.classList.add('pending');
+            }
+        });
+    }
+
+    window.openGreasePoint = (pointName) => {
+        activeGreasePoint = pointName;
+        renderGreasePopup(pointName);
+        document.getElementById('grease-popup').classList.remove('hidden');
+    }
+
+    window.closeGreasePopup = () => {
+        document.getElementById('grease-popup').classList.add('hidden');
+        activeGreasePoint = null;
+        updateGreaseIconStates();
+    }
+
+    function renderGreasePopup(step) {
+        const container = document.getElementById('grease-popup-content');
+        let title = (step === 'front') ? 'Front Nibble Bearing' : 'Rear Nibble Bearing';
+        let html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">${title}</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="handleGreasePopupChoice('${step}', 'Exists')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Exists</button>
+                <button onclick="handleGreasePopupChoice('${step}', 'Not Exists')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Not Exists</button>
+            </div>`;
+        container.innerHTML = html;
+    }
+
+    window.handleGreasePopupChoice = (step, choice) => {
+        greaseState[step] = choice;
+        closeGreasePopup();
+    }
 
     window.submitGreaseTask = async () => {
-        const frontBearingAvailable = document.getElementById('front-bearing-available').checked;
-        const rearBearingAvailable = document.getElementById('rear-bearing-available').checked;
+        // Validation
+        if (!greaseState.front || !greaseState.rear) {
+            showAlert('Please check both front and rear bearings.', 'Incomplete Data');
+            return;
+        }
+        
+        const greaseAmount = document.getElementById('grease-amount').value;
+        if (!greaseAmount) {
+             showAlert('Please enter the total grease amount.', 'Incomplete Data');
+            return;
+        }
 
         const taskData = {
             user: currentUser,
             tag: selectedGreaseEquipment.tag,
             description: selectedGreaseEquipment.description,
-            frontBearingAvailable: frontBearingAvailable,
-            frontBearingCondition: frontBearingAvailable ? (document.querySelector('input[name="front-bearing-condition"]:checked')?.value || 'N/A') : 'Not Available',
-            rearBearingAvailable: rearBearingAvailable,
-            rearBearingCondition: rearBearingAvailable ? (document.querySelector('input[name="rear-bearing-condition"]:checked')?.value || 'N/A') : 'Not Available',
-            greaseAmount: document.getElementById('grease-amount').value,
+            frontBearingStatus: greaseState.front,
+            rearBearingStatus: greaseState.rear,
+            greaseAmount: greaseAmount,
             note: document.getElementById('grease-note').value,
             timestamp: serverTimestamp(),
+            
+            // For compatibility with old admin view
+            frontBearingAvailable: greaseState.front === 'Exists',
+            frontBearingCondition: greaseState.front === 'Exists' ? 'OK' : 'Not Available', // Simplified
+            rearBearingAvailable: greaseState.rear === 'Exists',
+            rearBearingCondition: greaseState.rear === 'Exists' ? 'OK' : 'Not Available', // Simplified
         };
 
+        showLoader();
         try {
             await addDoc(collection(db, "grease_tasks"), taskData);
             showAlert('Greasing Task Saved Successfully!', 'Success');
@@ -1328,6 +2104,8 @@
         } catch (error) {
             console.error("Error adding greasing task: ", error);
             showAlert('Failed to save greasing task.', 'Error');
+        } finally {
+            hideLoader();
         }
     };
 
@@ -1341,26 +2119,29 @@
         document.getElementById('pm-note-container').classList.add('hidden');
         updateIconStates();
         const offModeButton = document.getElementById('pm-off-mode-button');
-        offModeButton.classList.remove('bg-red-600', 'text-white');
-        offModeButton.classList.add('bg-gray-600', 'text-white');
-        offModeButton.innerText = "OFF MODE";
+        // EDITED: Default to RUN MODE (green)
+        offModeButton.classList.remove('bg-red-600');
+        offModeButton.classList.add('bg-green-600', 'text-white');
+        offModeButton.innerText = "RUN MODE";
     }
 
     window.togglePmOffMode = () => {
         isOfflineMode = !isOfflineMode;
         const offModeButton = document.getElementById('pm-off-mode-button');
         if (isOfflineMode) {
-            offModeButton.classList.remove('bg-gray-600');
+            // EDITED: Change to OFF MODE (red)
+            offModeButton.classList.remove('bg-green-600');
             offModeButton.classList.add('bg-red-600');
-            offModeButton.innerText = "OFFLINE";
+            offModeButton.innerText = "OFF MODE";
             // Clear any data that is now disabled
             delete pmState.sound;
             delete pmState.vibration;
             delete pmState.temp;
         } else {
+            // EDITED: Change to RUN MODE (green)
             offModeButton.classList.remove('bg-red-600');
-            offModeButton.classList.add('bg-gray-600');
-            offModeButton.innerText = "OFF MODE";
+            offModeButton.classList.add('bg-green-600');
+            offModeButton.innerText = "RUN MODE";
         }
         updateIconStates();
     }
@@ -1431,53 +2212,53 @@
         switch (step) {
             case 'status':
                 html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Motor Status</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="handlePopupChoice('status', 'Clean')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Clean</button>
-                        <button onclick="handlePopupChoice('status', 'Dirty')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Dirty</button>
-                    </div>`;
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="handlePopupChoice('status', 'Clean')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Clean</button>
+                            <button onclick="handlePopupChoice('status', 'Dirty')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Dirty</button>
+                        </div>`;
                 break;
             case 'status_dirty_action':
                 html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Action for "Dirty"</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="handlePopupChoice('status_dirty_action', 'Done')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Done</button>
-                        <button onclick="handlePopupChoice('status_dirty_action', 'Not')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Not</button>
-                    </div>`;
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="handlePopupChoice('status_dirty_action', 'Done')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Done</button>
+                            <button onclick="handlePopupChoice('status_dirty_action', 'Not')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Not</button>
+                        </div>`;
                 break;
             case 'sound':
                 html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Sound</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="handlePopupChoice('sound', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
-                        <button onclick="handlePopupChoice('sound', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
-                    </div>`;
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="handlePopupChoice('sound', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
+                            <button onclick="handlePopupChoice('sound', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
+                        </div>`;
                 break;
             case 'sound_abnormal_source':
                 html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">"Abnormal" Sound Source</h3>
-                    <div class="grid grid-cols-1 gap-4">
-                        <button onclick="handlePopupChoice('sound_abnormal_source', 'Front Bearing')" class="pm-choice-button bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200">Front Bearing</button>
-                        <button onclick="handlePopupChoice('sound_abnormal_source', 'Rear Bearing')" class="pm-choice-button bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200">Rear Bearing</button>
-                        <button onclick="handlePopupChoice('sound_abnormal_source', 'Other')" class="pm-choice-button bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200">Other</button>
-                    </div>`;
+                        <div class="grid grid-cols-1 gap-4">
+                            <button onclick="handlePopupChoice('sound_abnormal_source', 'Front Bearing')" class="pm-choice-button bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200">Front Bearing</button>
+                            <button onclick="handlePopupChoice('sound_abnormal_source', 'Rear Bearing')" class="pm-choice-button bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200">Rear Bearing</button>
+                            <button onclick="handlePopupChoice('sound_abnormal_source', 'Other')" class="pm-choice-button bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200">Other</button>
+                        </div>`;
                 break;
             case 'vibration':
                 html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Vibration</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="handlePopupChoice('vibration', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
-                        <button onclick="handlePopupChoice('vibration', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
-                    </div>`;
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="handlePopupChoice('vibration', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
+                            <button onclick="handlePopupChoice('vibration', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
+                        </div>`;
                 break;
             case 'temp':
                 html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Temperature</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="handlePopupChoice('temp', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
-                        <button onclick="handlePopupChoice('temp', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
-                    </div>`;
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="handlePopupChoice('temp', 'Normal')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Normal</button>
+                            <button onclick="handlePopupChoice('temp', 'Abnormal')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Abnormal</button>
+                        </div>`;
                 break;
             case 'shelter':
                 html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Shelter</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="handlePopupChoice('shelter', 'Exist')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Exist</button>
-                        <button onclick="handlePopupChoice('shelter', 'Not Exist')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Not Exist</button>
-                    </div>`;
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="handlePopupChoice('shelter', 'Exist')" class="pm-choice-button bg-green-100 text-green-800 border-green-300 hover:bg-green-200">Exist</button>
+                            <button onclick="handlePopupChoice('shelter', 'Not Exist')" class="pm-choice-button bg-red-100 text-red-800 border-red-300 hover:bg-red-200">Not Exist</button>
+                        </div>`;
                 break;
         }
         container.innerHTML = html;
@@ -1525,21 +2306,27 @@
         const noteContainer = document.getElementById('pm-note-container');
         const note = document.getElementById('note').value;
         if (!noteContainer.classList.contains('hidden') && !note.trim()) {
-            // Show confirmation modal instead of blocking
+            // Show confirmation modal
+            submitContinuation = () => proceedToSubmitPmTask(note); // Save the function call
             document.getElementById('confirm-note-modal').classList.remove('hidden');
-            return;
+        } else {
+            // No error, or error with note, submit directly
+            proceedToSubmitPmTask(note);
         }
-        
-        // If validation passes (or no note is needed), continue
-        continueSubmitPmTask();
     };
     
-    window.continueSubmitPmTask = async () => {
-        // Close the note confirmation modal if it was open
-        closeConfirmNoteModal();
-        showLoader();
+    window.continueSubmitPmTask = () => {
+        if (submitContinuation) {
+            submitContinuation(); // Call the saved function
+        }
+        closeConfirmNoteModal(); // Close the modal
+    }
 
-        const note = document.getElementById('note').value;
+    async function proceedToSubmitPmTask(note) {
+        showLoader();
+        
+        // EDITED: Use "Off-M" for offline mode
+        const offlineVal = 'Off-M';
         
         // Build the new task object
         const task = {
@@ -1554,20 +2341,19 @@
             inspectionMode: isOfflineMode ? 'Offline' : 'Online',
             status: pmState.status || 'N/A',
             status_dirty_action: pmState.status_dirty_action || 'N/A',
-            sound: pmState.sound || 'N/A',
-            sound_abnormal_source: pmState.sound_abnormal_source || 'N/A',
-            vibration: pmState.vibration || 'N/A',
-            temp: pmState.temp || 'N/A',
+            sound: isOfflineMode ? offlineVal : (pmState.sound || 'N/A'),
+            sound_abnormal_source: isOfflineMode ? offlineVal : (pmState.sound_abnormal_source || 'N/A'),
+            vibration: isOfflineMode ? offlineVal : (pmState.vibration || 'N/A'),
+            temp: isOfflineMode ? offlineVal : (pmState.temp || 'N/A'),
             shelter: pmState.shelter || 'N/A',
             note: note,
             
             // --- Deprecated Simple Fields (for backwards compatibility) ---
-            // We can set a general "status" for the old admin view
-            status: (pmState.status === 'Dirty' || pmState.sound === 'Abnormal' || pmState.vibration === 'Abnormal' || pmState.temp === 'Abnormal' || pmState.shelter === 'Not Exist' || pmState.status_dirty_action === 'Not') ? 'Error' : 'OK',
-            sound: pmState.sound || 'N/A', // Keep simple sound
-            vibration: pmState.vibration || 'N/A', // Keep simple vibration
-            heat: pmState.temp || 'N/A', // Map temp to heat
-            motor_umbrella: pmState.shelter || 'N/A' // Map shelter to motor_umbrella
+            status_simple: (pmState.status === 'Dirty' || pmState.sound === 'Abnormal' || pmState.vibration === 'Abnormal' || pmState.temp === 'Abnormal' || pmState.shelter === 'Not Exist' || pmState.status_dirty_action === 'Not') ? 'Error' : 'OK',
+            sound_simple: isOfflineMode ? offlineVal : (pmState.sound || 'N/A'),
+            vibration_simple: isOfflineMode ? offlineVal : (pmState.vibration || 'N/A'),
+            heat_simple: isOfflineMode ? offlineVal : (pmState.temp || 'N/A'),
+            motor_umbrella_simple: pmState.shelter || 'N/A'
         };
 
         // --- SUBMIT TO FIREBASE ---
@@ -1601,7 +2387,7 @@
         const taskData = docSnap.data();
         
         const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
-        let isError = taskData.status === 'Error' || // Old logic
+        let isError = taskData.status_simple === 'Error' || // Use the simple status first
                       errorStates.includes(taskData.status) ||
                       errorStates.includes(taskData.sound) ||
                       errorStates.includes(taskData.vibration) ||
@@ -1669,7 +2455,7 @@
             const card = document.createElement('div');
             
             const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
-            let isError = task.status === 'Error' || // Old logic
+            let isError = task.status_simple === 'Error' || // Use the simple status
                           errorStates.includes(task.status) ||
                           errorStates.includes(task.sound) ||
                           errorStates.includes(task.vibration) ||
@@ -1700,7 +2486,7 @@
         tasks.slice(0, 10).forEach(task => {
             
             const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
-            let isError = task.status === 'Error' || // Old logic
+            let isError = task.status_simple === 'Error' || // Use simple status
                           errorStates.includes(task.status) ||
                           errorStates.includes(task.sound) ||
                           errorStates.includes(task.vibration) ||
@@ -1730,10 +2516,10 @@
                  details += `, <strong class="text-gray-500">Vibration:</strong> (Offline)`;
                  details += `, <strong class="text-gray-500">Temp:</strong> (Offline)`;
             } else {
-                details += `, <strong>Sound:</strong> ${task.sound || 'N/A'}`;
-                if (task.sound_abnormal_source && task.sound_abnormal_source !== 'N/A') details += ` (${task.sound_abnormal_source})`;
-                details += `, <strong>Vibration:</strong> ${task.vibration || 'N/A'}`;
-                details += `, <strong>Temp:</strong> ${task.temp || 'N/A'}`;
+                 details += `, <strong>Sound:</strong> ${task.sound || 'N/A'}`;
+                 if (task.sound_abnormal_source && task.sound_abnormal_source !== 'N/A') details += ` (${task.sound_abnormal_source})`;
+                 details += `, <strong>Vibration:</strong> ${task.vibration || 'N/A'}`;
+                 details += `, <strong>Temp:</strong> ${task.temp || 'N/A'}`;
             }
 
             card.innerHTML = `
@@ -1785,7 +2571,7 @@
                             </tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
         filteredTasks.forEach(task => {
             const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
-            let isError = task.status === 'Error' || // Old logic
+            let isError = task.status_simple === 'Error' || // Use simple status
                           errorStates.includes(task.status) ||
                           errorStates.includes(task.sound) ||
                           errorStates.includes(task.vibration) ||
@@ -1841,7 +2627,7 @@
         // --- Error States ---
         const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
         const isPmTaskError = (t) => {
-            return t.status === 'Error' || // Old logic
+            return t.status_simple === 'Error' || // Use simple status
                    errorStates.includes(t.status) ||
                    errorStates.includes(t.sound) ||
                    errorStates.includes(t.vibration) ||
@@ -1900,7 +2686,7 @@
         startOfWeek.setHours(0, 0, 0, 0);
 
         const isPmTaskError = (t) => {
-            return t.status === 'Error' || errorStates.includes(t.status) || errorStates.includes(t.sound) ||
+            return t.status_simple === 'Error' || errorStates.includes(t.status) || errorStates.includes(t.sound) ||
                    errorStates.includes(t.vibration) || errorStates.includes(t.temp) ||
                    errorStates.includes(t.shelter) || errorStates.includes(t.status_dirty_action) ||
                    errorStates.includes(t.sound_abnormal_source);
@@ -2219,8 +3005,8 @@
             tableHTML += `<tr>
                 <td class="px-2 py-2 whitespace-nowrap">${task.user}</td>
                 <td class="px-2 py-2 whitespace-nowrap">${task.tag}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${task.frontBearingCondition}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${task.rearBearingCondition}</td>
+                <td class="px-2 py-2 whitespace-nowrap">${task.frontBearingStatus || 'N/A'}</td>
+                <td class="px-2 py-2 whitespace-nowrap">${task.rearBearingStatus || 'N/A'}</td>
                 <td class="px-2 py-2 whitespace-nowrap">${task.greaseAmount}</td>
                 <td class="px-2 py-2 whitespace-nowrap max-w-xs truncate">${task.note || 'N/A'}</td>
                 <td class="px-2 py-2 whitespace-nowrap">${task.timestamp ? task.timestamp.toDate().toLocaleString() : ''}</td>
@@ -2233,7 +3019,7 @@
     window.exportGreaseToExcel = () => {
         if (allGreaseTasks.length === 0) return showAlert("No greasing data to export.");
 
-        const headers = ["User", "TAG", "Description", "Front Bearing Available", "Front Bearing Condition", "Rear Bearing Available", "Rear Bearing Condition", "Grease Amount (g)", "Note", "Timestamp"];
+        const headers = ["User", "TAG", "Description", "Front Bearing Status", "Rear Bearing Status", "Grease Amount (g)", "Note", "Timestamp"];
         const customHeader = "Arab Potash Company,,,,Weekly Motor Grease,,,,Hot Leach Plant\r\n\r\n";
         let csvContent = customHeader + headers.join(",") + "\r\n";
         
@@ -2242,10 +3028,8 @@
                 task.user,
                 task.tag,
                 `"${(task.description || '').replace(/"/g, '""')}"`,
-                task.frontBearingAvailable,
-                task.frontBearingCondition,
-                task.rearBearingAvailable,
-                task.rearBearingCondition,
+                task.frontBearingStatus || 'N/A',
+                task.rearBearingStatus || 'N/A',
                 task.greaseAmount,
                 `"${(task.note || '').replace(/"/g, '""')}"`,
                 task.timestamp ? `"${task.timestamp.toDate().toLocaleDateString('en-GB')}"` : ''
@@ -2330,13 +3114,6 @@
     document.getElementById('grease-search-text').addEventListener('keyup', displayAdminGreaseHistory);
     document.getElementById('grease-search-date').addEventListener('change', displayAdminGreaseHistory);
     
-    document.getElementById('front-bearing-available').addEventListener('change', (e) => {
-        document.getElementById('front-bearing-condition-block').classList.toggle('hidden', !e.target.checked);
-    });
-
-    document.getElementById('rear-bearing-available').addEventListener('change', (e) => {
-        document.getElementById('rear-bearing-condition-block').classList.toggle('hidden', !e.target.checked);
-    });
     </script>
 </body>
 </html>

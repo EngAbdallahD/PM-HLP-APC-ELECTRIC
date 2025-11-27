@@ -127,8 +127,6 @@ body {
     color: #1f2937; /* text-gray-800 */
 }
     
-/* --- Animated Circles (DELETED) --- */
-    
 /* --- STYLES FOR NEW GREASE MODAL --- */
 .grease-icon-button {
     display: flex;
@@ -170,6 +168,57 @@ body {
     box-shadow: 0 0 15px #22c55e;
 }
 .grease-icon-button.error {
+    border-color: #ef4444; /* red-500 */
+    color: #ef4444;
+    box-shadow: 0 0 15px #ef4444;
+}
+
+/* --- STYLES FOR NEW DIESEL ICONS --- */
+.diesel-icon-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 9999px; /* full */
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    border: 3px solid white;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark background */
+    position: relative;
+    z-index: 30;
+}
+.diesel-icon-button:hover {
+    transform: scale(1.1);
+    border-color: #3b82f6; /* blue-500 */
+}
+.diesel-icon-label {
+    font-size: 0.70rem;
+    font-weight: 600;
+    margin-top: 4px;
+    color: #e5e7eb; /* gray-200 */
+    text-shadow: 0 1px 2px black;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Diesel Icon States */
+.diesel-icon-button.pending {
+    border-color: #3b82f6; /* blue-500 */
+    box-shadow: 0 0 10px #3b82f6;
+}
+.diesel-icon-button.ok {
+    border-color: #22c55e; /* green-500 */
+    color: #22c55e;
+    box-shadow: 0 0 15px #22c55e;
+}
+.diesel-icon-button.ok svg {
+     fill: #22c55e;
+     color: #22c55e;
+}
+.diesel-icon-button.error {
     border-color: #ef4444; /* red-500 */
     color: #ef4444;
     box-shadow: 0 0 15px #ef4444;

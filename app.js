@@ -53,12 +53,12 @@ let weeklyChartInstance = null;
 // NEW: Default user settings from user list.csv
 const defaultUserSettings = {
     users: [
-        { id: 'user1', name: 'Eng. Osama Samirat', password: '7454', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'] },
-        { id: 'user2', name: 'Eng. Saliba Madanat', password: '15486', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['HLP', 'Motor Grease'] },
-        { id: 'user3', name: 'Abdullah Mansour', password: '6453', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['SCREEN', 'COMPACTION', 'Motor Grease'] },
-        { id: 'user4', name: 'Khaled Qawabaa', password: '7526', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: [] },
-        { id: 'user5', name: 'Muhammad Zanoun', password: '15515', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP'] },
-        { id: 'user6', name: "Mutasim Ala'a Al-Din", password: '15529', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['SCREEN'] },
+        { id: 'user1', name: 'Eng. Osama Samirat', password: '7454', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'] },
+        { id: 'user2', name: 'Eng. Saliba Madanat', password: '15486', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'] },
+        { id: 'user3', name: 'Abdullah Mansour', password: '6453', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'] },
+        { id: 'user4', name: 'Khaled Qawabaa', password: '7526', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'] },
+        { id: 'user5', name: 'Muhammad Zanoun', password: '15515', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'] },
+        { id: 'user6', name: "Mutasim Ala'a Al-Din", password: '15529', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'] },
         { id: 'user7', name: 'Muhammad Qatawneh', password: '6432', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['COMPACTION'] },
         { id: 'user8', name: 'Anwar Souqi', password: '6325', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['Motor Grease'] },
         { id: 'user9', name: 'Ibrahim Sharaida', password: '7647', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'SCREEN'] },
@@ -71,7 +71,7 @@ const defaultUserSettings = {
         { id: 'user16', name: 'Osama Al-Lemon', password: '7202', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['HLP', 'SCREEN', 'Motor Grease'] },
         { id: 'user17', name: 'Youssef Abu Odeh', password: '15530', color: 'bg-blue-600', hover: 'hover:bg-blue-700', allowedZones: ['HLP', 'COMPACTION', 'Motor Grease'] },
         { id: 'user18', name: 'Ahmed Daqs', password: '1111', color: 'bg-teal-600', hover: 'hover:bg-teal-700', allowedZones: ['SCREEN', 'COMPACTION', 'Motor Grease'] },
-        { id: 'user19', name: 'Abdullah Mashaala', password: '1112', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'] },
+        { id: 'user19', name: 'Abdullah Mashaala', password: '1112', color: 'bg-indigo-600', hover: 'hover:bg-indigo-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'] },
         { id: 'user20', name: 'General user', password: '', color: 'bg-slate-600', hover: 'hover:bg-slate-700', allowedZones: ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'] }
     ],
     archiveSchedule: {
@@ -359,7 +359,7 @@ function renderUserEditor() {
     const container = document.getElementById('user-editor-container');
     if(!container) return;
     container.innerHTML = '';
-    const allZones = ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease'];
+    const allZones = ['HLP', 'SCREEN', 'COMPACTION', 'Motor Grease', 'Weekly Diesel Gen'];
     
     // Ensure users are sorted by id (user1, user2, ...)
     const sortedUsers = [...userSettings.users].sort((a, b) => {
@@ -463,8 +463,11 @@ function showUserDashboard(userName) {
     // --- Diesel Card (Force Visible for now) ---
     const dieselTaskCard = document.getElementById('diesel-task-card');
     if (dieselTaskCard) {
-        // We use 'flex' because the class definition has 'flex flex-col'
-        dieselTaskCard.style.display = 'flex'; 
+        if (userAllowedZones.includes('Weekly Diesel Gen')) {
+            dieselTaskCard.style.display = 'flex';
+        } else {
+            dieselTaskCard.style.display = 'none';
+        }
     }
 
     pushState("dashboard");
@@ -554,6 +557,7 @@ window.selectDieselGen = (tag, description) => {
     dieselState = {};
     activeDieselPoint = null;
     document.getElementById('diesel-tag-display').innerText = `${tag} - ${description}`;
+    document.getElementById('diesel-note').value = '';
     updateDieselIconStates();
     
     document.getElementById('diesel-task-modal').classList.remove('hidden');
@@ -654,6 +658,7 @@ window.submitDieselTask = async () => {
         vdc: dieselState.vdc,
         frequency: dieselState.freq,
         output_voltage: dieselState.vout,
+        note: document.getElementById('diesel-note').value, // <--- ADD THIS LINE
         timestamp: serverTimestamp(),
         status_simple: (dieselState.clean === 'Dirty') ? 'Error' : 'OK'
     };

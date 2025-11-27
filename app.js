@@ -460,12 +460,18 @@ function showUserDashboard(userName) {
         greaseTaskCard.style.display = userAllowedZones.includes('Motor Grease') ? 'flex' : 'none';
     }
 
-    // PUSH STATE for Back Button
+    // --- Diesel Card (Force Visible for now) ---
+    const dieselTaskCard = document.getElementById('diesel-task-card');
+    if (dieselTaskCard) {
+        // We use 'flex' because the class definition has 'flex flex-col'
+        dieselTaskCard.style.display = 'flex'; 
+    }
+
     pushState("dashboard");
 
     listenForTasks();
-    listenForGreaseTasks(); // Also listen for grease tasks as a user
-    listenForDieselTasks(); // NEW: Listen for diesel tasks
+    listenForGreaseTasks();
+    listenForDieselTasks();
 }
 
 window.showAdminLogin = () => {

@@ -1,3 +1,6 @@
+/* =========================================
+   GLOBAL & UTILITIES
+   ========================================= */
 body {
     font-family: 'Inter', sans-serif;
 }
@@ -24,46 +27,51 @@ body {
 }
 
 /* Hide scrollbar for clean look */
-#recent-activities-container::-webkit-scrollbar {
+#recent-activities-container::-webkit-scrollbar,
+.dashboard-main::-webkit-scrollbar,
+.admin-dashboard-main::-webkit-scrollbar {
     display: none;
 }
 
-#recent-activities-container {
+#recent-activities-container,
+.dashboard-main,
+.admin-dashboard-main {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
-    
-/* --- STYLES FOR NEW PM MODAL --- */
-    
-/* STYLING FOR NEW PM MODAL ICONS */
+
+/* =========================================
+   PM MODAL ICONS (Motor Inspection)
+   ========================================= */
 .pm-icon-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80px; /* 5rem */
-    height: 80px; /* 5rem */
+    width: 80px; 
+    height: 80px; 
     border-radius: 9999px; /* full */
     color: white;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     border: 3px solid white;
-    /* EDITED: Darker background for readability */
     background-color: rgba(0, 0, 0, 0.7);
-    position: relative; /* For z-index */
-    z-index: 30; /* On top of image */
+    position: relative; 
+    z-index: 30; 
 }
+
 .pm-icon-button:hover {
     transform: scale(1.1) rotate(5deg);
 }
+
 .pm-icon-label {
     font-size: 0.75rem; /* 12px */
-    font-weight: 600; /* semibold */
-    margin-top: 4px; /* Increased margin */
-    display: block; /* Ensure it's always visible */
+    font-weight: 600; 
+    margin-top: 4px; 
+    display: block; 
 }
-    
-/* Icon Glow and Color States */
+
+/* PM Icon States */
 .pm-icon-button.pending {
     border-color: #3b82f6; /* blue-500 */
     color: #3b82f6;
@@ -72,7 +80,7 @@ body {
 .pm-icon-button.pending svg {
     filter: drop-shadow(0 0 5px #3b82f6);
 }
-    
+
 .pm-icon-button.ok {
     border-color: #22c55e; /* green-500 */
     color: #22c55e;
@@ -90,7 +98,7 @@ body {
 .pm-icon-button.error svg {
     filter: drop-shadow(0 0 5px #ef4444);
 }
-    
+
 .pm-icon-button.disabled {
     border-color: #6b7280; /* gray-500 */
     color: #6b7280;
@@ -99,7 +107,7 @@ body {
     pointer-events: none;
 }
 
-/* For mobile */
+/* Mobile adjustments for PM */
 @media (max-width: 640px) {
     .pm-icon-button {
         width: 60px;
@@ -107,73 +115,78 @@ body {
         border-width: 2px;
     }
     .pm-icon-label {
-        font-size: 0.65rem; /* 10px */
+        font-size: 0.65rem; 
         margin-top: 2px;
     }
 }
-    
-/* Button style for popup choices */
+
+/* Popup Choice Buttons */
 .pm-choice-button {
-    /* Translation of: @apply w-full text-center py-4 px-5 rounded-2xl font-semibold text-lg border-2 cursor-pointer transition-all text-gray-800; */
     width: 100%;
     text-align: center;
-    padding: 1rem 1.25rem; /* py-4 px-5 */
-    border-radius: 1rem; /* rounded-2xl */
-    font-weight: 600; /* font-semibold */
-    font-size: 1.125rem; /* text-lg */
-    border-width: 2px; /* border-2 */
-    cursor: pointer; /* cursor-pointer */
-    transition: all 0.3s ease; /* transition-all */
-    color: #1f2937; /* text-gray-800 */
+    padding: 1rem 1.25rem; 
+    border-radius: 1rem; 
+    font-weight: 600; 
+    font-size: 1.125rem; 
+    border-width: 2px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    color: #1f2937; 
 }
-    
-/* --- STYLES FOR NEW GREASE MODAL --- */
+
+/* =========================================
+   GREASE MODAL ICONS
+   ========================================= */
 .grease-icon-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100px; /* Larger */
-    height: 100px; /* Larger */
-    border-radius: 9999px; /* full */
-    color: white; /* SVG color */
+    width: 100px; 
+    height: 100px; 
+    border-radius: 9999px; 
+    color: white; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     border: 3px solid white;
-    background-color: rgba(0, 0, 0, 0.7); /* ADDED: Semi-transparent black background */
-    position: relative; /* For z-index */
-    z-index: 30; /* On top of image */
+    background-color: rgba(0, 0, 0, 0.7); 
+    position: relative; 
+    z-index: 30; 
 }
+
 .grease-icon-button:hover {
     transform: scale(1.05);
     border-color: #f59e0b; /* orange-500 */
 }
+
 .grease-icon-label {
-    font-size: 0.875rem; /* 14px */
-    font-weight: 600; /* semibold */
+    font-size: 0.875rem; 
+    font-weight: 600; 
     margin-top: 6px;
-    color: #f59e0b; /* orange-500 */
-    text-shadow: 0 0 10px #f59e0b; /* Orange glow */
+    color: #f59e0b; 
+    text-shadow: 0 0 10px #f59e0b; 
 }
-    
+
 /* Grease Icon States */
 .grease-icon-button.pending {
-    border-color: #f59e0b; /* orange-500 */
-    color: #f59e0b; /* SVG color */
+    border-color: #f59e0b; 
+    color: #f59e0b; 
     box-shadow: 0 0 15px #f59e0b;
 }
 .grease-icon-button.ok {
-    border-color: #22c55e; /* green-500 */
+    border-color: #22c55e; 
     color: #22c55e;
     box-shadow: 0 0 15px #22c55e;
 }
 .grease-icon-button.error {
-    border-color: #ef4444; /* red-500 */
+    border-color: #ef4444; 
     color: #ef4444;
     box-shadow: 0 0 15px #ef4444;
 }
 
-/* --- STYLES FOR NEW DIESEL ICONS --- */
+/* =========================================
+   DIESEL GENERATOR ICONS (NEW)
+   ========================================= */
 .diesel-icon-button {
     display: flex;
     flex-direction: column;
@@ -181,50 +194,77 @@ body {
     justify-content: center;
     width: 90px;
     height: 90px;
-    border-radius: 9999px; /* full */
+    border-radius: 9999px; /* full circle */
     color: white;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
     border: 3px solid white;
-    background-color: rgba(0, 0, 0, 0.8); /* Dark background */
+    background-color: rgba(0, 0, 0, 0.85); /* Very dark bg */
     position: relative;
     z-index: 30;
 }
+
 .diesel-icon-button:hover {
     transform: scale(1.1);
-    border-color: #3b82f6; /* blue-500 */
+    border-color: #3b82f6; 
 }
+
 .diesel-icon-label {
     font-size: 0.70rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-top: 4px;
-    color: #e5e7eb; /* gray-200 */
-    text-shadow: 0 1px 2px black;
+    color: #e5e7eb; 
+    text-shadow: 0 2px 4px black; 
     text-align: center;
-    line-height: 1;
+    line-height: 1.1;
+    max-width: 80px;
 }
 
 /* Diesel Icon States */
 .diesel-icon-button.pending {
-    border-color: #3b82f6; /* blue-500 */
-    box-shadow: 0 0 10px #3b82f6;
+    border-color: #60a5fa; /* blue-400 */
+    box-shadow: 0 0 10px #60a5fa;
+    color: #60a5fa;
 }
+
 .diesel-icon-button.ok {
     border-color: #22c55e; /* green-500 */
     color: #22c55e;
     box-shadow: 0 0 15px #22c55e;
+    background-color: rgba(0, 0, 0, 0.9);
 }
-.diesel-icon-button.ok svg {
-     fill: #22c55e;
-     color: #22c55e;
+/* Ensure the SVG inside turns the correct color */
+.diesel-icon-button.ok svg, 
+.diesel-icon-button.error svg {
+    color: currentColor; 
+    fill: currentColor;
 }
+
 .diesel-icon-button.error {
     border-color: #ef4444; /* red-500 */
     color: #ef4444;
     box-shadow: 0 0 15px #ef4444;
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
-/* NEW: Dashboard Backgrounds */
+/* Mobile adjustments for Diesel icons to fit phone screen */
+@media (max-width: 640px) {
+    .diesel-icon-button {
+        width: 65px; 
+        height: 65px;
+        border-width: 2px;
+    }
+    .diesel-icon-label {
+        font-size: 0.55rem; 
+        margin-top: 2px;
+    }
+}
+
+/* =========================================
+   DASHBOARD BACKGROUNDS & CARDS
+   ========================================= */
+
+/* User Dashboard */
 .dashboard-main {
     background-image: url('arab-potash-company-banner.jpg');
     background-size: cover;
@@ -247,10 +287,10 @@ body {
     z-index: 2;
 }
 .content-card {
-    background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white card */
+    background-color: rgba(255, 255, 255, 0.95);
 }
-    
-/* Dark mode for admin cards */
+
+/* Admin Dashboard (Darker Theme) */
 .admin-dashboard-main {
     background-image: url('arab-potash-company-banner.jpg');
     background-size: cover;
@@ -265,7 +305,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(20, 20, 30, 0.7); /* Darker overlay for admin */
+    background-color: rgba(20, 20, 30, 0.75); /* Darker overlay */
     z-index: 1;
 }
 .admin-dashboard-content {
@@ -273,10 +313,10 @@ body {
     z-index: 2;
 }
 .admin-content-card {
-    background-color: rgba(255, 255, 255, 0.98); /* Almost opaque cards */
+    background-color: rgba(255, 255, 255, 0.98); 
 }
 .admin-stat-card {
-    background-color: rgba(240, 245, 255, 0.95); /* Light-blueish stat cards */
+    background-color: rgba(240, 245, 255, 0.95); 
     transition: all 0.2s ease-in-out;
 }
 .admin-stat-card:hover {

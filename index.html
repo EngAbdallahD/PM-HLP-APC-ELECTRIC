@@ -19,10 +19,8 @@
         <div id="loader"></div>
     </div>
 
-
     <div id="app" class="h-screen w-screen">
 
-        <!-- NEW LOGIN SCREEN -->
         <div id="login-screen" class="flex flex-col items-center justify-center h-full w-full bg-image">
             <div class="bg-white bg-opacity-90 p-8 rounded-2xl shadow-2xl text-center w-full max-w-md">
                 <img src="arab_potash_logo.png" alt="Logo" class="mx-auto mb-6 h-24" onerror="this.src='https://placehold.co/150x100/FFFFFF/333333?text=Logo+Not+Found'">
@@ -50,9 +48,6 @@
             <p class="text-white text-center mt-4 text-sm font-light absolute bottom-4">Design by: Eng.Abdallah Dmour</p>
         </div>
 
-        <!-- This modal is no longer used for login, but kept for "remember me" logic -->
-        <div id="user-password-modal" class="hidden"></div>
-
         <div id="user-interface" class="hidden h-full flex flex-col">
             <header class="bg-white shadow-md p-4 flex justify-between items-center z-10">
                 <div class="flex items-center">
@@ -70,7 +65,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-2xl font-bold text-white">Select a Task</h2>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div class="content-card p-6 rounded-lg shadow-md">
                                 <h3 class="font-bold text-xl text-gray-900 mb-4">Preventive Maintenance (PM)</h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -83,24 +78,27 @@
                                 <h3 class="font-bold text-xl text-gray-900 mb-4">Motor Greasing</h3>
                                 <button onclick="showGreaseSearch()" class="bg-green-600 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 text-xl h-full">Log Motor Grease</button>
                             </div>
+                            <div class="content-card p-6 rounded-lg shadow-md flex flex-col">
+                                <h3 class="font-bold text-xl text-gray-900 mb-4">Weekly Diesel Generator</h3>
+                                <button onclick="showDieselSelection()" class="bg-blue-800 text-white font-bold py-6 rounded-lg shadow-lg hover:bg-blue-900 transition-transform transform hover:scale-105 text-xl h-full">Log Diesel Gen</button>
+                            </div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-2xl font-bold text-white">Recent PM Activities (Today)</h2> <!-- EDITED -->
+                            <h2 class="text-2xl font-bold text-white">Recent PM Activities (Today)</h2>
                             <div class="flex space-x-2">
                                 <button onclick="scrollRecentActivities(-200)" aria-label="Scroll Up" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
                                 </button>
                                 <button onclick="scrollRecentActivities(200)" aria-label="Scroll Down" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                             </div>
                         </div>
                         <div id="recent-activities-container" class="max-h-96 overflow-y-auto pr-2">
                             <div id="recent-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                                <!-- Recent activities will be populated here -->
-                            </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -113,216 +111,163 @@
         <div id="admin-interface" class="hidden h-full flex flex-col">
              <header class="bg-white shadow-md p-4 flex justify-between items-center z-10">
                   <div class="flex items-center">
-                       <img src="arab_potash_logo.png" alt="Logo" class="h-12 mr-4" onerror="this.src='https://placehold.co/100x50/FFFFFF/333333?text=Logo'">
-                       <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+                        <img src="arab_potash_logo.png" alt="Logo" class="h-12 mr-4" onerror="this.src='https://placehold.co/100x50/FFFFFF/333333?text=Logo'">
+                        <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
                   </div>
                   <div>
-                       <span class="font-semibold text-lg text-red-700 mr-4">ADMIN</span>
-                       <button onclick="logout()" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition">Logout</button>
+                        <span class="font-semibold text-lg text-red-700 mr-4">ADMIN</span>
+                        <button onclick="logout()" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition">Logout</button>
                   </div>
              </header>
              <main class="flex-grow p-4 md:p-6 admin-dashboard-main overflow-y-auto">
                   <div class="admin-dashboard-content">
-                     <div class="mb-6">
-                         <h2 class="text-2xl font-bold text-white mb-4">Dashboard Analytics</h2>
-                         <!-- NEW KPI GRID -->
-                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                             <!-- Row 1 -->
-                             <div onclick="filterHistoryByAnalytics('pm_today')" class="admin-stat-card p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-blue-800" id="analytics-pm-today">0</h3>
-                                 <p class="text-blue-600 font-medium">PM Tasks Today</p>
-                             </div>
-                             <div onclick="filterHistoryByAnalytics('grease_today')" class="admin-stat-card bg-green-50 p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-green-800" id="analytics-grease-today">0</h3>
-                                 <p class="text-green-600 font-medium">Grease Tasks Today</p>
-                             </div>
-                             <div onclick="filterHistoryByAnalytics('unresolved')" class="admin-stat-card bg-red-50 p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-red-800" id="analytics-unresolved-errors">0</h3>
-                                 <p class="text-red-600 font-medium">Unresolved Errors</p>
-                             </div>
-                             <div onclick="filterHistoryByAnalytics('active_users')" class="admin-stat-card bg-yellow-50 p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-yellow-800" id="analytics-users-active">0</h3>
-                                 <p class="text-yellow-600 font-medium">Users Active Today</p>
-                             </div>
-                             <!-- Row 2 -->
-                             <div onclick="filterHistoryByAnalytics('pm_week')" class="admin-stat-card p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-blue-800" id="analytics-pm-week">0</h3>
-                                 <p class="text-blue-600 font-medium">PM Tasks This Week</p>
-                             </div>
-                             <div onclick="filterHistoryByAnalytics('grease_week')" class="admin-stat-card bg-green-50 p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-green-800" id="analytics-grease-week">0</h3>
-                                 <p class="text-green-600 font-medium">Grease Tasks This Week</p>
-                             </div>
-                             <div onclick="filterHistoryByAnalytics('total_tasks_week')" class="admin-stat-card bg-indigo-50 p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-indigo-800" id="analytics-total-tasks-week">0</h3>
-                                 <p class="text-indigo-600 font-medium">Total Tasks This Week</p>
-                             </div>
-                             <div onclick="filterHistoryByAnalytics('total_errors_week')" class="admin-stat-card bg-red-50 p-4 rounded-lg shadow cursor-pointer">
-                                 <h3 class="font-bold text-3xl text-red-800" id="analytics-total-errors-week">0</h3>
-                                 <p class="text-red-600 font-medium">Total Errors This Week</p>
-                             </div>
-                         </div>
-                     </div>
+                      <div class="mb-6">
+                          <h2 class="text-2xl font-bold text-white mb-4">Dashboard Analytics</h2>
+                          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 text-center">
+                              <div onclick="filterHistoryByAnalytics('pm_today')" class="admin-stat-card p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-blue-800" id="analytics-pm-today">0</h3>
+                                  <p class="text-blue-600 font-medium">PM Today</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('grease_today')" class="admin-stat-card bg-green-50 p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-green-800" id="analytics-grease-today">0</h3>
+                                  <p class="text-green-600 font-medium">Grease Today</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('unresolved')" class="admin-stat-card bg-red-50 p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-red-800" id="analytics-unresolved-errors">0</h3>
+                                  <p class="text-red-600 font-medium">Unresolved Errors</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('diesel_week')" class="admin-stat-card bg-blue-50 p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-blue-900" id="analytics-diesel-week">0</h3>
+                                  <p class="text-blue-800 font-medium">Diesel Gen (Week)</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('active_users')" class="admin-stat-card bg-yellow-50 p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-yellow-800" id="analytics-users-active">0</h3>
+                                  <p class="text-yellow-600 font-medium">Users Active Today</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('pm_week')" class="admin-stat-card p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-blue-800" id="analytics-pm-week">0</h3>
+                                  <p class="text-blue-600 font-medium">PM Week</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('grease_week')" class="admin-stat-card bg-green-50 p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-green-800" id="analytics-grease-week">0</h3>
+                                  <p class="text-green-600 font-medium">Grease Week</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('total_tasks_week')" class="admin-stat-card bg-indigo-50 p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-indigo-800" id="analytics-total-tasks-week">0</h3>
+                                  <p class="text-indigo-600 font-medium">Total Tasks Week</p>
+                              </div>
+                              <div onclick="filterHistoryByAnalytics('total_errors_week')" class="admin-stat-card bg-red-50 p-4 rounded-lg shadow cursor-pointer">
+                                  <h3 class="font-bold text-3xl text-red-800" id="analytics-total-errors-week">0</h3>
+                                  <p class="text-red-600 font-medium">Total Errors Week</p>
+                              </div>
+                          </div>
+                      </div>
 
-                     <!-- NEW: Monthly Chart -->
-                     <div class="mb-6 admin-content-card p-6 rounded-lg shadow-md">
-                         <h2 class="text-2xl font-bold text-gray-800 mb-4">Monthly Task Overview (Last 4 Weeks)</h2>
-                         <div>
-                             <canvas id="admin-weekly-chart"></canvas>
-                         </div>
-                     </div>
+                      <div class="mb-6 admin-content-card p-6 rounded-lg shadow-md">
+                          <h2 class="text-2xl font-bold text-gray-800 mb-4">Monthly Task Overview (Last 4 Weeks)</h2>
+                          <div><canvas id="admin-weekly-chart"></canvas></div>
+                      </div>
 
-                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                         <div class="admin-content-card p-6 rounded-lg shadow-md">
-                             <h2 class="text-2xl font-bold text-gray-800 mb-4">Live PM Activities</h2>
-                             <div id="admin-live-activities" class="space-y-4 max-h-screen overflow-y-auto">
-                                 <!-- Live activities will be populated here -->
-                             </div>
-                         </div>
-                         <div class="admin-content-card p-6 rounded-lg shadow-md space-y-6">
-                             <div>
-                                 <h2 class="text-2xl font-bold text-gray-800">History & Reports</h2>
-                                 <!-- *** EDITED: Added Equipment Manager Tab *** -->
-                                 <div class="border-b border-gray-200">
-                                     <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                                         <button onclick="switchAdminView('pm')" id="tab-pm" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
-                                             PM History
-                                         </button>
-                                         <button onclick="switchAdminView('grease')" id="tab-grease" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                             Grease History
-                                         </button>
-                                         <button onclick="switchAdminView('equipment')" id="tab-equipment" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                             Equipment Manager
-                                         </button>
-                                     </nav>
-                                 </div>
+                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <div class="admin-content-card p-6 rounded-lg shadow-md">
+                              <h2 class="text-2xl font-bold text-gray-800 mb-4">Live PM Activities</h2>
+                              <div id="admin-live-activities" class="space-y-4 max-h-screen overflow-y-auto"></div>
+                          </div>
+                          <div class="admin-content-card p-6 rounded-lg shadow-md space-y-6">
+                              <div>
+                                  <h2 class="text-2xl font-bold text-gray-800">History & Reports</h2>
+                                  <div class="border-b border-gray-200">
+                                      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                                          <button onclick="switchAdminView('pm')" id="tab-pm" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">PM History</button>
+                                          <button onclick="switchAdminView('grease')" id="tab-grease" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">Grease History</button>
+                                          <button onclick="switchAdminView('diesel')" id="tab-diesel" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">Diesel Gen History</button>
+                                          <button onclick="switchAdminView('equipment')" id="tab-equipment" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">Equipment Manager</button>
+                                      </nav>
+                                  </div>
     
-                                 <div id="pm-view">
-                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
-                                         <input type="text" id="history-search-text" placeholder="Search PM by User or TAG..." class="p-2 border rounded-lg w-full">
-                                         <input type="date" id="history-search-date" class="p-2 border rounded-lg w-full">
-                                     </div>
-                                     <div class="flex space-x-4 my-4">
-                                         <button onclick="exportToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export PM to Excel</button>
-                                         <button onclick="exportToPDF()" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">Export PM to PDF</button>
-                                     </div>
-                                     <div id="admin-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
-                                 </div>
+                                  <div id="pm-view">
+                                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
+                                          <input type="text" id="history-search-text" placeholder="Search PM by User or TAG..." class="p-2 border rounded-lg w-full">
+                                          <input type="date" id="history-search-date" class="p-2 border rounded-lg w-full">
+                                      </div>
+                                      <div class="flex space-x-4 my-4">
+                                          <button onclick="exportToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export PM to Excel</button>
+                                          <button onclick="exportToPDF()" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">Export PM to PDF</button>
+                                      </div>
+                                      <div id="admin-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
+                                  </div>
     
-                                 <div id="grease-view" class="hidden">
-                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
-                                         <input type="text" id="grease-search-text" placeholder="Search Grease by User or TAG..." class="p-2 border rounded-lg w-full">
-                                         <input type="date" id="grease-search-date" class="p-2 border rounded-lg w-full">
-                                     </div>
-                                     <div class="flex space-x-4 my-4">
-                                         <button onclick="exportGreaseToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export Grease to Excel</button>
-                                     </div>
-                                     <div id="admin-grease-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
-                                 </div>
-                                 
-                                 <!-- *** NEW: Equipment Manager View *** -->
-                                 <div id="equipment-view" class="hidden mt-4 space-y-6">
-                                     
-                                     <!-- Manual Add Form -->
-                                     <div class="p-4 bg-gray-50 rounded-lg border">
-                                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Add Equipment Manually</h3>
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div>
-                                                <label for="manual-zone" class="block text-sm font-medium text-gray-700">Zone</label>
-                                                <select id="manual-zone" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg">
-                                                    <option value="HLP">HLP</option>
-                                                    <option value="SCREEN">SCREEN</option>
-                                                    <option value="COMPACTION">COMPACTION</option>
-                                                </select>
-                                            </div>
-                                             <div>
-                                                <label for="manual-tag" class="block text-sm font-medium text-gray-700">TAG Number</label>
-                                                <input type="text" id="manual-tag" placeholder="e.g., 13-29-066" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg">
-                                             </div>
-                                             <div>
-                                                <label for="manual-desc" class="block text-sm font-medium text-gray-700">Description</label>
-                                                <input type="text" id="manual-desc" placeholder="e.g., NEW CONVEYOR" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg">
-                                             </div>
-                                        </div>
-                                        <button onclick="saveManualEquipment()" class="mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Equipment</button>
-                                     </div>
-                                     
-                                     <!-- CSV Upload Form -->
-                                     <div class="p-4 bg-gray-50 rounded-lg border">
-                                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Add Equipment from CSV</h3>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label for="csv-zone" class="block text-sm font-medium text-gray-700">Add to Zone</label>
-                                                <select id="csv-zone" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg">
-                                                    <option value="HLP">HLP</option>
-                                                    <option value="SCREEN">SCREEN</option>
-                                                    <option value="COMPACTION">COMPACTION</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label for="csv-file" class="block text-sm font-medium text-gray-700">Upload CSV File</label>
-                                                <input type="file" id="csv-file" accept=".csv" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                            </div>
-                                        </div>
-                                        <p class="text-xs text-gray-500 mt-2">CSV must have headers: "TAG number", "Equipment Description"</p>
-                                        <button onclick="handleCsvUpload()" class="mt-4 bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Upload CSV</button>
-                                     </div>
-                                     
-                                     <!-- Equipment Preview Table -->
-                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Current Equipment List</h3>
-                                         <label for="preview-zone" class="block text-sm font-medium text-gray-700">Select Zone to View</label>
-                                         <select id="preview-zone" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg">
-                                             <option value="HLP">HLP</option>
-                                             <option value="SCREEN">SCREEN</option>
-                                             <option value="COMPACTION">COMPACTION</option>
-                                         </select>
-                                        <div id="equipment-list-preview" class="h-64 overflow-y-auto border rounded-lg p-2 bg-white mt-4">
-                                            <!-- Equipment list will be populated here by JS -->
-                                        </div>
-                                     </div>
+                                  <div id="grease-view" class="hidden">
+                                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 p-4 bg-gray-50 rounded-lg border">
+                                          <input type="text" id="grease-search-text" placeholder="Search Grease by User or TAG..." class="p-2 border rounded-lg w-full">
+                                          <input type="date" id="grease-search-date" class="p-2 border rounded-lg w-full">
+                                      </div>
+                                      <div class="flex space-x-4 my-4">
+                                          <button onclick="exportGreaseToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export Grease to Excel</button>
+                                      </div>
+                                      <div id="admin-grease-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
+                                  </div>
 
-                                 </div>
-
-                             </div>
-                             
-                             <div class="space-y-6 border-t pt-6">
-                                 <div id="data-management" class="space-y-4 border p-4 rounded-lg bg-white">
-                                     <h3 class="font-semibold text-lg text-gray-700">Automated Archiving Schedule</h3>
-                                     <p class="text-sm text-gray-600">Set the schedule for automatically deleting old PM records. This cycle runs when the admin logs in.</p>
-                                     <div class="flex items-center space-x-4">
-                                         <label for="interval-duration" class="font-semibold">Interval:</label>
-                                         <select id="interval-duration" class="p-2 border rounded-lg">
-                                             <option value="daily">Daily</option>
-                                             <option value="weekly" selected>Weekly</option>
-                                             <option value="monthly">Monthly</option>
-                                         </select>
-                                     </div>
-                                     <div class="grid grid-cols-1 gap-4">
-                                         <div>
-                                             <label for="start-date" class="font-semibold">Cycle Start Date:</label>
-                                             <input type="date" id="start-date" class="w-full p-2 border rounded-lg">
-                                         </div>
-                                         <div class="bg-gray-100 p-2 rounded-lg text-center">
-                                             <p class="text-sm font-medium">Next cycle ends on: <strong id="end-date-display" class="text-blue-600"></strong></p>
-                                         </div>
-                                     </div>
-                                     <div class="flex flex-wrap gap-4">
-                                         <button onclick="runCycleManually()" class="bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition">Run Archive Cycle Now</button>
-                                         <button onclick="confirmClearAllData()" class="bg-red-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-900 transition">Clear ALL History</button>
-                                     </div>
-                                 </div>
-
-                                 <div id="user-management" class="space-y-4 border p-4 rounded-lg bg-white">
-                                     <h3 class="font-semibold text-lg text-gray-700">Manage Users</h3>
-                                     <div id="user-editor-container" class="space-y-4 max-h-96 overflow-y-auto pr-2">
-                                         <!-- User editor will be populated here -->
-                                     </div>
-                                     <button onclick="saveUsers()" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Users</button>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
+                                  <div id="diesel-view" class="hidden">
+                                      <div class="flex space-x-4 my-4">
+                                          <button onclick="exportDieselToExcel()" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Export Diesel to Excel</button>
+                                      </div>
+                                      <div id="admin-diesel-history" class="h-80 overflow-y-auto border rounded-lg p-2 bg-white"></div>
+                                  </div>
+                                  
+                                  <div id="equipment-view" class="hidden mt-4 space-y-6">
+                                      <div class="p-4 bg-gray-50 rounded-lg border">
+                                          <h3 class="text-lg font-semibold text-gray-800 mb-3">Add Equipment Manually</h3>
+                                          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                              <div><label for="manual-zone" class="block text-sm font-medium text-gray-700">Zone</label><select id="manual-zone" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"><option value="HLP">HLP</option><option value="SCREEN">SCREEN</option><option value="COMPACTION">COMPACTION</option></select></div>
+                                              <div><label for="manual-tag" class="block text-sm font-medium text-gray-700">TAG Number</label><input type="text" id="manual-tag" placeholder="e.g., 13-29-066" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"></div>
+                                              <div><label for="manual-desc" class="block text-sm font-medium text-gray-700">Description</label><input type="text" id="manual-desc" placeholder="e.g., NEW CONVEYOR" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"></div>
+                                          </div>
+                                          <button onclick="saveManualEquipment()" class="mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Equipment</button>
+                                      </div>
+                                      <div class="p-4 bg-gray-50 rounded-lg border">
+                                          <h3 class="text-lg font-semibold text-gray-800 mb-3">Add Equipment from CSV</h3>
+                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                              <div><label for="csv-zone" class="block text-sm font-medium text-gray-700">Add to Zone</label><select id="csv-zone" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"><option value="HLP">HLP</option><option value="SCREEN">SCREEN</option><option value="COMPACTION">COMPACTION</option></select></div>
+                                              <div><label for="csv-file" class="block text-sm font-medium text-gray-700">Upload CSV File</label><input type="file" id="csv-file" accept=".csv" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
+                                          </div>
+                                          <p class="text-xs text-gray-500 mt-2">CSV must have headers: "TAG number", "Equipment Description"</p>
+                                          <button onclick="handleCsvUpload()" class="mt-4 bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Upload CSV</button>
+                                      </div>
+                                      <div>
+                                          <h3 class="text-lg font-semibold text-gray-800 mb-3">Current Equipment List</h3>
+                                           <label for="preview-zone" class="block text-sm font-medium text-gray-700">Select Zone to View</label>
+                                           <select id="preview-zone" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"><option value="HLP">HLP</option><option value="SCREEN">SCREEN</option><option value="COMPACTION">COMPACTION</option></select>
+                                          <div id="equipment-list-preview" class="h-64 overflow-y-auto border rounded-lg p-2 bg-white mt-4"></div>
+                                      </div>
+                                  </div>
+                              </div>
+                              
+                              <div class="space-y-6 border-t pt-6">
+                                  <div id="data-management" class="space-y-4 border p-4 rounded-lg bg-white">
+                                      <h3 class="font-semibold text-lg text-gray-700">Automated Archiving Schedule</h3>
+                                      <p class="text-sm text-gray-600">Set the schedule for automatically deleting old PM records. This cycle runs when the admin logs in.</p>
+                                      <div class="flex items-center space-x-4">
+                                          <label for="interval-duration" class="font-semibold">Interval:</label>
+                                          <select id="interval-duration" class="p-2 border rounded-lg"><option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="monthly">Monthly</option></select>
+                                      </div>
+                                      <div class="grid grid-cols-1 gap-4">
+                                          <div><label for="start-date" class="font-semibold">Cycle Start Date:</label><input type="date" id="start-date" class="w-full p-2 border rounded-lg"></div>
+                                          <div class="bg-gray-100 p-2 rounded-lg text-center"><p class="text-sm font-medium">Next cycle ends on: <strong id="end-date-display" class="text-blue-600"></strong></p></div>
+                                      </div>
+                                      <div class="flex flex-wrap gap-4">
+                                          <button onclick="runCycleManually()" class="bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition">Run Archive Cycle Now</button>
+                                          <button onclick="confirmClearAllData()" class="bg-red-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-900 transition">Clear ALL History</button>
+                                      </div>
+                                  </div>
+                                  <div id="user-management" class="space-y-4 border p-4 rounded-lg bg-white">
+                                      <h3 class="font-semibold text-lg text-gray-700">Manage Users</h3>
+                                      <div id="user-editor-container" class="space-y-4 max-h-96 overflow-y-auto pr-2"></div>
+                                      <button onclick="saveUsers()" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Users</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                   </div>
              </main>
               <footer class="bg-gray-200 text-center p-4 z-10">
@@ -333,115 +278,132 @@
         <div id="equipment-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl w-11/12 max-w-3xl">
                 <h2 class="text-2xl font-bold mb-4" id="equipment-modal-title">Select Equipment</h2>
-                <div class="mb-4">
-                    <input type="text" id="tag-search" class="w-full p-3 border rounded-lg" placeholder="Search by TAG number...">
-                </div>
+                <div class="mb-4"><input type="text" id="tag-search" class="w-full p-3 border rounded-lg" placeholder="Search by TAG number..."></div>
                 <div class="h-64 overflow-y-auto border rounded-lg">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TAG Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Equipment Description</th>
-                            </tr>
-                        </thead>
-                        <tbody id="equipment-table-body" class="bg-white divide-y divide-gray-200">
-                            <!-- Equipment table will be populated here -->
-                        </tbody>
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TAG Number</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Equipment Description</th></tr></thead>
+                        <tbody id="equipment-table-body" class="bg-white divide-y divide-gray-200"></tbody>
                     </table>
                 </div>
-                <div class="mt-6 flex justify-end">
-                    <button onclick="closeEquipmentModal()" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition">Cancel</button>
-                </div>
+                <div class="mt-6 flex justify-end"><button onclick="closeEquipmentModal()" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition">Cancel</button></div>
             </div>
         </div>
         
-        <!-- NEW INTERACTIVE PM MODAL -->
         <div id="pm-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center overflow-y-auto p-4 z-50">
             <div class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-4xl relative">
-                
-                <!-- HEADER: Title and OFF MODE Toggle -->
                 <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-white">Motor Inspection</h2>
-                        <p class="text-sm md:text-lg text-gray-400">TAG: <span id="pm-tag-number" class="font-semibold text-blue-400"></span></p>
-                    </div>
-                    <!-- EDITED: Button default state -->
-                    <button id="pm-off-mode-button" onclick="togglePmOffMode()" class="bg-green-600 text-white font-semibold py-2 px-5 rounded-lg transition hover:bg-green-500">
-                        RUN MODE
-                    </button>
+                    <div><h2 class="text-xl md:text-2xl font-bold text-white">Motor Inspection</h2><p class="text-sm md:text-lg text-gray-400">TAG: <span id="pm-tag-number" class="font-semibold text-blue-400"></span></p></div>
+                    <button id="pm-off-mode-button" onclick="togglePmOffMode()" class="bg-green-600 text-white font-semibold py-2 px-5 rounded-lg transition hover:bg-green-500">RUN MODE</button>
                 </div>
-
-                <!-- WARNING MESSAGE (for duplicate PM) -->
-                <div id="pm-warning-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4" role="alert">
-                </div>
-
-                <!-- MAIN INTERACTIVE AREA -->
+                <div id="pm-warning-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4" role="alert"></div>
                 <div id="pm-interactive-container" class="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden">
-                    <!-- Animated Circles Background (DELETED) -->
-                    
-                    <!-- Base Motor Image -->
-                    <img src="Motor based.png" alt="Motor Diagram" class="w-full h-auto relative" style="z-index: 20;"
-                         onerror="this.src='https://placehold.co/1024x768/374151/E2E8F0?text=Motor+Image+Not+Found%0A(Motor%20based.png)'">
-
-                    <!-- Inspection Icons (Absolutely Positioned) -->
-                    
-                    <!-- 1. Status -->
-                    <button id="pm-icon-status" onclick="openInspectionPoint('status')" class="pm-icon-button absolute top-1/2 left-4 md:left-10 transform -translate-y-1/2">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
-                        <span class="pm-icon-label">Status</span>
-                    </button>
-
-                    <!-- 2. Sound -->
-                    <button id="pm-icon-sound" onclick="openInspectionPoint('sound')" class="pm-icon-button absolute top-1/4 left-1/3 md:left-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                        <span class="pm-icon-label">Sound</span>
-                    </button>
-
-                    <!-- 3. Vibration -->
-                    <button id="pm-icon-vibration" onclick="openInspectionPoint('vibration')" class="pm-icon-button absolute top-1/3 right-1/4 md:right-1/3 transform translate-x-1/2 -translate-y-1/2">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                        <span class="pm-icon-label">Vibration</span>
-                    </button>
-
-                    <!-- 4. Temp -->
-                    <button id="pm-icon-temp" onclick="openInspectionPoint('temp')" class="pm-icon-button absolute bottom-1/4 right-8 md:right-20 transform translate-x-1/2 translate-y-1/2">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                        <span class="pm-icon-label">Temp</span>
-                    </button>
-                    
-                    <!-- 5. Shelter -->
-                    <button id="pm-icon-shelter" onclick="openInspectionPoint('shelter')" class="pm-icon-button absolute bottom-1/4 left-1/4 md:left-1/3 transform -translate-x-1/2 translate-y-1/2">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0v-7"></path></svg>
-                        <span class="pm-icon-label">Shelter</span>
-                    </button>
+                    <img src="Motor based.png" alt="Motor Diagram" class="w-full h-auto relative" style="z-index: 20;" onerror="this.src='https://placehold.co/1024x768/374151/E2E8F0?text=Motor+Image'">
+                    <button id="pm-icon-status" onclick="openInspectionPoint('status')" class="pm-icon-button absolute top-1/2 left-4 md:left-10 transform -translate-y-1/2"><svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg><span class="pm-icon-label">Status</span></button>
+                    <button id="pm-icon-sound" onclick="openInspectionPoint('sound')" class="pm-icon-button absolute top-1/4 left-1/3 md:left-1/4 transform -translate-x-1/2 -translate-y-1/2"><svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg><span class="pm-icon-label">Sound</span></button>
+                    <button id="pm-icon-vibration" onclick="openInspectionPoint('vibration')" class="pm-icon-button absolute top-1/3 right-1/4 md:right-1/3 transform translate-x-1/2 -translate-y-1/2"><svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span class="pm-icon-label">Vibration</span></button>
+                    <button id="pm-icon-temp" onclick="openInspectionPoint('temp')" class="pm-icon-button absolute bottom-1/4 right-8 md:right-20 transform translate-x-1/2 translate-y-1/2"><svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg><span class="pm-icon-label">Temp</span></button>
+                    <button id="pm-icon-shelter" onclick="openInspectionPoint('shelter')" class="pm-icon-button absolute bottom-1/4 left-1/4 md:left-1/3 transform -translate-x-1/2 translate-y-1/2"><svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0v-7"></path></svg><span class="pm-icon-label">Shelter</span></button>
                 </div>
-                
-                <!-- "Smart" Note Container - Starts Hidden -->
                 <div id="pm-note-container" class="hidden mt-6">
                     <label for="note" class="font-semibold text-lg text-white">Note (Recommended for "Error" / "Dirty" / "Not")</label>
                     <textarea id="note" class="w-full mt-2 p-3 border rounded-lg h-24 bg-gray-700 text-white border-gray-600" placeholder="Please describe the issue(s)..."></textarea>
                 </div>
-
-                <!-- FOOTER: Cancel and Submit Buttons -->
                 <div class="mt-8 flex justify-between">
-                    <button onclick="closePmModal()" class="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">
-                        Cancel
-                    </button>
-                    <button onclick="submitPmTask()" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition">
-                        Submit Inspection Data
-                    </button>
+                    <button onclick="closePmModal()" class="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Cancel</button>
+                    <button onclick="submitPmTask()" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition">Submit Inspection Data</button>
                 </div>
-
             </div>
+            <div id="pm-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div id="pm-popup-content" class="bg-gray-700 p-6 rounded-2xl shadow-xl w-full max-w-md"></div></div>
+        </div>
+        
+        <div id="grease-search-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl w-11/12 max-w-3xl">
+                <h2 class="text-2xl font-bold mb-4">Search for Motor TAG</h2>
+                <div class="mb-4"><input type="text" id="grease-tag-search" class="w-full p-3 border rounded-lg" placeholder="Search any TAG number..."></div>
+                <div class="h-64 overflow-y-auto border rounded-lg"><table class="min-w-full divide-y divide-gray-200"><tbody id="grease-search-table-body" class="bg-white divide-y divide-gray-200"></tbody></table></div>
+                <div class="mt-6 flex justify-end"><button onclick="document.getElementById('grease-search-modal').classList.add('hidden')" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition">Cancel</button></div>
+            </div>
+        </div>
+        <div id="grease-task-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center overflow-y-auto p-4 z-50">
+            <div class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-4xl relative">
+                <div class="flex justify-between items-center mb-4"><div><h2 class="text-xl md:text-2xl font-bold text-white">Motor Greasing</h2><p class="text-sm md:text-lg text-gray-400">TAG: <span id="grease-tag-number" class="font-semibold text-blue-400"></span></p></div></div>
+                <div id="grease-interactive-container" class="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden">
+                    <img src="motor grease.png" alt="Motor Diagram" class="w-full h-auto relative" style="z-index: 20;" onerror="this.src='https://placehold.co/1024x768/374151/E2E8F0?text=Motor+Image'">
+                    <button id="grease-icon-front" onclick="openGreasePoint('front')" class="grease-icon-button absolute top-1/2 left-4 md:left-10 transform -translate-y-1/2"><svg class="w-8 h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span class="grease-icon-label">Front Nibble</span></button>
+                    <button id="grease-icon-rear" onclick="openGreasePoint('rear')" class="grease-icon-button absolute top-1/2 right-4 md:right-10 transform -translate-y-1/2"><svg class="w-8 h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span class="grease-icon-label">Rear Nibble</span></button>
+                </div>
+                <div class="mt-6 space-y-4">
+                    <div><label for="grease-amount" class="font-semibold text-lg text-white">Total Grease Amount (grams)</label><input type="number" id="grease-amount" class="w-full mt-2 p-3 border rounded-lg bg-gray-700 text-white border-gray-600" placeholder="e.g., 50"></div>
+                    <div><label for="grease-note" class="font-semibold text-lg text-white">Note</label><textarea id="grease-note" class="w-full mt-2 p-3 border rounded-lg h-24 bg-gray-700 text-white border-gray-600" placeholder="Add extra information here..."></textarea></div>
+                </div>
+                <div class="mt-8 flex justify-between"><button onclick="closeGreaseTaskModal()" class="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Cancel</button><button onclick="submitGreaseTask()" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition">Greasing Finished</button></div>
+            </div>
+        </div>
+        <div id="grease-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div id="grease-popup-content" class="bg-gray-700 p-6 rounded-2xl shadow-xl w-full max-w-md"></div></div>
 
-            <!-- POPUP for Questions -->
-            <div id="pm-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-                <div id="pm-popup-content" class="bg-gray-700 p-6 rounded-2xl shadow-xl w-full max-w-md">
-                    <!-- Content will be dynamically injected here by JavaScript -->
+        <div id="diesel-selection-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl w-11/12 max-w-md text-center">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Select Generator</h2>
+                <div class="grid grid-cols-1 gap-4">
+                    <button onclick="selectDieselGen('DG#SW1', 'Switch Room No.1')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition">DG#SW1 - Switch Room No.1</button>
+                    <button onclick="selectDieselGen('DG#SW2', 'Switch Room No.2')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition">DG#SW2 - Switch Room No.2</button>
+                    <button onclick="selectDieselGen('DG#SW3', 'Switch Room No.3')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition">DG#SW3 - Switch Room No.3</button>
+                    <button onclick="selectDieselGen('DG#SW4', 'Switch Room No.4')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition">DG#SW4 - Switch Room No.4</button>
+                </div>
+                <button onclick="document.getElementById('diesel-selection-modal').classList.add('hidden')" class="mt-6 text-gray-500 hover:text-gray-700 font-semibold">Cancel</button>
+            </div>
+        </div>
+
+        <div id="diesel-task-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center overflow-y-auto p-4 z-50">
+            <div class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-4xl relative">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Weekly Diesel Generator</h2>
+                        <p class="text-sm text-gray-400"><span id="diesel-tag-display" class="font-semibold text-blue-400"></span></p>
+                    </div>
+                </div>
+                
+                <div class="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden bg-gray-900">
+                     <img src="diesel gen.png" alt="Diesel Generator" class="w-full h-auto relative" style="z-index: 20;" onerror="this.src='https://placehold.co/1024x768/374151/E2E8F0?text=Diesel+Gen+Image+Not+Found'">
+                     
+                     <button id="diesel-icon-level" onclick="openDieselInput('level', 'Diesel Level', '%')" class="diesel-icon-button absolute top-[20%] left-[10%] transform -translate-x-1/2 -translate-y-1/2">
+                         <svg class="w-8 h-8 text-white" viewBox="0 0 130 130" fill="currentColor"><path d="M92.7,22.1L75.1,67.6C72.5,65,69,63.5,65,63.5c-0.5,0-1,0-1.5,0.1L92.7,22.1z"/><path d="M65,66.4c-6.4,0-11.6,5.2-11.6,11.6h23.1C76.6,71.5,71.4,66.4,65,66.4z"/><path d="M14,65.7l5.2,1.2c1-2.2,2.2-4.4,3.5-6.4l-4.7-2.3C16.4,60.6,15.1,63.1,14,65.7z"/><path d="M35.4,40.6l3.3,4.1c1.8-1.1,3.6-2.1,5.5-3L42,37C39.7,38.1,37.5,39.3,35.4,40.6z"/><path d="M26.9,47.2l4.1,3.3c1.6-1.5,3.3-2.8,5.1-4.1l-3.3-4.1C30.8,43.8,28.8,45.5,26.9,47.2z"/><path d="M54.7,33l1.2,5.1c2-0.4,4-0.6,6-0.7l0-5.2C59.5,32.3,57.1,32.5,54.7,33z"/><path d="M19.6,55.6l4.8,2.3c1.4-1.9,2.8-3.6,4.4-5.3l-4.1-3.3C22.9,51.3,21.2,53.4,19.6,55.6z"/><path d="M44.8,35.8l2.3,4.7c1.9-0.7,3.8-1.3,5.8-1.8l-1.2-5.1C49.4,34.2,47.1,35,44.8,35.8z"/><path d="M10.5,77.2h5.3c0.5-2.6,1.3-5,2.2-7.4l-5.1-1.2C11.9,71.4,11.1,74.2,10.5,77.2z"/><path d="M65,32C65,32,65,32,65,32l0,5.2c0,0,0,0,0,0c2.1,0,4.1,0.1,6.1,0.4l1.2-5.1C69.9,32.2,67.5,32,65,32z"/><path d="M75.3,33c1.8,0.3,3.6,0.8,5.3,1.3l-3.2,4.5c-1.1-0.3-2.2-0.5-3.3-0.7L75.3,33z"/><path d="M119.5,77.2h-5.3c-3.1-15-13-27.6-26.4-34.5l1.9-4.9C105,45.5,116.2,59.9,119.5,77.2z"/></svg>
+                         <span class="diesel-icon-label">Diesel Level</span>
+                     </button>
+                     
+                     <button id="diesel-icon-clean" onclick="openDieselChoice('clean')" class="diesel-icon-button absolute top-[20%] right-[10%] transform translate-x-1/2 -translate-y-1/2">
+                         <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
+                         <span class="diesel-icon-label">Cleanliness</span>
+                     </button>
+
+                     <button id="diesel-icon-vdc" onclick="openDieselInput('vdc', 'Voltage DC', 'V')" class="diesel-icon-button absolute top-[50%] right-[15%] transform translate-x-1/2 -translate-y-1/2">
+                        <svg class="w-8 h-8 text-white" viewBox="0 0 130 130" fill="currentColor"><path d="M110.5,49.4v62.5H19.5V49.4h11.9v-4.8c0-0.9,1-1.7,1.9-1.7h19.3c0.9,0,1.4,0.8,1.4,1.7v4.8h21v-4.8c0-0.9,0.8-1.7,1.6-1.7h19.3c0.9,0,1.7,0.8,1.7,1.7v4.8H110.5z M68,94.6l6.4-22.3l-11.4,5.9l9-19.2h-9.5l-6.9,26.9l10.9-4.6l-1.3,13.3h-2.7l3.3,9.2l4.8-9.2H68z"/><rect x="33.5" y="25.1" width="18.3" height="3.8"/><rect x="76.1" y="25.1" width="17.8" height="3.8"/><rect x="40.5" y="18.1" width="3.8" height="18.3"/></svg>
+                        <span class="diesel-icon-label">Voltage DC</span>
+                     </button>
+
+                     <button id="diesel-icon-freq" onclick="openDieselInput('freq', 'Frequency', 'Hz')" class="diesel-icon-button absolute bottom-[20%] left-[15%] transform -translate-x-1/2 translate-y-1/2">
+                        <svg class="w-8 h-8 text-white" viewBox="0 0 130 130" fill="currentColor"><path d="M40.2,49V20.3h6V31h11.2V20.3h6V49h-6V36H46.2v13H40.2z"/><path d="M67.3,44l14.9-18.6H67.8v-5.1h22V25L74.6,43.9h15.1V49H67.3V44z"/></svg>
+                        <span class="diesel-icon-label">Frequency</span>
+                     </button>
+
+                     <button id="diesel-icon-vout" onclick="openDieselInput('vout', 'Output Voltage', 'V')" class="diesel-icon-button absolute bottom-[20%] right-[15%] transform translate-x-1/2 translate-y-1/2">
+                        <svg class="w-8 h-8 text-white" viewBox="0 0 130 130" fill="currentColor"><polygon points="54.8,24.9 42.9,70.7 63.4,68.2 51.2,108 87.1,49.7 65.2,52.3 79,22 "/></svg>
+                        <span class="diesel-icon-label">Output Voltage</span>
+                     </button>
+                </div>
+                
+                <div class="mt-8 flex justify-between">
+                    <button onclick="closeDieselTaskModal()" class="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Cancel</button>
+                    <button onclick="submitDieselTask()" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition">Submit Diesel Gen</button>
                 </div>
             </div>
         </div>
-        
+
+        <div id="diesel-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
+            <div id="diesel-popup-content" class="bg-gray-700 p-6 rounded-2xl shadow-xl w-full max-w-md">
+                </div>
+        </div>
+
         <div id="alert-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-[100]">
             <div class="bg-white p-8 rounded-2xl shadow-2xl w-11/12 max-w-sm text-center">
                 <h2 id="alert-title" class="text-xl font-bold mb-4">Alert</h2>
@@ -461,7 +423,6 @@
             </div>
         </div>
         
-        <!-- Note Confirmation Modal -->
         <div id="confirm-note-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-[100]">
             <div class="bg-white p-8 rounded-2xl shadow-2xl w-11/12 max-w-sm text-center">
                 <h2 class="text-xl font-bold mb-4 text-yellow-600">No Note Added</h2>
@@ -473,96 +434,6 @@
             </div>
         </div>
 
-    </div>
-
-    <div id="grease-search-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl w-11/12 max-w-3xl">
-            <h2 class="text-2xl font-bold mb-4">Search for Motor TAG</h2>
-            <div class="mb-4">
-                <input type="text" id="grease-tag-search" class="w-full p-3 border rounded-lg" placeholder="Search any TAG number...">
-            </div>
-            <div class="h-64 overflow-y-auto border rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TAG Number</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Equipment Description</th>
-                        </tr>
-                    </thead>
-                    <tbody id="grease-search-table-body" class="bg-white divide-y divide-gray-200">
-                        <!-- Grease search table will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-6 flex justify-end">
-                <button onclick="document.getElementById('grease-search-modal').classList.add('hidden')" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- NEW INTERACTIVE GREASE MODAL -->
-    <div id="grease-task-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center overflow-y-auto p-4 z-50">
-        <div class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-4xl relative">
-            
-            <!-- HEADER: Title -->
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h2 class="text-xl md:text-2xl font-bold text-white">Motor Greasing</h2>
-                    <p class="text-sm md:text-lg text-gray-400">TAG: <span id="grease-tag-number" class="font-semibold text-blue-400"></span></p>
-                </div>
-            </div>
-
-            <!-- MAIN INTERACTIVE AREA -->
-            <div id="grease-interactive-container" class="relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden">
-                <!-- Base Motor Image -->
-                <img src="motor grease.png" alt="Motor Diagram" class="w-full h-auto relative" style="z-index: 20;"
-                     onerror="this.src='https://placehold.co/1024x768/374151/E2E8F0?text=Motor+Image+Not+Found%0A(motor%20grease.png)'">
-
-                <!-- Inspection Icons (Absolutely Positioned) -->
-                
-                <!-- 1. Front Bearing -->
-                <button id="grease-icon-front" onclick="openGreasePoint('front')" class="grease-icon-button absolute top-1/2 left-4 md:left-10 transform -translate-y-1/2">
-                    <svg class="w-8 h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    <span class="grease-icon-label">Front Nibble</span>
-                </button>
-
-                <!-- 2. Rear Bearing -->
-                <button id="grease-icon-rear" onclick="openGreasePoint('rear')" class="grease-icon-button absolute top-1/2 right-4 md:right-10 transform -translate-y-1/2">
-                    <svg class="w-8 h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    <span class="grease-icon-label">Rear Nibble</span>
-                </button>
-            </div>
-            
-            <!-- Data Entry Fields -->
-            <div class="mt-6 space-y-4">
-                <div>
-                    <label for="grease-amount" class="font-semibold text-lg text-white">Total Grease Amount (grams)</label>
-                    <input type="number" id="grease-amount" class="w-full mt-2 p-3 border rounded-lg bg-gray-700 text-white border-gray-600" placeholder="e.g., 50">
-                </div>
-                <div>
-                    <label for="grease-note" class="font-semibold text-lg text-white">Note</label>
-                    <textarea id="grease-note" class="w-full mt-2 p-3 border rounded-lg h-24 bg-gray-700 text-white border-gray-600" placeholder="Add extra information here..."></textarea>
-                </div>
-            </div>
-
-            <!-- FOOTER: Cancel and Submit Buttons -->
-            <div class="mt-8 flex justify-between">
-                <button onclick="closeGreaseTaskModal()" class="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">
-                    Cancel
-                </button>
-                <button onclick="submitGreaseTask()" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition">
-                    Greasing Finished
-                </button>
-            </div>
-
-        </div>
-
-        <!-- POPUP for Grease Questions -->
-        <div id="grease-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-            <div id="grease-popup-content" class="bg-gray-700 p-6 rounded-2xl shadow-xl w-full max-w-md">
-                <!-- Content will be dynamically injected here by JavaScript -->
-            </div>
-        </div>
     </div>
 
     <script type="module" src="app.js"></script>

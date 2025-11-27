@@ -24,8 +24,10 @@ let selectedEquipment = null;
 let equipmentData = { HLP: [], SCREEN: [], COMPACTION: [] }; 
 let allTasks = [];
 let allGreaseTasks = [];
+let allDieselTasks = []; // NEW: Diesel Tasks Container
 let unsubscribePmTasks = null;
 let unsubscribeGreaseTasks = null;
+let unsubscribeDieselTasks = null; // NEW: Diesel Listener
 let unsubscribeUserSettings = null;
     
 // PM Modal State
@@ -38,6 +40,11 @@ let submitContinuation = null;
 let selectedGreaseEquipment = null;
 let greaseState = {};
 let activeGreasePoint = null;
+
+// NEW: Diesel Modal State
+let selectedDieselGen = null; 
+let dieselState = {}; 
+let activeDieselPoint = null;
 
 // EDITED: Chart instance
 let weeklyChartInstance = null;
@@ -74,7 +81,33 @@ const defaultUserSettings = {
 };
 let userSettings = { users: [], archiveSchedule: { start: null, interval: 'weekly' } }; // Start with empty users
 
-// --- *** EDITED: Hard-coded CSV data removed *** ---
+// --- NEW: BACK BUTTON HANDLING ---
+// This listens for browser back button presses
+window.onpopstate = function(event) {
+    if (event.state) {
+        // If we go back to dashboard state, hide all modals
+        if (event.state.page === "dashboard") {
+            document.getElementById('pm-modal').classList.add('hidden');
+            document.getElementById('grease-task-modal').classList.add('hidden');
+            document.getElementById('equipment-modal').classList.add('hidden');
+            document.getElementById('grease-search-modal').classList.add('hidden');
+            // NEW: Hide Diesel Modals
+            document.getElementById('diesel-selection-modal').classList.add('hidden');
+            document.getElementById('diesel-task-modal').classList.add('hidden');
+            // Hide Popups
+            document.getElementById('pm-popup').classList.add('hidden');
+            document.getElementById('grease-popup').classList.add('hidden');
+            document.getElementById('diesel-popup').classList.add('hidden');
+        } else if (event.state.page === "login") {
+            logout();
+        }
+    }
+};
+
+// Helper to push history state
+function pushState(pageName) {
+    history.pushState({ page: pageName }, "", `#${pageName}`);
+}
 
 // --- UI HELPER FUNCTIONS ---
 const showLoader = () => document.getElementById('loader-overlay').classList.remove('hidden');
@@ -95,7 +128,7 @@ function clearUserCredentials(userId) {
     localStorage.removeItem(`pm-user-${userId}`);
 }
 
-// --- *** EDITED: DATA LOADING (Now from Firebase) *** ---
+// --- DATA LOADING ---
 
 // Helper function to parse the old hardcoded CSV data
 function parseCsvData(csvText) {
@@ -127,661 +160,14 @@ async function loadEquipmentData() {
             
             // --- This is the old hard-coded data, now used only as a default ---
             const hlpCsvData = `TAG number,Equipment Description
-13-01-015,1ST STAGE DECOMPOSTION THICKNER DISCHARGE PUMP #15
-13-01-016,1ST STAGE DECOMPOSTION THICKNER DISCHARGE PUMP #16
-13-01-017 (VFD),CARNALITE RE-PULP TANK PUMP #17
-13-01-018 (VFD),CARNALITE RE-PULP TANK PUMP #18
-13-01-031 (VFD),WASH THECKENER U/F #31 (VFD)
-13-01-032,WASH THICKNER U/F PUMP #32
-13-01-033 (VFD),CARNALITE THICKNER U/F PUMP #33 (VFD)
-13-01-034,CARNALITE THICKNER U/F PUMP #34
-13-01-035,1ST STAGE DECOMPOSTION THICKNER U/F PUMP #35
-13-01-036,1ST STAGE DECOMPOSTION THICKNER U/F PUMP #36
-13-01-037 (VFD),WASH THECKENER U/F #37 (VFD)
-13-01-038 (VFD),CARNALITE THICKNER U/F PUMP #38 (VFD)
-13-01-039,1ST STAGE DECOMPOSTION THICKNER U/F PUMP #39
-13-01-044,1ST STAGE DECOMPOSTION THICKNER O/F PUMP #44
-13-01-045,1ST STAGE DECOMPOSTION THICKNER O/F PUMP #45
-13-01-046,WASH THICKNER O/F PUMP #46
-13-01-047,WASH THICKNER O/F PUMP #47
-13-01-051,SYLVNITE THICKNER U/F PUMP #51
-13-01-052,SYLVNITE THICKNER U/F PUMP #52
-13-01-061,SYLVNITE THICKNER O/F PUMP #61
-13-01-062,SYLVNITE THICKNER O/F PUMP #62
-13-01-071,SYLVANITE FILTER FEED PUMP #71
-13-01-072,SYLVANITE FILTER FEED PUMP #72
-13-01-073 (VFD),SYLVANITE FILTER FEED PUMP #73 (VFD)
-13-01-074 (VFD),SYLVANITE FILTER FEED PUMP #74 (VFD)
-13-01-075,VIBRATING SCREEN FEED PUMP #75
-13-01-076,VIBRATING SCREEN FEED PUMP #76
-13-01-077 (VFD),VIBRATING SCREEN OVERSIZE PUMP #77 (VFD)
-13-01-078 (VFD),VIBRATING SCREEN OVERSIZE PUMP #78 (VFD)
-13-01-082 (VFD),WASH THICKENER REPULP PUMP #82
-13-01-083 (VFD),WASH THICKENER REPULP PUMP #83
-13-01-084,FLUSHING WATER PUMP AT DEWATRING CENTRIFUGE AREA
-13-01-093 (VFD),SYLVANITE 2 ND FILTRATE PUMP #93 (VFD)
-13-01-094 (VFD),SYLVANITE 2 ND FILTRATE PUMP #94 (VFD)
-13-01-103,SUMP PUMP #103
-13-01-104,SUMP PUMP #104
-13-01-105,SUMP PUMP #105
-13-01-106,SUMP PUMP #106
-13-01-111 (VFD),CARNALLITE SURGE TANK PUMP #111
-13-01-112 (VFD),CARNALLITE SURGE TANK PUMP #112
-13-01-113 (VFD),CARNALLITE SURGE TANK PUMP #113
-13-01-114 (VFD),CARNALLITE SURGE TANK PUMP #114
-13-01-115,STONE REMOVAL REPULP TANK PUMP #115
-13-01-116,STONE REMOVAL REPULP TANK PUMP #116
-13-01-117,STONE REMOVAL REPULP TANK PUMP #117
-13-01-141 (VFD),BUFFER TANK PUMP MOTOR #141
-13-01-142 (VFD),BUFFER TANK PUMP MOTOR #142
-13-01-143 (VFD),THICKENER PUMP MOTOR #143
-13-01-144 (VFD),THICKENER PUMP MOTOR #144
-13-01-145 (VFD),HOTWELL#2 PUMP MOTOR #145
-13-01-146 (VFD),HOTWELL#2 PUMP MOTOR #146
-13-01-147 (VFD),HOTWELL#2 PUMP MOTOR #147
-13-01-151 (VFD),HOT BRINE PUMP #151 (VFD)
-13-01-152 (VFD),HOT BRINE PUMP #152 (VFD)
-13-01-161,TAIL DESPOSAL PUMP #161
-13-01-162,TAIL DESPOSAL PUMP #162
-13-01-171,BRINE HEATER CONDENSATE PUMP #171
-13-01-172,BRINE HEATER CONDENSATE PUMP #172
-13-01-181,NO.1 BAROMETRIC CONDENCER PUMP #181
-13-01-182,NO.1 BAROMETRIC CONDENCER PUMP #182
-13-01-183,GLAND PACKING COOLING PUMP #183
-13-01-184,GLAND PACKING COOLING PUMP #184
-13-01-210,1ST STAGE CRYST.TRANSFEER PUMP #210
-13-01-220,1ST STAGE CRYST.O/F TRANSFEER PUMP #220
-13-01-230 (VFD),NO.2 BAROMETRIC CONDENCER PUMP #230 (VFD)
-13-01-250,2ND STAGE CRYST.TRANSFEER PUMP # 250
-13-01-260,2SD STAGE CRYST.O/F TRANSFEER PUMP #260
-13-01-270 (VFD),NO.3 BAROMETRIC CONDENCER PUMP #270 (VFD)
-13-01-271 (VFD),NO.6 BAROMETRIC CONDENCER PUMP #271 (VFD)
-13-01-290 (VFD),3 RD STAGE CRYST.TRANSFEER PUMP #290 (VFD)
-13-01-291 (VFD),6 TH STAGE CRYST.TRANSFEER PUMP #291 (VFD)
-13-01-300,3 RD STAGE CRYST.O/F TRANSFEER PUMP #300
-13-01-301,6 TH STAGE CRYST.O/F TRANSFEER PUMP #301
-13-01-310 (VFD),4 TH STAGE CRYST.TRANSFEER PUMP #310 (VFD)
-13-01-320,4 TH STAGE CRYST.O/F TRANSFEER PUMP #320
-13-01-331,5 TH STAGE CRYST.TRANSFEER PUMP #331
-13-01-332,6 TH STAGE CRYST.TRANSFEER PUMP #332
-13-01-341 (VFD),5 TH STAGE CRYST. TRANSFER PUMP #341 (VFD)
-13-01-342 (VFD),6 TH STAGE CRYST. TRANSFER PUMP #342 (VFD)
-13-01-351,NO.5 BAROMETRIC CONDENCER PUMP #351
-13-01-352,NO.5 BAROMETRIC CONDENCER PUMP #352
-13-01-361,CRYSTALLIZER WATER ADDITION PUMP #361
-13-01-362,CRYSTALLIZER WATER ADDITION PUMP #362
-13-01-363,HOT THICKENER WATER ADDITION PUMP #363
-13-01-370,CRYSTALLIZER WASH TANK PUMP #370
-13-01-371,CRYSTALLIZER WASH TANK PUMP #371
-13-01-403,NEW PRODUCT CENTRIFUGE CENTRATE PUMP #403
-13-01-404,NEW PRODUCT CENTRIFUGE CENTRATE PUMP #404
-13-01-405 (VFD),MOTHER LIQUOR THICKENER OVERFLOW PUMP #01 MOTOR (VFD)
-13-01-406 (VFD),MOTHER LIQUOR THICKENER OVERFLOW PUMP #02 MOTOR (VFD)
-13-01-407,MOTHER LIQUOR THICKENER GSW BOOSTER PUMP #01 MOTOR
-13-01-408,MOTHER LIQUOR THICKENER GSW BOOSTER PUMP #02 MOTOR
-13-01-409 (VFD),MOTHER LIQUOR THICKENER UNDERFLOW PUMP #01 MOTOR (VFD)
-13-01-410 (VFD),MOTHER LIQUOR THICKENER UNDERFLOW PUMP #02 MOTOR (VFD)
-13-01-432,#12 CENTRIFUGE LUBE OIL MOTOR
-13-01-433,#13 CENTRIFUGE LUBE OIL MOTOR
-13-01-434,#14 CENTRIFUGE LUBE OIL MOTOR
-13-01-435,#15 CENTRIFUGE LUBE OIL MOTOR
-13-01-436,#16 CENTRIFUGE LUBE OIL MOTOR
-13-01-442,#22 CENTRIFUGE LUBE OIL MOTOR
-13-01-443,#23 CENTRIFUGE LUBE OIL MOTOR
-13-01-444,#24 CENTRIFUGE LUBE OIL MOTOR
-13-01-445,#25 CENTRIFUGE LUBE OIL MOTOR
-13-01-446,#26 CENTRIFUGE LUBE OIL MOTOR
-13-01-447,#27 CENTRIFUGE LUBE OIL MOTOR
-13-01-451,#31 CENTRIFUGE LUBE OIL MOTOR
-13-01-452,#32 CENTRIFUGE LUBE OIL MOTOR
-13-01-453,#33 CENTRIFUGE LUBE OIL MOTOR
-13-01-454,#34 CENTRIFUGE LUBE OIL MOTOR
-13-01-462,#42 CENTRIFUGE LUBE OIL MOTOR
-13-01-463,#43 CENTRIFUGE LUBE OIL COOLING FAN / CENTRIFUGE #43
-13-01-464,#44 CENTRIFUGE LUBE OIL COOLING FAN / CENTRIFUGE #44
-13-01-471,#51 CENTRIFUGE LUBE OIL MOTOR
-13-01-472,#52 CENTRIFUGE LUBE OIL MOTOR
-13-01-473,#53 CENTRIFUGE LUBE OIL MOTOR
-13-01-474,#54 CENTRIFUGE LUBE OIL MOTOR
-13-01-475,#55 CENTRIFUGE LUBE OIL MOTOR
-13-01-541,TAILS CYCLONE FEED PUMP #541
-13-01-542,TAILS CYCLONE FEED PUMP #542
-13-01-555,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #01
-13-01-556,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #02
-13-01-557,PACKING PUMP FOR NEW HOT-WELL PUMP #01
-13-01-558,PACKING PUMP FOR NEW HOT-WELL PUMP #02
-13-01-559,PACKING PUMP #590
-13-01-560,PACKING PUMP #560
-13-01-561 (VFD),HOT THEKENER UNDER FLOW #561 (VFD)
-13-01-562 (VFD),HOT THEKENER UNDER FLOW #562 (VFD)
-13-01-571 (VFD),NEW HOT THICKENER O/F PUMP #571 (VFD)
-13-01-572 (VFD),NEW HOT THICKENER O/F PUMP #572 (VFD)
-13-01-573,NEW HOT BRINE THICKNER SUMP PUMP # 573
-13-01-574,NEW HOT BRINE THICKNER SUMP PUMP #574
-13-01-610,FLUSHING PUMP FOR PRODUCT CENTRIFUGE
-13-01-611,FLUSHING PUMP FOR CARNALITE CENTRIFUGE
-13-02-011,VACUUM PUMP #11
-13-02-012,VACUUM PUMP #12
-13-02-013,VACUUM PUMP #13 (ROOTS BLOWER PUMP)
-13-02-014,VACUUM PUMP #14 (ROOTS BLOWER PUMP)
-13-03-011,SYLVANITE BELT FILTER #11 BLOWER MOTOR
-13-03-012,SYLVANITE BELT FILTER #12 BLOWER MOTOR
-13-03-013,SYLVANITE BELT FILTER #13 BLOWER MOTOR
-13-03-015,ROOT COOLING FAN #15 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
-13-03-016,ROOT COOLING FAN #16 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
-13-03-017,ROOT COOLING FAN #17 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
-13-03-018,ROOT COOLING FAN #18 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
-13-03-141,RADIATOR COOLING FAN MOTOR #141
-13-03-142,RADIATOR COOLING FAN MOTOR #142
-13-03-143,RADIATOR COOLING FAN MOTOR #143
-13-03-144,RADIATOR COOLING FAN MOTOR #144
-13-03-145,RADIATOR COOLING FAN MOTOR #145
-13-03-146,RADIATOR COOLING FAN MOTOR #146
-13-03-147,RADIATOR COOLING FAN MOTOR #147
-13-03-432,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #12
-13-03-433,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #13
-13-03-434,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #14
-13-03-435,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #15
-13-03-436,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #16
-13-03-442,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #22
-13-03-443,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #23
-13-03-444,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #24
-13-03-445,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #25
-13-03-446,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #26
-13-03-447,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #27
-13-03-451,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #31
-13-03-452,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #32
-13-03-453,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #33
-13-03-454,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #34
-13-03-462,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #42
-13-03-463,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #43
-13-03-464,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #44
-13-03-471,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #51
-13-03-472,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #52
-13-03-473,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #53
-13-03-474,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #54
-13-03-475,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #55
-13-01-541,TAILS CYCLONE FEED PUMP #541
-13-01-542,TAILS CYCLONE FEED PUMP #542
-13-01-555,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #01
-13-01-556,PACKING PUMP FOR NEW CARNALITE O/F PUMPS #02
-13-01-557,PACKING PUMP FOR NEW HOT-WELL PUMP #01
-13-01-558,PACKING PUMP FOR NEW HOT-WELL PUMP #02
-13-01-559,PACKING PUMP #590
-13-01-560,PACKING PUMP #560
-13-01-561 (VFD),HOT THEKENER UNDER FLOW #561 (VFD)
-13-01-562 (VFD),HOT THEKENER UNDER FLOW #562 (VFD)
-13-01-571 (VFD),NEW HOT THICKENER O/F PUMP #571 (VFD)
-13-01-572 (VFD),NEW HOT THICKENER O/F PUMP #572 (VFD)
-13-01-573,NEW HOT BRINE THICKNER SUMP PUMP # 573
-13-01-574,NEW HOT BRINE THICKNER SUMP PUMP #574
-13-01-610,FLUSHING PUMP FOR PRODUCT CENTRIFUGE
-13-01-611,FLUSHING PUMP FOR CARNALITE CENTRIFUGE
-13-02-011,VACUUM PUMP #11
-13-02-012,VACUUM PUMP #12
-13-02-013,VACUUM PUMP #13 (ROOTS BLOWER PUMP)
-13-02-014,VACUUM PUMP #14 (ROOTS BLOWER PUMP)
-13-03-011,SYLVANITE BELT FILTER #11 BLOWER MOTOR
-13-03-012,SYLVANITE BELT FILTER #12 BLOWER MOTOR
-13-03-013,SYLVANITE BELT FILTER #13 BLOWER MOTOR
-13-03-015,ROOT COOLING FAN #15 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
-13-03-016,ROOT COOLING FAN #16 FOR VACUUM PUMP #14 (ROOTS BLOWER PUMP)
-13-03-017,ROOT COOLING FAN #17 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
-13-03-018,ROOT COOLING FAN #18 FOR VACUUM PUMP #13 (ROOTS BLOWER PUMP)
-13-03-141,RADIATOR COOLING FAN MOTOR #141
-13-03-142,RADIATOR COOLING FAN MOTOR #142
-13-03-143,RADIATOR COOLING FAN MOTOR #143
-13-03-144,RADIATOR COOLING FAN MOTOR #144
-13-03-145,RADIATOR COOLING FAN MOTOR #145
-13-03-146,RADIATOR COOLING FAN MOTOR #146
-13-03-147,RADIATOR COOLING FAN MOTOR #147
-13-03-432,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #12
-13-03-433,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #13
-13-03-434,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #14
-13-03-435,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #15
-13-03-436,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #16
-13-03-442,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #22
-13-03-443,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #23
-13-03-444,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #24
-13-03-445,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #25
-13-03-446,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #26
-13-03-447,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #27
-13-03-451,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #31
-13-03-452,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #32
-13-03-453,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #33
-13-03-454,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #34
-13-03-462,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #42
-13-03-463,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #43
-13-03-464,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #44
-13-03-471,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #51
-13-03-472,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #52
-13-03-473,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #53
-13-03-474,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #54
-13-03-475,RADIATOR LUBE OIL COOLING FAN / CENTRIFUGE #55
-13-04-010-01,"CARN. WASH THICKENER RAKE MOTOR ""NORTH"" PUMP #01"
-13-04-010-02,"CARN. WASH THICKENER RAKE MOTOR ""SOUTH"" PUMP#02"
-13-04-010-03,"CARN. WASH THICKENER RAKE MOTOR ""LIFTTING"" PUMP#01"
-13-04-010-04,"CARN. WASH THICKENER RAKE MOTOR ""LIFTTING"" PUMP#02"
-13-04-010-05,CARN. WASH THICKENER RAKE OIL TANK COOLANT FAN
-13-04-010-CONTROL PANEL,CARN. WASH THICKENER RAKE LOCAL CONTROL PANEL 230V
-13-04-010-HEATER PANEL,CARN. WASH THICKENER RAKE LOCAL HEATER PANEL 400V
-13-04-011-01,CAR. THICKENER HYD.DRIVE PUMP #01 MOTOR
-13-04-011-02,CAR. THICKENER HYD.DRIVE PUMP #02 MOTOR
-13-04-011-03 (A),"CARN. THICKENER RAKE ""HYD LIFTTING PUMP A"""
-13-04-011-03 (B),"CARN. THICKENER RAKE ""HYD LIFTTING PUMP B"""
-13-04-011-LOCAL PANEL,CARNLITE THICKENER 230V LOCAL CONTROL PANEL
-13-04-012-01,"1ST STAGE THICKENER RAKE "" NORTH"""
-13-04-012-02,"1ST STAGE THICKENER RAKE "" SOUTH"""
-13-04-012-03,"1ST STAGE THICKENER RAKE "" LIFTTING"""
-13-04-020-01,"SULV. THICKENER RAKE MOTOR ""NORTH"""
-13-04-020-02,"SULV. THICKENER RAKE MOTOR ""SOUTH"""
-13-04-020-03,"SULV. THICKENER RAKE MOTOR ""LIFTTING"""
-13-04-031-01,NEW HOT BRINE THICKNER RAKE MOTOR #01
-13-04-031-02,NEW HOT BRINE THICKNER RAKE MOTOR #02
-13-04-031-03,NEW HOT BRINE THICKNER RAKE LIFTTING MOTOR #03
-13-04-031-04,NEW HOT BRINE THICKNER RAKE LIFTTING MOTOR #04
-13-04-031-05,NEW HOT BRINE THICKNER OIL COOLING FAN MOTOR #01
-13-04-031-06,NEW HOT BRINE THICKNER OIL COOLING FAN MOTOR #02
-13-04-031-LOCAL PANEL,NEW HOT BRINE THICKNER  LOCAL PANEL FEEDER
-13-04-051-01,MOTHER LIQUOR THICKENER DRIVE RAKE PUMP #01 MOTOR
-13-04-051-02,MOTHER LIQUOR THICKENER DRIVE RAKE PUMP #02 MOTOR
-13-04-051-03,MOTHER LIQUOR THICKENER RAKE LIFT MOTOR
-13-04-051-04,MOTHER LIQUOR THICKENER OIL COOLING FAN MOTOR #01
-13-04-051-05,MOTHER LIQUOR THICKENER OIL COOLING FAN MOTOR #02
-13-04-051-06,MOTHER LIQUOR THICKENER OIL TANK HEATER WITH THERMOSTAT
-13-05-007(81),DECOMPOSTION TANK #07 AGITATOR MOTOR
-13-05-008(82),DECOMPOSTION TANK #08 AGITATOR MOTOR
-13-05-011,CARNALLITE SURGE TANK #01
-13-05-012,CARNALLITE SURGE TANK #02
-13-05-013,CARNALLITE SURGE TANK #03
-13-05-014(90),CARNALLITE SURGE TANK #04
-13-05-015,REACTOR TNK. AGITATOR
-13-05-016-01,STONE REMOVAL REPULP TANK AGITATOR #016
-13-05-016-02,STONE REMOVAL REPULP TANK AGITATOR #016 LUBRICANT PUMP
-13-05-026,WASH THICKENER REPULP TANK AGITATOR #26
-13-05-030,DECOMPOSTION TANK #01 AGITATOR MOTOR
-13-05-040,DECOMPOSTION TANK #02 AGITATOR MOTOR
-13-05-050,DECOMPOSTION TANK #03 AGITATOR MOTOR
-13-05-060,DECOMPOSTION TANK #04 AGITATOR MOTOR
-13-05-070,DECOMPOSTION TANK #05 AGITATOR MOTOR
-13-05-077,NEW UPGRADING SCREEN TANK AGITATOR
-13-05-080,DECOMPOSTION TANK #06 AGITATOR MOTOR
-13-05-091,SYLV. SURGE TNK. AGITATOR #91
-13-05-095,CARNALITE RE-PULP TANK AGITATOR #95
-13-05-100,HOT LEACH TANK #01 AGITATOR MOTOR
-13-05-110,HOT LEACH TANK #02 AGITATOR MOTOR
-13-05-120,HOT LEACH TANK #03 AGITATOR MOTOR
-13-05-130,HOT LEACH TANK #04 AGITATOR MOTOR
-13-05-131,HOT LEACH TANK #05 AGITATOR MOTOR
-13-05-132,HOT LEACH TANK #06 AGITATOR MOTOR
-13-05-150,TAIL REPULP TANK #150 AGITATOR MOTOR
-13-05-160,CRYSTALLIZER #01 AGITATOR MOTOR
-13-05-170,CRYSTALLIZER #02 AGITATOR MOTOR
-13-05-180,CRYSTALLIZER #03 AGITATOR MOTOR
-13-05-181,CRYSTALLIZER #06 AGITATOR MOTOR
-13-05-190,CRYSTALLIZER #04 AGITATOR MOTOR
-13-05-200,CRYSTALLIZER #05 AGITATOR MOTOR
-13-05-240,PRODUCT TNK. AGITATOR MOTOR #240
-13-21-012,CARNALITE CENTRIFUGE #12
-13-21-013,CARNALITE CENTRIFUGE #13
-13-21-014,CARNALITE CENTRIFUGE #14
-13-21-015,CARNALITE CENTRIFUGE #15
-13-21-016,CARNALITE CENTRIFUGE #16
-13-21-022,CARNALITE CENTRIFUGE #22
-13-21-023,CARNALITE CENTRIFUGE #23
-13-21-024,CARNALITE CENTRIFUGE #24
-13-21-025,CARNALITE CENTRIFUGE #25
-13-21-026,CARNALITE CENTRIFUGE #26
-13-21-027,CARNALITE CENTRIFUGE #27
-13-21-031,TAILS CENTRIFUGE #31
-13-21-032,TAILS CENTRIFUGE #32
-13-21-033,TAILS CENTRIFUGE #33
-13-21-034,TAILS CENTRIFUGE #34
-13-21-042,PRODUCT CENTRIFUGE #42
-13-21-043,PRODUCT CENTRIFUGE #43
-13-21-044,PRODUCT CENTRIFUGE #44
-13-21-051,WASH THICKENER CENTRIFUGE #51
-13-21-052,WASH THICKENER CENTRIFUGE #52
-13-21-053,WASH THICKENER CENTRIFUGE #53
-13-21-054,WASH THICKENER CENTRIFUGE #54
-13-21-055,WASH THICKENER CENTRIFUGE #55
-13-22-011 (VFD),DRIVE SYESTEM FOR BELT FILTER #11 (VFD)
-13-22-012 (VFD),DRIVE SYESTEM FOR BELT FILTER #12 (VFD)
-13-22-013 (VFD),DRIVE SYESTEM FOR BELT FILTER #13 (VFD)
-13-28-100,SYLVANITE UP GRADING SCREEN #100
-13-28-101,SYLVANITE UP GRADING SCREEN #101
-13-28-102,SYLVANITE UP GRADING SCREEN #102
-13-28-103,STONE REMOVAL REPULP TANK SCREEN #103
-13-28-104,STONE REMOVAL REPULP TANK SCREEN #104
-13-29-011,CARNALITE CONVEYOR BELT #11
-13-29-012,CARNALITE CONVEYOR BELT #12
-13-29-020,NEW CARNALITE CONVEYOR BELT #20
-13-29-040,SYLVANITE CONVEYOR BELT #40
-13-29-050,WASH THICKENER REPULP BELT CONVEYOR
-13-29-060,DRYER FEED CONVEYOR BELT #60`;
+// ... PASTE YOUR HLP DATA HERE ...
+`;
             const screenCsvData = `TAG number,Equipment Description
-14-01-001A (VFD),NEW COOLER PUMP #01A (VFD)
-14-01-001B (VFD),NEW COOLER PUMP #02B (VFD)
-14-01-071,SCREEN SUMP PUMP
-14-01-201,DUST WATER DILUTION TANK PUMP #01
-14-01-301,DUST WATER DILUTION TANK PUMP #02
-14-02-501,AIR COMPRESSOR FOR NEW COOLER SYSTEM #01
-14-02-502,AIR COMPRESSOR FOR NEW COOLER SYSTEM #02
-14-02-503,AIR COMPRESSOR FOR NEW COOLER SYSTEM #03
-14-02-511,AIR COMPRESSOR FOR NEW DRYER DE DUSTING SYSTEM #01
-14-02-512,AIR COMPRESSOR FOR NEW DRYER DE DUSTING SYSTEM #02
-14-03-020-01 (VFD),ID FAN MOTOR #01 (VFD)
-14-03-020-02 (VFD),ID FAN MOTOR #02 (VFD)
-14-03-031 (VFD),DRYER DILUTION FAN #31 (VFD)
-14-03-032 (VFD),DRYER DILUTION FAN #32 (VFD)
-14-03-050,SCRUBER FAN #50
-14-03-060,EXHAUST FAN #01 (MO1) / SCREEN
-14-03-070,EXHAUST FAN #02 (MO2) / COMPACTION
-14-03-080,EXHAUST FAN #01  (MO6) / SHIPPING
-14-03-090, EXHAUST FAN #01 / WAREHOUSE
-14-03-100,EXHAUST FAN #02 / WAREHOUSE
-14-03-202-01,COOLER BAGHOUSE EXHAUST FAN #01
-14-03-202-02,COOLER BAGHOUSE EXHAUST FAN #02
-14-03-501, NEW COMBUSTION AIR FAN #501
-14-03-502, NEW COMBUSTION AIR FAN #502
-14-03-601,COOLER SUPPLY AIR FAN #601
-14-03-602,COOLER SUPPLY AIR FAN #602
-14-03-603,COOLER SUPPLY AIR FAN #603
-14-05-010,NEW DISSOLVING TANK AT LOADING DE-DUSTING SYSTEM
-14-05-201,DUST WATER DILUTION TANK - AGITATORS #201
-14-05-301,DUST WATER DILUTION TANK - AGITATORS #301
-14-15-020-01(STARTER),VIBRATORSB AND LIVE BOTTOMS
-14-15-080-01(STARTER),VIBRATORSB AND LIVE BOTTOMS
-14-15-080-02(STARTER),VIBRATORSB AND LIVE BOTTOMS
-14-15-090-01,VIBRATORSB AND LIVE BOTTOMS
-14-15-090-02,VIBRATORSB AND LIVE BOTTOMS
-14-15-100,"SHIPPING BIN CHUTE ""TELESCOPING SYSTEM"" ""EAST"""
-14-15-100-01,#01 SHIPPING BIN CHUTE - Vibrator#01
-14-15-100-02,#01 SHIPPING BIN CHUTE - Vibrator#02
-14-15-100-03,#01 SHIPPING BIN CHUTE - Vibrator#03
-14-15-110,"SHIPPING BIN CHUTE ""TELESCOPING SYSTEM"" ""MIDDLE"""
-14-15-110-01,#02 SHIPPING BIN CHUTE - Vibrator#01
-14-15-110-02,#02 SHIPPING BIN CHUTE - Vibrator#02
-14-15-110-03,#02 SHIPPING BIN CHUTE - Vibrator#03
-14-15-120,"SHIPPING BIN CHUTE ""TELESCOPING SYSTEM"" ""WEST"""
-14-15-120-01,#03 SHIPPING BIN CHUTE - Vibrator#01
-14-15-120-02,#03 SHIPPING BIN CHUTE - Vibrator#02
-14-15-120-03,#03 SHIPPING BIN CHUTE - Vibrator#03
-14-15-390,DISSOLVING MAIN HOPPER VIBRATOR
-14-15-400,DISSOLVING SCREEN SHUTE VIBRATOR
-14-25-001,PRIMARY FUEL SKID PUMP #01
-14-25-002,PRIMARY FUEL SKID PUMP #02
-14-25-003,SECONDARY FUEL SKID PUMP #01
-14-25-004,SECONDARY FUEL SKID PUMP #02
-14-25-510-01,ROTARY DRYER DRIVE
-14-25-510-02,AUX. DRYER MOTOR
-14-25-510-03,BURNER CARRIAGE (TROLLEY) MOTOR
-14-25-510-04,DRYER THRUSTER RELEASED DRUM BREAK
-14-26-014,NEW CRUSHER SCREEN MOTOR
-14-28-001,ROTEX SCREEN #01
-14-28-002,ROTEX SCREEN #02
-14-28-003,ROTEX SCREEN #03
-14-28-010,DISSOLVING SCREEN
-14-29-010,COLLECTING CONVEYOR BELT #10 MOTOR
-14-29-020,SHIPPING CONVEYOR BELT #20
-14-29-030,STORAGE CONVEYOR BELT#30
-14-29-040,RECLAIM CONVEYOR BELT #40
-14-29-050,RECLAIM CONVEYOR BELT #50
-14-29-060,RECLAIM CONVEYOR BELT #60
-14-29-070,RECLAIM CONVEYOR BELT #70
-14-29-081,TRIPPER DRIVE MOTOR
-14-29-081-TROLLEY,TRIPPER DRIVE MOTOR
-14-29-081-WHEEL,TRIPPER DRIVE MOTOR
-14-29-090,DISSOLVING BELT CONEYOR #02 / MOBILE BELT
-14-29-100,DISSOLVING BELT CONEYOR #01 / LONG BELT
-14-29-120M1,Fresh feed KCL fines/dust belt conveyor main drive
-14-29-120M2,Fresh feed KCL fines/dust belt conveyor cleaning drive
-14-29-200M1,Fresh feed KCL fines/dust belt conveyor main drive
-14-29-200M2,Fresh feed KCL fines/dust belt conveyor cleaning drive
-14-30-001,ANTICACKING MIXER
-14-30-002,NEW SCREW CONVEYOR OF WAREHOUSE & SHIPPING DE-DUSTING BAGHOUSES.
-14-30-040,COOLER CHAIN CONVYOR WITH SCLAPING SCREEN #60
-14-30-050,SCREW CONVEYOR #50
-14-30-170,FINE PRODUCT SCREW CONVEYOR #170
-14-30-180,COMPACTION FEED BIN SCREW CONVEYOR #180
-14-30-181 (VFD) AC (YARA),COMPACTION FEED BIN SCREW CONVEYOR ANTICAKING SYSTEM #181 (VFD) AC
-14-30-181 (VFD) DC (YARA SPARE),COMPACTION FEED BIN SCREW CONVEYOR ANTICAKING SYSTEM #181 (VFD) DC
-14-30-190,DUST SCREW CONVEYOR #190
-14-30-191,NEW DUST SCREW AT BUCKET ELEVATOR #20 OUTLET CHUTE
-14-30-192,NEW DUST SCREW UNDER GRANULAR BIN
-14-30-200M,Fresh feed KCL fines/dust screw feeder main drive
-14-30-200VFD,Fresh feed KCL fines/dust screw feeder main drive
-14-30-201,Integrated screw conveyor below BAG HOUSE 1 #201
-14-30-202,Integrated screw conveyor below BAG HOUSE 1 #202
-14-30-203,Integrated screw conveyor below BAG HOUSE 1 #203
-14-30-204,Integrated screw conveyor below BAG HOUSE 1 #204
-14-30-210,Screw conveyor (Gathering below BAG HOUSE 1) #210
-14-30-220,SCREW CONVEYOR (GATHERING BELOW BAG HOUSE 1) #220
-14-30-290,Screw conveyor below cyclone hopper #01
-14-30-301,Integrated screw conveyor below BAG HOUSE 2 #301
-14-30-302,Integrated screw conveyor below BAG HOUSE 2 #302
-14-30-303,Integrated screw conveyor below BAG HOUSE 2 #303
-14-30-304,Integrated screw conveyor below BAG HOUSE 2 #304
-14-30-310,Screw conveyor (Gathering below BAG HOUSE 2) #310
-14-30-320,Screw conveyor (Gathering below BAG HOUSE 2) #320
-14-30-403,COOLER SCREW TO STANDARD BIN
-14-30-450,SCREW CONVEYOR MO3 / SCREEN
-14-30-460,SCREW CONVEYOR MO4 / COMPACTION
-14-30-470,SCREW ( MO3)/ WAREHOUSE
-14-31-010-01,BUCKET ELEVATOR #10
-14-31-010-02,BUCKET ELEVATOR #10 / MAINTENANCE
-14-31-020,DUST BUCKET ELEVATOR #20
-14-31-060-01,COOLER BUCKET ELEVATOR MAIN MOTOR
-14-31-060-02,COOLER BUCKET ELEVATOR MAINTENANCE MOTOR
-14-31-070M,Fresh feed KCL fines/dust bucket elevator main drive
-14-33-021-01,STRORAGE PAN FEEDER #21
-14-33-021-02,STRORAGE PAN FEEDER #21
-14-33-022-01,STRORAGE PAN FEEDER #22
-14-33-022-02,STRORAGE PAN FEEDER #22
-14-33-023-01,STRORAGE PAN FEEDER #23
-14-33-023-02,STRORAGE PAN FEEDER #23
-14-33-024-01,STRORAGE PAN FEEDER #24
-14-33-024-02,STRORAGE PAN FEEDER #24
-14-33-025-01,STRORAGE PAN FEEDER #25
-14-33-025-02,STRORAGE PAN FEEDER #25
-14-33-026-01,STRORAGE PAN FEEDER #26
-14-33-026-02,STRORAGE PAN FEEDER #26
-14-33-027-01,STRORAGE PAN FEEDER #27
-14-33-027-02,STRORAGE PAN FEEDER #27
-14-33-028-01,STRORAGE PAN FEEDER #28
-14-33-028-02,STRORAGE PAN FEEDER #28
-14-36-020-01,Isolating damper ID fan 20  inlet/ electromechanical #01
-14-36-020-02,Isolating damper ID Fan 20 outlet/ electromechanical #01
-14-36-021-01,Isolating damper ID fan 21 inlet/ electromechanical #02
-14-36-021-02,Isolating damper ID Fan 21 outlet/ electromechanical #02
-14-36-201,WATER DILUTION TANK DAMPER
-14-36-211,BAG HOUSE 1 Filter inlet DUMPER #211
-14-36-301,WATER DILUTION TANK DAMPER
-14-36-311,BAG HOUSE 2 Filter inlet DUMPER #311
-14-36-410,Cyclone inlet damper #410
-14-36-510,Cyclone inlet damper #510
-14-36-720,DIVERTER #720
-14-36-730,DIVERTER #730
-14-36-740,DIVERTER #740
-14-54-201,Rotary valve below filter SCREW 201 trough #201
-14-54-202,Rotary valve below filter SCREW 202 trough #202
-14-54-203,Rotary valve below filter SCREU 203 trough #203
-14-54-204,Rotary valve below filter SCREW 204 trough #204
-14-54-301,Rotary valve below filter SCREW 301 trough #301
-14-54-302,Rotary valve below filter SCREW 302 trough #302
-14-54-303,Rotary valve below filter SCREW 303 trough #303
-14-54-304,Rotary valve below filter SCREW 304 trough #304
-14-54-400 (VFD),COOLER PRODUCT OUTLET ROTARY VALVE #400
-14-54-410,Rotary valves below cyclones hopper #410
-14-54-501,ROTARY AIR LOCK VALVE (BCYCLON)
-14-54-502,ROTARY AIR LOCK VALVE (NEW COOLER BAGFILTER) #502
-14-54-510,Rotary valves below cyclones hopper #510
-14-54-650,ROTARY VALVE (MO6)/ COMPACTION
-14-54-660,ROTARY VALVE  (MO4)/ WAREHOUSE
-14-54-670,ROTARY VALVE (MO8) / SHIPPING
-14-54-680,ROTary VALVE (MO5)/SCREEN
-14-75-800 M,DIVERTER UNIT`;
+// ... PASTE YOUR SCREEN DATA HERE ...
+`;
             const compactionCsvData = `TAG number,Equipment Description
-16-01-213M,post treatment water pump main drive
-16-01-214M,post treatment water pump main drive
-16-01-216M,grease lubrication roller press compaction circuit 1&2 redundant grease pump A
-16-01-217 M,PRESSURE GAUGES
-16-01-218 M,PRESSURE GAUGES
-16-01-219 M,End Suction Centrifugal Pump
-16-01-220 M,End Suction Centrifugal Pump
-16-01-221 M,End Suction Centrifugal Pump
-16-01-223M,post treatment oil / amin pump main drive
-16-01-224M,post treatment oil / amin pump main drive
-16-01-226M,grease lubrication roller press compaction circuit 1&2 redundant grease pump B
-16-01-227 M,Rotary Lobe Pump
-16-01-228 M,Rotary Lobe Pump
-16-03-310M,post treatment Cooling Air fan main drive
-16-03-320M,Fan - Pre-Heater External Feed Combustion Air main drive
-16-03-700M,Fan - External Feed Pre-Heater Recirculation Air main drive
-16-03-710M,post treatment Cooling Air fan main drive
-16-03-720M,post treatment mixing air fan main drive
-16-03-730M,post treatment de-dusting exhaust air fan main drive
-16-03-740M,de-dusting exhaust air fan
-16-03-750M2,Fan - External Feed Pre-Heater Exhaust Air throttle valve actuator / motor valve
-16-03-760M,Fan - External Feed Equipment De-Dusting main drive
-16-05-125M,post treatment oil / amin tank agitator main drive
-16-05-135M,post treatment oil / amin dosing tank agitator motor control
-16-05-145 M,Mixing Agitator
-16-08-160M1,NATUS SPARE FEEDER
-16-08-160M2,NATUS SPARE FEEDER
-16-08-160M3,NATUS SPARE FEEDER
-16-20-070M,Compaction feed drag conveyor main drive
-16-20-080M,crushed compaction product circuit 1 drag conveyor main drive
-16-20-090M,crushed compaction product circuit 2 drag conveyor main drive
-16-20-100M,recycle drag conveyor main drive
-16-25-400M,post treatment dryer/cooler main drive
-16-25-500M1,Pre-Heater - External Feed weir dryer cold area flap
-16-25-500M2,Pre-Heater - External Feed bypass flap dryer
-16-25-815M1,Hot Gas Generator - Pre-Heater External Feed Diesel pump motor 1
-16-25-815M2,Hot Gas Generator - Pre-Heater External Feed Diesel pump motor 2
-16-26-010M,Fresh feed oversize crusher main drive
-16-26-017M1,compaction circuit 1 flake breaker main drive 1
-16-26-017M2,compaction circuit 1 flake breaker main drive 2
-16-26-027M1,compaction circuit 2 flake breaker main drive 1
-16-26-027M2,compaction circuit 2 flake breaker main drive 2
-16-26-031M,compaction circuit 1 oversize crusher main drive 1
-16-26-032M,compaction circuit 2 oversize crusher main drive 1
-16-26-033M1,compaction circuit 1 secondary screen oversize product crusher main drive fixed roller
-16-26-033M2,compaction circuit 1 secondary screen oversize product crusher main drive floating roller
-16-26-034M1,compaction circuit 1 secondary screen oversize product crusher main drive floating roller
-16-26-034M2,compaction circuit 1 secondary screen oversize product crusher main drive fixed roller
-16-26-035M1,compaction circuit 2 secondary screen oversize product crusher main drive floating roller
-16-26-035M2,compaction circuit 2 secondary screen oversize product crusher main drive fixed roller
-16-26-036M1,compaction circuit 2 secondary screen oversize product crusher main drive fixed roller
-16-26-036M2,compaction circuit 2 secondary screen oversize product crusher main drive fixed roller
-16-27-016M3,compaction circuit 1 roller press screw feeder drive side
-16-27-016M4,compaction circuit 1 roller press screw feeder non-drive side
-16-27-016M5,compaction circuit 1 roller press gear box fixed roller oil cooling pump
-16-27-016M6,compaction circuit 1 roller press gear box floating roller oil cooling pump
-16-27-016M7,compaction circuit 1 roller press hydraulic pump
-16-27-027M3,compaction circuit 2 roller press screw feeder drive side
-16-27-027M4,compaction circuit 2 roller press screw feeder non-drive side
-16-27-027M5,compaction circuit 2 roller press gear box floating roller oil cooling pump
-16-27-027M6,compaction circuit 2 roller press gear box fixed roller oil cooling pump
-16-27-027M7,compaction circuit 2 roller press hydraulic pump
-16-28-020M,Fresh feed KCL fines/dust screen main drive
-16-28-031M,compaction circuit 1 primary screen main drive
-16-28-032M,compaction circuit 2 primary screen main drive
-16-28-041M,compaction circuit 1 secondary screen main drive
-16-28-042M,compaction circuit 1 secondary screen main drive
-16-28-043M,compaction circuit 2 secondary screen main drive
-16-28-044M,compaction circuit 2 secondary screen main drive
-16-28-050M,post treatment dryer/cooler product screen main drive
-16-28-100M,CONTAINER LOADING ROTEX PAN FEEDER
-16-29-140M1,compaction product belt conveyor main drive
-16-29-140M2,compaction product belt conveyor cleaning drive
-16-29-160M1,post treatment compaction product storage bin weigh feeder main drive
-16-29-180M,post treatment compaction product storage bin weigh feeder main drive
-16-29-200M1,post treatment final granulate belt conveyor main drive
-16-29-200M2,post treatment final granulate belt conveyor cleaning drive
-16-29-220M1,belt conveyor external fresh feed KCl Product main drive
-16-29-220M2,belt conveyor external fresh feed KCl Product cleaning drive
-16-29-300 M,BELT CONVEYORS
-16-29-300TRM1,TRIPPER CAR TROLLEY MOTOR
-16-29-300TRM2,TELESCOPIC CHUTE MOTOR
-16-29-300TRM3,REELING SYSTEM MOTOR
-16-29-400 M,TRUCK LOADING MOTRIDAL BELT CONVEYER
-16-29-500M,CONTAINER LOADING MOTRIDAL BELT CONVEYER
-16-29-520M,CONTAINER LOADING MOTRIDAL BELT CONVEYER
-16-29-540M1,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
-16-29-540M2,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
-16-29-540M3,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
-16-29-540M4,CONTAINER SHUTTLE MOTRIDAL BELT CONVEYER
-16-29-600M1,NATUS SPARE FEEDER
-16-29-600M2,NATUS SPARE FEEDER
-16-30-161M1,compaction circuit 1 secondary screen oversize product vibration feeder main drive
-16-30-161M2,compaction circuit 1 secondary screen oversize product vibration feeder main drive
-16-30-162M1,compaction circuit 2 secondary screen oversize product vibration feeder main drive
-16-30-162M2,compaction circuit 2 secondary screen oversize product vibration feeder main drive
-16-30-171M1,compaction circuit 1 secondary screen oversize product vibration feeder main drive
-16-30-171M2,compaction circuit 1 secondary screen oversize product vibration feeder main drive
-16-30-172M1,compaction circuit 2 secondary screen oversize product vibration feeder main drive
-16-30-172M2,compaction circuit 2 secondary screen oversize product vibration feeder main drive
-16-30-205M1,Iron oxide loss-in-weight feeder/M1 Screw Motor VFD
-16-30-205M2,Iron oxide loss-in-weight feeder/M2 Agitator Motor
-16-30-205M3,Iron oxide loss-in-weight feeder/M3 Air Blower
-16-30-205M4,Iron oxide loss-in-weight feeder/M4 Vibrating Motor
-16-30-210M1,Iron oxide loss-in-weight feeder/M1 Screw Motor VFD
-16-30-210M2,Iron oxide loss-in-weight feeder/M2 Agitator Motor
-16-30-210M3,Iron oxide loss-in-weight feeder/M3 Air Blower
-16-30-210M4,Iron oxide loss-in-weight feeder/M4 Vibrating Motor
-16-30-215M1,post treatment amine feed loss-in-weight feeder/M1 Screw Motor VFD
-16-30-215M2,post treatment amine feed loss-in-weight feeder/M2 Agitator Motor
-16-30-215M3,post treatment amine feed loss-in-weight feeder/M3 Air Blower
-16-30-215M4,post treatment amine feed loss-in-weight feeder/M4 Vibrating Motor
-16-30-220M,Fresh feed storage bin screw conveyor main drive
-16-30-222M,post treatment compaction product moisture mixer main drive
-16-30-240M,de-dusting bag house filter screw feeder main drive
-16-30-250M,Screw Feeder - Bag House Filter Pre-Heater External Feed main drive
-16-30-255M,post treatment oil / amin mixer main drive
-16-30-260M,Compaction feed overflow screw conveyor main drive
-16-30-270M,Screw Conveyor - External Feed to Pre-Heater main drive
-16-30-270M2,Screw Conveyor - External Feed to Pre-Heater main drive / Motor Fan
-16-30-275M,Screw Conveyor - External Feed from Filter main drive
-16-30-280M,post treatment de-dusting bag house filter drying zone screw feeder main drive
-16-30-290M,post treatment de-dusting bag house filter cooling zone screw feeder main drive
-16-31-070M1,Bucket Elevator - External Feed to Pre-Heater main drive
-16-31-070M2,Bucket Elevator - External Feed to Pre-Heater maintenance drive
-16-31-080M,Fresh feed crusher product bucket elevator main drive
-16-31-090M1,Compaction feed bucket elevator main drive
-16-31-090M2,Compaction feed bucket elevator maintenance drive
-16-31-100M1,crushed compaction product circuit 1 bucket elevator main drive
-16-31-100M2,crushed compaction product circuit 1 bucket elevator maintenance drive
-16-31-110M1,crushed compaction product circuit 2 bucket elevator main drive
-16-31-110M2,crushed compaction product circuit 2 bucket elevator maintenance drive
-16-31-120M1,post treatment compaction product bucket elevator main drive
-16-31-120M2,post treatment compaction product bucket elevator maintenance drive
-16-31-130M1,post treatment product bucket elevator main drive
-16-31-130M2,post treatment product bucket elevator maintenance drive
-16-31-140M1, bucket elevator external fresh feed KCL  main drive
-16-31-140M2, bucket elevator external fresh feed KCL  maintenance drive
-16-35-801 M,Motor for TLS (Hopper)
-16-35-802 M,Motor for TLS (Hopper)
-16-35-803 M,Motor for TLS (Hopper)
-16-54-600M,de-dusting bag house filter rotary valve main drive
-16-54-700M,post treatment de-dusting bag house filter drying zone rotary valve main drive
-16-54-701M,post treatment de-dusting bag house filter cooling zone rotary valve main drive
-16-54-750M,Rotary Valve - Pre-Heater External Feed main drive
-16-54-800 M,200T/h Rotary Valve
-16-54-850M,external feed de-dusting bag house filter drying zone rotary valve main drive
-16-54-900M,0
-16-54-910M,0
-16-54-950M,Rotary Valve - External Feed Equipment De-Dusting main drive
-16-60-5100 M,Electrical motorized Slide Gate
-16-60-5200 M,Electrical motorized Slide Gate
-16-60-5300 M,Electrical motorized Slide Gate
-16-60-745M,de-dusting exhaust air fan flap main drive
-16-60-750M,de-dusting exhaust air fan flap bypass flap dryer
-16-75-0750M,Fresh feed KCL fines/dust diverter gate main drive
-16-75-0755M,Compaction feed overflow diverter gate main drive
-16-75-850M,NATUS SPARE FEEDER
-16-85-600M1,de-dusting bag house filter throttle valve actuator
-16-85-600M2,de-dusting bag house filter throttle valve actuator`;
+// ... PASTE YOUR COMPACTION DATA HERE ...
+`;
             // --- End of old data ---
 
             const defaultData = {
@@ -801,7 +187,7 @@ async function loadEquipmentData() {
     }
 }
 
-// --- *** NEW: Function to save equipment data back to Firebase *** ---
+// --- Function to save equipment data back to Firebase ---
 async function saveEquipmentDataToFirebase() {
     showLoader();
     const equipDocRef = doc(db, "app_settings", "equipment_lists");
@@ -1074,8 +460,12 @@ function showUserDashboard(userName) {
         greaseTaskCard.style.display = userAllowedZones.includes('Motor Grease') ? 'flex' : 'none';
     }
 
+    // PUSH STATE for Back Button
+    pushState("dashboard");
+
     listenForTasks();
     listenForGreaseTasks(); // Also listen for grease tasks as a user
+    listenForDieselTasks(); // NEW: Listen for diesel tasks
 }
 
 window.showAdminLogin = () => {
@@ -1104,6 +494,10 @@ window.loginAdmin = async () => {
         currentUser = 'Admin';
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('admin-interface').classList.remove('hidden');
+        
+        // PUSH STATE for Back Button
+        pushState("dashboard");
+
         // *** NEW: Load equipment data on admin login ***
         await loadEquipmentData(); 
         initializeAdminUI();
@@ -1111,6 +505,7 @@ window.loginAdmin = async () => {
         listenForTasks();
         listenForUserSettingsChanges();
         listenForGreaseTasks();
+        listenForDieselTasks(); // NEW: Diesel listener
     } else {
         showAlert('Incorrect password.');
         document.getElementById('admin-password').value = '';
@@ -1122,6 +517,7 @@ window.logout = () => {
     currentUser = null;
     if (unsubscribePmTasks) unsubscribePmTasks();
     if (unsubscribeGreaseTasks) unsubscribeGreaseTasks();
+    if (unsubscribeDieselTasks) unsubscribeDieselTasks(); // NEW
     if (unsubscribeUserSettings) unsubscribeUserSettings();
     if (weeklyChartInstance) weeklyChartInstance.destroy(); // EDITED: Destroy chart
     
@@ -1133,6 +529,140 @@ window.logout = () => {
     document.getElementById('admin-password').value = '';
     document.getElementById('user-password-input').value = '';
     showUserSelection(); // Go back to user password input
+    
+    pushState("login");
+};
+
+// --- NEW: DIESEL GENERATOR FUNCTIONS ---
+
+window.showDieselSelection = () => {
+    document.getElementById('diesel-selection-modal').classList.remove('hidden');
+    pushState("diesel-selection");
+};
+
+window.selectDieselGen = (tag, description) => {
+    selectedDieselGen = { tag, description };
+    document.getElementById('diesel-selection-modal').classList.add('hidden');
+    
+    // Reset state
+    dieselState = {};
+    activeDieselPoint = null;
+    document.getElementById('diesel-tag-display').innerText = `${tag} - ${description}`;
+    updateDieselIconStates();
+    
+    document.getElementById('diesel-task-modal').classList.remove('hidden');
+    pushState("diesel-task");
+};
+
+window.closeDieselTaskModal = () => {
+    document.getElementById('diesel-task-modal').classList.add('hidden');
+    // Back button logic handles pushing state, we just need to go back
+    history.back();
+};
+
+window.openDieselInput = (pointName, title, unit) => {
+    activeDieselPoint = pointName;
+    const container = document.getElementById('diesel-popup-content');
+    
+    let html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">${title}</h3>`;
+    // Numeric Input
+    html += `<div class="mb-4">
+                <input type="number" id="diesel-input-val" class="w-full p-4 text-xl rounded-lg text-center font-bold" placeholder="Enter value in ${unit}" step="0.1">
+             </div>
+             <div class="grid grid-cols-2 gap-4">
+                 <button onclick="document.getElementById('diesel-popup').classList.add('hidden')" class="bg-gray-500 text-white font-bold py-3 rounded-lg hover:bg-gray-600 transition">Cancel</button>
+                 <button onclick="handleDieselPopupSubmit()" class="bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">Save</button>
+             </div>`;
+             
+    container.innerHTML = html;
+    document.getElementById('diesel-popup').classList.remove('hidden');
+    document.getElementById('diesel-input-val').focus();
+};
+
+window.openDieselChoice = (pointName) => {
+    activeDieselPoint = pointName;
+    const container = document.getElementById('diesel-popup-content');
+    
+    let html = `<h3 class="text-2xl font-bold text-center mb-6 text-white">Cleanliness</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="handleDieselChoice('Clean')" class="bg-green-100 text-green-800 font-bold py-4 rounded-xl border-2 border-green-400 hover:bg-green-200 transition">Clean</button>
+                    <button onclick="handleDieselChoice('Dirty')" class="bg-red-100 text-red-800 font-bold py-4 rounded-xl border-2 border-red-400 hover:bg-red-200 transition">Dirty</button>
+                </div>`;
+    
+    container.innerHTML = html;
+    document.getElementById('diesel-popup').classList.remove('hidden');
+};
+
+window.handleDieselChoice = (value) => {
+    dieselState[activeDieselPoint] = value;
+    document.getElementById('diesel-popup').classList.add('hidden');
+    updateDieselIconStates();
+};
+
+window.handleDieselPopupSubmit = () => {
+    const val = document.getElementById('diesel-input-val').value;
+    if (!val) {
+        alert("Please enter a value");
+        return;
+    }
+    dieselState[activeDieselPoint] = val;
+    document.getElementById('diesel-popup').classList.add('hidden');
+    updateDieselIconStates();
+};
+
+function updateDieselIconStates() {
+    const points = ['level', 'clean', 'vdc', 'freq', 'vout'];
+    points.forEach(p => {
+        const btn = document.getElementById(`diesel-icon-${p}`);
+        if(btn) {
+            btn.classList.remove('pending', 'ok', 'error');
+            if (dieselState[p]) {
+                if (p === 'clean' && dieselState[p] === 'Dirty') {
+                     btn.classList.add('error');
+                } else {
+                     btn.classList.add('ok');
+                }
+            } else {
+                btn.classList.add('pending');
+            }
+        }
+    });
+}
+
+window.submitDieselTask = async () => {
+    const required = ['level', 'clean', 'vdc', 'freq', 'vout'];
+    const missing = required.filter(r => !dieselState[r]);
+    
+    if (missing.length > 0) {
+        showAlert("Please complete all 5 inspection points.", "Incomplete Data");
+        return;
+    }
+
+    showLoader();
+    const taskData = {
+        user: currentUser,
+        tag: selectedDieselGen.tag,
+        description: selectedDieselGen.description,
+        diesel_level: dieselState.level,
+        cleanliness: dieselState.clean,
+        vdc: dieselState.vdc,
+        frequency: dieselState.freq,
+        output_voltage: dieselState.vout,
+        timestamp: serverTimestamp(),
+        status_simple: (dieselState.clean === 'Dirty') ? 'Error' : 'OK'
+    };
+
+    try {
+        await addDoc(collection(db, "diesel_tasks"), taskData);
+        showAlert("Diesel Generator Logged Successfully!", "Success");
+        document.getElementById('diesel-task-modal').classList.add('hidden');
+        history.back(); // Return to previous state
+    } catch (e) {
+        console.error(e);
+        showAlert("Error saving diesel task.", "Error");
+    } finally {
+        hideLoader();
+    }
 };
 
 // --- ADMIN UI & AUTOMATED DATE LOGIC ---
@@ -1391,11 +921,13 @@ window.selectZone = (zone) => {
     populateEquipmentTable(zone);
     document.getElementById('equipment-modal').classList.remove('hidden');
     document.getElementById('tag-search').focus();
+    pushState("equipment-modal");
 };
 
 window.closeEquipmentModal = () => {
     document.getElementById('equipment-modal').classList.add('hidden');
     document.getElementById('tag-search').value = '';
+    history.back(); // Trigger popstate
 };
 
 // EDITED: Show non-blocking warning for duplicate PM
@@ -1445,15 +977,18 @@ window.selectEquipment = async (tag, description) => {
 
     // Always show the modal
     document.getElementById('pm-tag-number').innerText = tag;
-    closeEquipmentModal();
+    // Don't call history.back here, we are transitioning from modal to modal
+    document.getElementById('equipment-modal').classList.add('hidden'); 
     resetPmModalState(); 
     document.getElementById('pm-modal').classList.remove('hidden');
+    pushState("pm-modal");
 };
 
 window.closePmModal = () => {
     document.getElementById('pm-modal').classList.add('hidden');
     resetPmModalState(); // Use the reset function
     closePopup(); // Ensure popup is also closed
+    history.back(); // Trigger popstate
 };
 
 function populateEquipmentTable(zone) {
@@ -1514,6 +1049,7 @@ window.showGreaseSearch = () => {
     populateGreaseSearchTable(allEquipment);
     document.getElementById('grease-search-modal').classList.remove('hidden');
     document.getElementById('grease-tag-search').focus();
+    pushState("grease-search");
 };
 
 window.selectGreaseEquipment = (tag, description) => {
@@ -1524,11 +1060,13 @@ window.selectGreaseEquipment = (tag, description) => {
     resetGreaseModalState(); // Reset state
     
     document.getElementById('grease-task-modal').classList.remove('hidden');
+    pushState("grease-task");
 };
 
 window.closeGreaseTaskModal = () => {
     document.getElementById('grease-task-modal').classList.add('hidden');
     resetGreaseModalState();
+    history.back();
 };
     
 function resetGreaseModalState() {
@@ -1622,7 +1160,9 @@ window.submitGreaseTask = async () => {
     try {
         await addDoc(collection(db, "grease_tasks"), taskData);
         showAlert('Greasing Task Saved Successfully!', 'Success');
-        closeGreaseTaskModal();
+        document.getElementById('grease-task-modal').classList.add('hidden');
+        resetGreaseModalState();
+        history.back(); // Trigger popstate
     } catch (error) {
         console.error("Error adding greasing task: ", error);
         showAlert('Failed to save greasing task.', 'Error');
@@ -1881,10 +1421,11 @@ async function proceedToSubmitPmTask(note) {
     // --- SUBMIT TO FIREBASE ---
     try {
         await addDoc(collection(db, "pm_tasks"), task);
-        closePmModal();
+        document.getElementById('pm-modal').classList.add('hidden');
+        resetPmModalState();
+        closePopup();
         showAlert('PM Task Saved Successfully! Select the next equipment.', 'Success');
-        selectZone(currentZone); // Re-open equipment list for the same zone
-
+        history.back(); // Trigger popstate
     } catch (error) {
         console.error("Error adding document: ", error);
         showAlert('Failed to save PM task.', 'Error');
@@ -1963,6 +1504,21 @@ function listenForTasks() {
     });
 }
 
+// NEW: Listener for Diesel
+function listenForDieselTasks() {
+    if (unsubscribeDieselTasks) unsubscribeDieselTasks();
+    const q = query(collection(db, "diesel_tasks"), orderBy("timestamp", "desc"));
+    unsubscribeDieselTasks = onSnapshot(q, (snapshot) => {
+        allDieselTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (currentUser === 'Admin') {
+            updateAdminAnalytics();
+            if (!document.getElementById('diesel-view').classList.contains('hidden')) {
+                displayAdminDieselHistory();
+            }
+        }
+    });
+}
+
 // --- DISPLAY FUNCTIONS ---
 window.scrollRecentActivities = (amount) => {
     const container = document.getElementById('recent-activities-container');
@@ -2000,7 +1556,7 @@ function displayRecentActivities(tasks) {
                       errorStates.includes(task.shelter) ||
                       errorStates.includes(task.status_dirty_action) ||
                       errorStates.includes(task.sound_abnormal_source);
-                       
+                        
         const borderClass = isError && !task.resolvedByAdmin ? 'border-l-4 border-red-500' : 'border-l-4 border-blue-500';
         const statusIndicator = isError && !task.resolvedByAdmin ? `<span class="text-red-600 font-bold ml-2">(${task.user} - Error)</span>` : `<span class="text-gray-600 font-medium ml-2">(${task.user})</span>`;
         
@@ -2117,7 +1673,7 @@ function displayAdminHistory(filterText = '', filterDate = '', preFilteredTasks 
                       errorStates.includes(task.shelter) ||
                       errorStates.includes(task.status_dirty_action) ||
                       errorStates.includes(task.sound_abnormal_source);
-                       
+                        
         const isErrorAndUnresolved = isError && !task.resolvedByAdmin;
         const resolveButton = isErrorAndUnresolved
             ? `<button onclick="markPmTaskAsResolved('${task.id}', '${task.status}')" class="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600 transition">Mark Resolved</button>`
@@ -2158,9 +1714,12 @@ function updateAdminAnalytics() {
     const greaseTasksToday = allGreaseTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfToday);
     const greaseTasksWeek = allGreaseTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
 
+    // --- NEW: Diesel Tasks ---
+    const dieselWeek = allDieselTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
+
     // --- Combined ---
-    const totalTasksWeek = pmTasksWeek.length + greaseTasksWeek.length;
-    const allActiveUsersToday = new Set([...pmTasksToday.map(t => t.user), ...greaseTasksToday.map(t => t.user)]);
+    const totalTasksWeek = pmTasksWeek.length + greaseTasksWeek.length + dieselWeek.length;
+    const allActiveUsersToday = new Set([...pmTasksToday.map(t => t.user), ...greaseTasksToday.map(t => t.user), ...allDieselTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfToday).map(t => t.user)]);
 
     // --- Error States ---
     const errorStates = ['Dirty', 'Abnormal', 'Not Exist', 'Not'];
@@ -2186,6 +1745,7 @@ function updateAdminAnalytics() {
     
     document.getElementById('analytics-pm-week').textContent = pmTasksWeek.length;
     document.getElementById('analytics-grease-week').textContent = greaseTasksWeek.length;
+    document.getElementById('analytics-diesel-week').textContent = dieselWeek.length; // NEW
     document.getElementById('analytics-total-tasks-week').textContent = totalTasksWeek;
     document.getElementById('analytics-total-errors-week').textContent = totalErrorsWeek.length;
 }
@@ -2263,6 +1823,11 @@ window.filterHistoryByAnalytics = (filterType) => {
             filteredGreaseTasks = allGreaseTasks.filter(t => t.timestamp && t.timestamp.toDate() >= startOfWeek);
             displayAdminGreaseHistory(); // This will use the full list
             greaseHistoryContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        case 'diesel_week': // NEW
+            switchAdminView('diesel');
+            displayAdminDieselHistory();
+            document.getElementById('admin-diesel-history').scrollIntoView({ behavior: 'smooth', block: 'start' });
             return;
         case 'total_tasks_week':
             // No specific table, just a number
@@ -2358,20 +1923,12 @@ window.exportToExcel = () => {
     document.body.removeChild(link);
 };
 
-// --- *** REMOVED ALL LOGO DATA (PNG and SVG) *** ---
-
 // --- NEW: Helper function to get week number ---
 function getWeekNumber(d) {
-    // Copy date so don't modify original
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    // Set to nearest Thursday: current date + 4 - current day number
-    // Make Sunday's day number 7
     d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-    // Get first day of year
     var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-    // Calculate full weeks to nearest Thursday
     var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-    // Return array of year and week number
     return weekNo;
 }
 
@@ -2389,7 +1946,6 @@ window.exportToPDF = () => {
 
     // --- Calculate Dates ---
     const now = new Date();
-    // Create a new date object for startOfWeek to avoid modifying 'now'
     const startOfWeek = new Date(now.getTime());
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Set to last Sunday
     
@@ -2399,16 +1955,13 @@ window.exportToPDF = () => {
     const year = now.getFullYear();
     const dateOptions = { day: 'numeric', month: 'short' };
     
-    // Use 'en-GB' for day-month format
     const startStr = startOfWeek.toLocaleDateString('en-GB', dateOptions).toUpperCase().replace(' ', '-');
     const endStr = endOfWeek.toLocaleDateString('en-GB', dateOptions).toUpperCase().replace(' ', '-');
     
     const weekString = `WEEK(${startStr} to ${endStr}) / ${year}`;
-    const weekNumber = getWeekNumber(new Date()); // Get current week number
+    const weekNumber = getWeekNumber(new Date()); 
 
-    // --- Add Header (Layout based on screenshot) ---
-    
-    // 1. Left Text
+    // --- Add Header ---
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 255); // Set text color to blue
@@ -2419,7 +1972,6 @@ window.exportToPDF = () => {
     doc.setTextColor(0, 0, 0); // Reset text color to black
     doc.text(weekString, leftMargin, 28, { align: 'left' });
 
-    // 2. Right Text
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 255); // Set text color to blue
@@ -2430,14 +1982,11 @@ window.exportToPDF = () => {
     doc.setTextColor(0, 0, 0); // Reset text color to black
     doc.text("HOT LEACH PLANT OF APC", rightMargin, 28, { align: 'right' });
 
-    // --- *** REPLACEMENT: Add "PM" Text instead of Logo *** ---
     doc.setFontSize(28); // Large font size
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(60, 60, 60); // Dark gray color
-    doc.text("PM", center, 25, { align: 'center' }); // Removed the -20 offset
-    // --- *** END OF REPLACEMENT *** ---
+    doc.text("PM", center, 25, { align: 'center' }); 
     
-    // 4. Add Horizontal Line
     doc.setLineWidth(0.5);
     doc.line(10, 30, pageWidth - 10, 30); // line from margin 10 to margin 10
 
@@ -2495,7 +2044,7 @@ window.confirmClearAllData = () => {
 
     document.getElementById('confirm-clear-message').innerHTML = message;
     const yesButton = document.getElementById('confirm-clear-button-yes');
-    yesButton.onclick = () => clearAllDataConfirmed(activeView); // Pass the active view to the confirmation function
+    yesButton.onclick = () => clearAllDataConfirmed(activeView); 
     yesButton.innerText = "Yes, Delete All";
     document.getElementById('confirm-clear-modal').classList.remove('hidden');
 };
@@ -2744,6 +2293,19 @@ function renderWeeklyChart() {
         }
     });
 
+    // NEW: Collate Diesel tasks
+    allDieselTasks.forEach(task => {
+        if (!task.timestamp) return;
+        const taskTime = task.timestamp.toDate().getTime();
+        for (let i = 0; i < 4; i++) {
+            if (taskTime >= weekStarts[i] && taskTime < weekStarts[i+1]) {
+                totalTasksData[i]++;
+                // You can define what makes a diesel task abnormal if needed
+                break;
+            }
+        }
+    });
+
     if (weeklyChartInstance) {
         weeklyChartInstance.destroy(); // Destroy old chart
     }
@@ -2754,7 +2316,7 @@ function renderWeeklyChart() {
             labels: labels,
             datasets: [
                 {
-                    label: 'Total Tasks (PM + Grease)',
+                    label: 'Total Tasks (PM + Grease + Diesel)',
                     data: totalTasksData,
                     borderColor: 'rgba(54, 162, 235, 1)',
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
@@ -2777,7 +2339,7 @@ function renderWeeklyChart() {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                       stepSize: 1 // Ensure y-axis shows whole numbers for tasks
+                        stepSize: 1
                     }
                 }
             }
@@ -2785,24 +2347,62 @@ function renderWeeklyChart() {
     });
 }
 
+// --- NEW: Display Function for Diesel History (Verbose Style) ---
+function displayAdminDieselHistory() {
+    const container = document.getElementById('admin-diesel-history');
+    if (!container) return;
+
+    let tableHTML = '<table class="min-w-full divide-y divide-gray-200 text-sm">';
+    tableHTML += '<thead class="bg-gray-50"><tr>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">User</th>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">TAG</th>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Level (%)</th>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Clean</th>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Vdc (V)</th>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Freq (Hz)</th>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Vout (V)</th>';
+    tableHTML += '<th class="px-2 py-2 text-left font-medium text-gray-500 uppercase">Timestamp</th>';
+    tableHTML += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
+
+    allDieselTasks.forEach(task => {
+        const cleanClass = task.cleanliness === 'Dirty' ? 'text-red-600 font-bold' : 'text-green-600';
+        tableHTML += '<tr>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap">' + task.user + '</td>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap">' + task.tag + '</td>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap">' + task.diesel_level + '</td>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap ' + cleanClass + '">' + task.cleanliness + '</td>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap">' + task.vdc + '</td>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap">' + task.frequency + '</td>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap">' + task.output_voltage + '</td>';
+        tableHTML += '<td class="px-2 py-2 whitespace-nowrap">' + (task.timestamp ? task.timestamp.toDate().toLocaleString() : '') + '</td>';
+        tableHTML += '</tr>';
+    });
+    tableHTML += '</tbody></table>';
+    container.innerHTML = tableHTML;
+}
+
 window.switchAdminView = (view) => {
     const pmView = document.getElementById('pm-view');
     const greaseView = document.getElementById('grease-view');
-    const equipmentView = document.getElementById('equipment-view'); // *** NEW ***
+    const dieselView = document.getElementById('diesel-view'); // NEW
+    const equipmentView = document.getElementById('equipment-view');
     
     const tabPm = document.getElementById('tab-pm');
     const tabGrease = document.getElementById('tab-grease');
-    const tabEquipment = document.getElementById('tab-equipment'); // *** NEW ***
+    const tabDiesel = document.getElementById('tab-diesel'); // NEW
+    const tabEquipment = document.getElementById('tab-equipment');
 
     // Hide all views
     pmView.classList.add('hidden');
     greaseView.classList.add('hidden');
-    equipmentView.classList.add('hidden'); // *** NEW ***
+    dieselView.classList.add('hidden'); // NEW
+    equipmentView.classList.add('hidden');
 
     // Deactivate all tabs
     tabPm.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300';
     tabGrease.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300';
-    tabEquipment.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'; // *** NEW ***
+    tabDiesel.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'; // NEW
+    tabEquipment.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300';
 
 
     if (view === 'pm') {
@@ -2811,12 +2411,49 @@ window.switchAdminView = (view) => {
     } else if (view === 'grease') {
         greaseView.classList.remove('hidden');
         tabGrease.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600';
-    } else if (view === 'equipment') { // *** NEW ***
+    } else if (view === 'diesel') { // NEW
+        dieselView.classList.remove('hidden');
+        tabDiesel.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600';
+        displayAdminDieselHistory();
+    } else if (view === 'equipment') {
         equipmentView.classList.remove('hidden');
         tabEquipment.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600';
     }
 };
     
+// NEW: Export Diesel to Excel
+window.exportDieselToExcel = () => {
+    if (allDieselTasks.length === 0) return showAlert("No data to export.");
+
+    const headers = ["User", "TAG", "Description", "Level (%)", "Cleanliness", "Vdc (V)", "Freq (Hz)", "Vout (V)", "Timestamp"];
+    const customHeader = "Arab Potash Company,,,,Weekly Diesel Generator,,,,Hot Leach Plant\r\n\r\n";
+    let csvContent = customHeader + headers.join(",") + "\r\n";
+    
+    allDieselTasks.forEach(task => {
+        const row = [
+            task.user,
+            task.tag,
+            `"${(task.description || '').replace(/"/g, '""')}"`,
+            task.diesel_level,
+            task.cleanliness,
+            task.vdc,
+            task.frequency,
+            task.output_voltage,
+            task.timestamp ? `"${task.timestamp.toDate().toLocaleDateString('en-GB')} ${task.timestamp.toDate().toLocaleTimeString()}"` : ''
+        ].join(",");
+        csvContent += row + "\r\n";
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `diesel_report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
 // --- INITIALIZATION ---
 window.onload = async () => {
     if ('serviceWorker' in navigator) {
@@ -2833,18 +2470,23 @@ window.onload = async () => {
         currentUser = 'Admin';
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('admin-interface').classList.remove('hidden');
+        
+        // Push state for back button
+        pushState("dashboard");
+
         await loadSettings();
-        await loadEquipmentData(); // *** NEW: Load equipment data on admin login ***
+        await loadEquipmentData(); 
         initializeAdminUI();
         await checkAndRunArchiveCycle();
         listenForTasks();
         listenForUserSettingsChanges();
         listenForGreaseTasks();
+        listenForDieselTasks(); // NEW
         hideLoader();
         return;
     }
 
-    await loadEquipmentData(); // *** NEW: Load equipment data on user login ***
+    await loadEquipmentData();
     await loadSettings();
     console.log("Application initialized successfully.");
 };
@@ -2852,14 +2494,14 @@ window.onload = async () => {
 document.getElementById('user-password-input').addEventListener('keyup', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        window.loginUserWithPassword(); // FIX: Call function from window object
+        window.loginUserWithPassword(); 
     }
 });
 
 document.getElementById('admin-password').addEventListener('keyup', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        window.loginAdmin(); // FIX: Call function from window object
+        window.loginAdmin(); 
     }
 });
 

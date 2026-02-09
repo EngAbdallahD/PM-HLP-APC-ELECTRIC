@@ -11,6 +11,32 @@ const firebaseConfig = {
     appId: "1:475757068157:web:3d5dd04d0164d94f6a1614",
     measurementId: "G-2S0LCM62GH"
 };
+window.saveRescuePin = async () => {
+    const newPin = document.getElementById('admin-rescue-pin').value;
+    
+    if (!newPin || newPin.length < 4 || isNaN(newPin)) {
+        showAlert("Rescue PIN must be at least 4 digits.", "Invalid Input");
+        return;
+    }
+    
+    // Update local state
+    userSettings.masterRescuePin = newPin;
+    
+    // Explicitly save settings to Firebase
+    showLoader();
+    const settingsDocRef = doc(db, "app_settings", "global_settings");
+    try {
+        // Use JSON.parse/stringify to remove any undefined fields
+        const settingsToSave = JSON.parse(JSON.stringify(userSettings));
+        await setDoc(settingsDocRef, settingsToSave);
+        showAlert("Rescue PIN updated successfully!", "Success");
+    } catch (e) {
+        console.error(e);
+        showAlert("Failed to update PIN.", "Error");
+    } finally {
+        hideLoader();
+    }
+};
 
 // --- INITIALIZE FIREBASE ---
 const app = initializeApp(firebaseConfig);
@@ -77,7 +103,8 @@ const defaultUserSettings = {
     archiveSchedule: {
         start: null,
         interval: 'weekly'
-    }
+    },
+    masterRescuePin: '0000' // <--- ADD THIS LINE
 };
 let userSettings = { users: [], archiveSchedule: { start: null, interval: 'weekly' } }; // Start with empty users
 
@@ -417,22 +444,95 @@ window.showUserPasswordPrompt = (user) => {
 // This function is no longer used
 window.closeUserPasswordModal = () => {};
 
+// --- LOGIN/LOGOUT & SECURITY CONFIG ---
+const MAX_ATTEMPTS = 5;          
+const LOCKOUT_TIME = 60 * 1000; 
+
 window.loginUserWithPassword = () => {
-    const password = document.getElementById('user-password-input').value;
-    if (!password) {
-        showAlert('Please enter a password.');
+    const input = document.getElementById('user-password-input');
+    const password = input.value;
+
+    if (!password) { 
+        showAlert('Please enter a PIN.'); 
+        return; 
+    }
+
+    // --- 1. CHECK RESCUE PIN FIRST (Dynamic from Firebase) ---
+    if (userSettings.masterRescuePin && password === userSettings.masterRescuePin) {
+        localStorage.removeItem('pm_login_lockout');
+        localStorage.removeItem('pm_failed_attempts');
+        
+        input.value = '';
+        if (typeof updatePinDots === "function") updatePinDots();
+        
+        showAlert("System Unlocked by Rescue PIN. Please change this PIN in Admin Dashboard if compromised.", "Success");
         return;
     }
 
+    // --- 2. CHECK LOCKOUT STATUS ---
+    const lockoutTimestamp = localStorage.getItem('pm_login_lockout');
+    if (lockoutTimestamp) {
+        const timeRemaining = parseInt(lockoutTimestamp) - Date.now();
+        if (timeRemaining > 0) {
+            const secondsLeft = Math.ceil(timeRemaining / 1000);
+            const alertModal = document.getElementById('alert-modal');
+            document.getElementById('alert-title').innerText = "System Locked";
+            document.getElementById('alert-message').innerHTML = `
+                Too many failed attempts.<br>
+                Please wait <strong class="text-red-600">${secondsLeft} seconds</strong>.<br><br>
+                <span class="text-sm text-gray-500">Contact Admin for the current Rescue PIN.</span>
+            `;
+            alertModal.classList.remove('hidden');
+            
+            input.value = '';
+            if (typeof updatePinDots === "function") updatePinDots();
+            return; 
+        } else {
+            localStorage.removeItem('pm_login_lockout');
+            localStorage.removeItem('pm_failed_attempts');
+        }
+    }
+
+    // --- 3. VALIDATE USER PASSWORD ---
     const foundUser = userSettings.users.find(u => u.password === password);
-    
+
     if (foundUser) {
-        // We don't use "remember me" in this flow, but we could add it
+        // SUCCESS
+        localStorage.removeItem('pm_failed_attempts');
+        localStorage.removeItem('pm_login_lockout');
+        
+        // --- NEW: 24-Hour Session Logic ---
+        const rememberMe = document.getElementById('remember-me-user').checked;
+        if (rememberMe) {
+            const sessionData = {
+                user: foundUser.name,
+                expiry: Date.now() + (24 * 60 * 60 * 1000) // 24 Hours from now
+            };
+            localStorage.setItem('pm_user_session', JSON.stringify(sessionData));
+        }
+
+        input.value = '';
+        if (typeof updatePinDots === "function") updatePinDots();
         showUserDashboard(foundUser.name);
+        
     } else {
-        showAlert('Incorrect password.');
-        document.getElementById('user-password-input').value = '';
-        document.getElementById('user-password-input').focus();
+        // FAILURE
+        let failedAttempts = parseInt(localStorage.getItem('pm_failed_attempts') || '0');
+        failedAttempts++;
+        localStorage.setItem('pm_failed_attempts', failedAttempts);
+
+        input.value = '';
+        if (typeof updatePinDots === "function") updatePinDots();
+        if (navigator.vibrate) navigator.vibrate(200);
+
+        if (failedAttempts >= MAX_ATTEMPTS) {
+            const unlockTime = Date.now() + LOCKOUT_TIME;
+            localStorage.setItem('pm_login_lockout', unlockTime);
+            showAlert(`System Locked for 1 minute due to too many failed attempts.`);
+        } else {
+            const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
+            showAlert(`Incorrect PIN. ${attemptsLeft} attempts remaining.`);
+        }
     }
 };
 
@@ -526,19 +626,30 @@ window.logout = () => {
     currentUser = null;
     if (unsubscribePmTasks) unsubscribePmTasks();
     if (unsubscribeGreaseTasks) unsubscribeGreaseTasks();
-    if (unsubscribeDieselTasks) unsubscribeDieselTasks(); // NEW
+    if (unsubscribeDieselTasks) unsubscribeDieselTasks();
     if (unsubscribeUserSettings) unsubscribeUserSettings();
-    if (weeklyChartInstance) weeklyChartInstance.destroy(); // EDITED: Destroy chart
+    if (weeklyChartInstance) weeklyChartInstance.destroy();
     
+    // NEW: Clear Sessions
+    localStorage.removeItem('pm_user_session');
     localStorage.removeItem('admin-remembered');
     
     document.getElementById('user-interface').classList.add('hidden');
     document.getElementById('admin-interface').classList.add('hidden');
     document.getElementById('login-screen').classList.remove('hidden');
+    
+    // Clear inputs
     document.getElementById('admin-password').value = '';
     document.getElementById('user-password-input').value = '';
-    showUserSelection(); // Go back to user password input
     
+    // Reset PIN dots if function exists
+    if (typeof updatePinDots === "function") updatePinDots();
+    
+    // Uncheck remember me
+    if(document.getElementById('remember-me-user')) 
+        document.getElementById('remember-me-user').checked = false;
+    
+    showUserSelection();
     pushState("login");
 };
 
@@ -562,6 +673,48 @@ window.selectDieselGen = (tag, description) => {
     
     document.getElementById('diesel-task-modal').classList.remove('hidden');
     pushState("diesel-task");
+};
+// --- PIN PAD LOGIC ---
+window.enterPin = (num) => {
+    const input = document.getElementById('user-password-input');
+    // Limit to 5 digits max (security against overflow)
+    if (input.value.length < 5) {
+        input.value += num;
+        updatePinDots();
+        
+        // Optional: Auto-login if length matches standard (e.g., 4)
+        // if (input.value.length === 4) window.loginUserWithPassword();
+    }
+};
+
+window.clearPin = () => {
+    const input = document.getElementById('user-password-input');
+    input.value = input.value.slice(0, -1); // Remove last char
+    updatePinDots();
+};
+
+function updatePinDots() {
+    const input = document.getElementById('user-password-input');
+    const dots = document.querySelectorAll('.pin-dot');
+    const len = input.value.length;
+    
+    dots.forEach((dot, index) => {
+        if (index < len) {
+            dot.classList.remove('bg-gray-100');
+            dot.classList.add('bg-blue-500'); // Filled
+        } else {
+            dot.classList.add('bg-gray-100');
+            dot.classList.remove('bg-blue-500'); // Empty
+        }
+    });
+}
+
+// Reset PIN on logout
+const originalLogout = window.logout;
+window.logout = () => {
+    originalLogout();
+    document.getElementById('user-password-input').value = '';
+    updatePinDots();
 };
 
 window.closeDieselTaskModal = () => {
@@ -681,6 +834,10 @@ function initializeAdminUI() {
     renderUserEditor();
     setupAdminFilters();
     renderWeeklyChart(); // Render chart on init
+    const rescueInput = document.getElementById('admin-rescue-pin');
+    if (rescueInput) {
+        rescueInput.value = userSettings.masterRescuePin || '0000';
+    }
 
     // *** NEW: Setup Equipment Manager ***
     renderEquipmentList('HLP'); // Render default preview
@@ -2468,38 +2625,52 @@ window.exportDieselToExcel = () => {
 // --- INITIALIZATION ---
 window.onload = async () => {
     if ('serviceWorker' in navigator) {
-        try {
-            const registration = await navigator.serviceWorker.register('./service-worker.js');
-            console.log('Service Worker registered with scope:', registration.scope);
-        } catch (error) {
-            console.error('Service Worker registration failed:', error);
-        }
+        try { navigator.serviceWorker.register('./service-worker.js'); } catch (e) {}
     }
     
+    // 1. Load Settings First
+    await loadSettings(); 
+    
+    // 2. Check Admin Session
     if (localStorage.getItem('admin-remembered') === 'true') {
         showLoader();
         currentUser = 'Admin';
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('admin-interface').classList.remove('hidden');
-        
-        // Push state for back button
         pushState("dashboard");
-
-        await loadSettings();
         await loadEquipmentData(); 
         initializeAdminUI();
         await checkAndRunArchiveCycle();
         listenForTasks();
         listenForUserSettingsChanges();
         listenForGreaseTasks();
-        listenForDieselTasks(); // NEW
+        listenForDieselTasks();
         hideLoader();
         return;
     }
 
+    // 3. NEW: Check User 24h Session
+    const userSessionRaw = localStorage.getItem('pm_user_session');
+    if (userSessionRaw) {
+        try {
+            const userSession = JSON.parse(userSessionRaw);
+            // Check expiry
+            if (Date.now() < userSession.expiry) {
+                console.log("Restoring User Session:", userSession.user);
+                await loadEquipmentData();
+                showUserDashboard(userSession.user);
+                return; // Skip login screen
+            } else {
+                localStorage.removeItem('pm_user_session');
+            }
+        } catch (e) {
+            localStorage.removeItem('pm_user_session');
+        }
+    }
+
+    // 4. Default Load
     await loadEquipmentData();
-    await loadSettings();
-    console.log("Application initialized successfully.");
+    console.log("Application initialized.");
 };
 
 document.getElementById('user-password-input').addEventListener('keyup', function(event) {

@@ -173,45 +173,31 @@ function parseCsvData(csvText) {
 }
 
 // This function now loads from Firebase, and uses old strings as a one-time fallback
+// --- OPTIMIZED EQUIPMENT LOAD (CACHE-FIRST) ---
 async function loadEquipmentData() {
-    const equipDocRef = doc(db, "app_settings", "equipment_lists");
-    try {
-        const docSnap = await getDoc(equipDocRef);
-        if (docSnap.exists()) {
-            // Data exists in Firebase, load it
-            equipmentData = docSnap.data();
-            console.log("Equipment data loaded from Firebase.");
-        } else {
-            // Data NOT in Firebase, use old hardcoded data as fallback
-            console.warn("No equipment data in Firebase. Creating from local fallback...");
-            
-            // --- This is the old hard-coded data, now used only as a default ---
-            const hlpCsvData = `TAG number,Equipment Description
-// ... PASTE YOUR HLP DATA HERE ...
-`;
-            const screenCsvData = `TAG number,Equipment Description
-// ... PASTE YOUR SCREEN DATA HERE ...
-`;
-            const compactionCsvData = `TAG number,Equipment Description
-// ... PASTE YOUR COMPACTION DATA HERE ...
-`;
-            // --- End of old data ---
+    // 1. FAST LOAD: Check Local Cache
+    const cachedEquip = localStorage.getItem('pm_equipment_data_cache');
+    
+    if (cachedEquip) {
+        console.log("Loaded equipment from cache (Instant)");
+        equipmentData = JSON.parse(cachedEquip);
+    } 
+    // Note: We don't showLoader here because loadSettings handles the main loader logic
 
-            const defaultData = {
-                HLP: parseCsvData(hlpCsvData),
-                SCREEN: parseCsvData(screenCsvData),
-                COMPACTION: parseCsvData(compactionCsvData)
-            };
-            
-            // Save this default data to Firebase for next time
-            await setDoc(equipDocRef, defaultData);
-            equipmentData = defaultData;
-            console.log("Default equipment data saved to Firebase.");
+    // 2. BACKGROUND UPDATE: Fetch fresh data
+    const equipDocRef = doc(db, "app_settings", "equipment_lists");
+    
+    getDoc(equipDocRef).then((docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            equipmentData = data;
+            // Update Cache
+            localStorage.setItem('pm_equipment_data_cache', JSON.stringify(data));
+            console.log("Equipment data updated from Firebase (Background)");
         }
-    } catch (error) {
-        console.error("Error loading equipment data:", error);
-        showAlert('Failed to load equipment data. Please check connection.', 'Error');
-    }
+    }).catch((error) => {
+        console.warn("Using cached equipment data.");
+    });
 }
 
 // --- Function to save equipment data back to Firebase ---
@@ -226,6 +212,9 @@ async function saveEquipmentDataToFirebase() {
             COMPACTION: equipmentData.COMPACTION
         };
         await setDoc(equipDocRef, dataToSave);
+        // --- ADD THIS LINE ---
+        localStorage.setItem('pm_equipment_data_cache', JSON.stringify(dataToSave));
+        // --------------------
         console.log("Equipment data saved to Firebase.");
         // Re-populate user-facing tables
         populateEquipmentTable(currentZone || 'HLP');
@@ -241,68 +230,76 @@ async function saveEquipmentDataToFirebase() {
 }
 
 // --- USER AND SCHEDULE SETTINGS (FIREBASE-BACKED) ---
+// --- OPTIMIZED SETTINGS LOAD (CACHE-FIRST) ---
 async function loadSettings() {
-    showLoader();
+    // 1. FAST LOAD: Check Local Cache first
+    const cachedSettings = localStorage.getItem('pm_app_settings_cache');
+    
+    if (cachedSettings) {
+        // If we have data, use it immediately
+        console.log("Loaded settings from cache (Instant)");
+        const data = JSON.parse(cachedSettings);
+        
+        // Merge with defaults (Preserve your existing merge logic)
+        let firebaseUsers = data.users || [];
+        const defaultUserMap = new Map(defaultUserSettings.users.map(u => [u.id, u]));
+        
+        let mergedUsers = firebaseUsers.map(fbUser => {
+            const defaultUser = defaultUserMap.get(fbUser.id);
+            return defaultUser ? { ...defaultUser, ...fbUser } : fbUser;
+        });
+        
+        defaultUserSettings.users.forEach(defaultUser => {
+            if (!mergedUsers.some(mu => mu.id === defaultUser.id)) {
+                mergedUsers.push(defaultUser);
+            }
+        });
+
+        userSettings = { 
+            users: mergedUsers, 
+            archiveSchedule: data.archiveSchedule || defaultUserSettings.archiveSchedule,
+            masterRescuePin: data.masterRescuePin || defaultUserSettings.masterRescuePin
+        };
+    } else {
+        // Only show loader if we have NO cache (First time ever)
+        showLoader();
+    }
+
+    // 2. BACKGROUND UPDATE: Fetch fresh data from Firebase
     const settingsDocRef = doc(db, "app_settings", "global_settings");
-    try {
-        const docSnap = await getDoc(settingsDocRef);
-        if (docSnap.exists() && docSnap.data().users && docSnap.data().users.length > 0) {
-            const firebaseSettings = docSnap.data();
+    
+    // We do NOT await this. We let it run in the background.
+    getDoc(settingsDocRef).then((docSnap) => {
+        if (docSnap.exists() && docSnap.data().users) {
+            const firebaseData = docSnap.data();
             
-            // **BUG FIX**: Load directly from Firebase.
-            // Merge with defaults only to add *new* users from default list
-            // or to add new *properties* (like color) to existing users.
-            
-            let firebaseUsers = firebaseSettings.users;
-            
-            // Create a map of default users for easy lookup
+            // Repeat merge logic for the fresh data
+            let firebaseUsers = firebaseData.users;
             const defaultUserMap = new Map(defaultUserSettings.users.map(u => [u.id, u]));
-            
             let mergedUsers = firebaseUsers.map(fbUser => {
                 const defaultUser = defaultUserMap.get(fbUser.id);
-                if (defaultUser) {
-                    // User exists in both. Use saved data (fbUser)
-                    // but ensure all default properties (like color) exist.
-                    return { ...defaultUser, ...fbUser };
-                }
-                // User only exists in Firebase (admin might have created one? - unlikely with current code)
-                // Or user ID is old/invalid, just return it.
-                return fbUser; 
+                return defaultUser ? { ...defaultUser, ...fbUser } : fbUser;
             });
-            
-            // Now, add any *new* users from the default list that aren't in Firebase yet
             defaultUserSettings.users.forEach(defaultUser => {
-                if (!mergedUsers.some(mu => mu.id === defaultUser.id)) {
-                    mergedUsers.push(defaultUser);
-                }
+                if (!mergedUsers.some(mu => mu.id === defaultUser.id)) mergedUsers.push(defaultUser);
             });
 
-            userSettings.users = mergedUsers;
-            userSettings.archiveSchedule = firebaseSettings.archiveSchedule || defaultUserSettings.archiveSchedule;
-            
-            if (!userSettings.archiveSchedule.start) {
-                userSettings.archiveSchedule.start = new Date().toISOString().split('T')[0];
-            }
-            
-            // Save settings back IF we had to merge in new default users
-            if (userSettings.users.length > firebaseUsers.length) {
-                await saveSettings();
-            }
-            
-        } else {
-            console.warn("No 'global_settings' document found or users array empty. Creating with defaults.");
-            defaultUserSettings.archiveSchedule.start = new Date().toISOString().split('T')[0];
-            userSettings = { ...defaultUserSettings };
-            await setDoc(settingsDocRef, userSettings);
+            // Update the global variable
+            userSettings = {
+                users: mergedUsers,
+                archiveSchedule: firebaseData.archiveSchedule || defaultUserSettings.archiveSchedule,
+                masterRescuePin: firebaseData.masterRescuePin || defaultUserSettings.masterRescuePin
+            };
+
+            // SAVE TO CACHE for next time
+            localStorage.setItem('pm_app_settings_cache', JSON.stringify(firebaseData));
+            console.log("Settings updated from Firebase (Background)");
         }
-    } catch (error) {
-        console.error("Error loading settings:", error);
-        showAlert('Failed to load application settings.', 'Error');
-        // Fallback to defaults if load fails
-        userSettings = { ...defaultUserSettings };
-    } finally {
-        hideLoader();
-    }
+    }).catch((error) => {
+        console.warn("Network unreachable, using cached settings.");
+    }).finally(() => {
+        hideLoader(); // Hide loader if it was showing
+    });
 }
 
 async function saveSettings() {

@@ -589,7 +589,7 @@ window.showUserSelection = () => {
 window.loginAdmin = async () => {
     showLoader();
     const password = document.getElementById('admin-password').value;
-    if (password === 'Karak@2025') {
+    if (password === 'zaid463') {
         const rememberMe = document.getElementById('admin-remember-me').checked;
         if (rememberMe) {
             localStorage.setItem('admin-remembered', 'true');

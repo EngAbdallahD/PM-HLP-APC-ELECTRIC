@@ -26,38 +26,12 @@
                 <img src="arab_potash_logo.png" alt="Logo" class="mx-auto mb-6 h-24" onerror="this.src='https://placehold.co/150x100/FFFFFF/333333?text=Logo+Not+Found'">
                 <h1 class="text-3xl font-bold text-gray-800 mb-6">PM Application</h1>
                 
-                <div id="user-login" class="w-full max-w-sm mx-auto">
-    <h2 class="text-xl font-semibold text-gray-700 mb-4">User Login</h2>
-    
-    <div class="flex justify-center gap-3 mb-6">
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-blue-500 bg-gray-100 transition-colors"></div>
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-blue-500 bg-gray-100 transition-colors"></div>
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-blue-500 bg-gray-100 transition-colors"></div>
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-blue-500 bg-gray-100 transition-colors"></div>
-        <input type="password" id="user-password-input" class="hidden">
-    </div>
-    <div class="flex items-center justify-center mb-6">
-                        <input id="remember-me-user" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
-                        <label for="remember-me-user" class="ml-2 block text-sm text-gray-600 cursor-pointer select-none font-medium">Remember me for 24h</label>
-    </div>
-
-    <div class="grid grid-cols-3 gap-3 mb-4">
-        <button onclick="enterPin('1')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">1</button>
-        <button onclick="enterPin('2')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">2</button>
-        <button onclick="enterPin('3')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">3</button>
-        <button onclick="enterPin('4')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">4</button>
-        <button onclick="enterPin('5')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">5</button>
-        <button onclick="enterPin('6')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">6</button>
-        <button onclick="enterPin('7')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">7</button>
-        <button onclick="enterPin('8')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">8</button>
-        <button onclick="enterPin('9')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">9</button>
-        <button onclick="clearPin()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-4 rounded-xl text-lg shadow-sm transition active:scale-95">CLR</button>
-        <button onclick="enterPin('0')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-xl shadow-sm transition active:scale-95">0</button>
-        <button onclick="loginUserWithPassword()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-lg shadow-sm transition active:scale-95">GO</button>
-    </div>
-
-    <button onclick="showAdminLogin()" class="mt-4 text-gray-500 hover:text-blue-600 font-medium text-sm">Admin Login</button>
-</div>
+                <div id="user-login">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">User Login</h2>
+                    <input type="password" id="user-password-input" placeholder="Enter Your Password" class="w-full p-3 border border-gray-300 rounded-lg text-center text-lg">
+                    <button onclick="loginUserWithPassword()" class="w-full mt-4 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition">Login</button>
+                    <button onclick="showAdminLogin()" class="mt-6 text-gray-600 hover:text-blue-600 font-medium">Login as Admin</button>
+                </div>
                 
                 <div id="admin-login" class="hidden">
                     <h2 class="text-xl font-semibold text-gray-700 mb-2">Admin Login</h2>
@@ -290,15 +264,6 @@
                                       <div class="flex flex-wrap gap-4">
                                           <button onclick="runCycleManually()" class="bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition">Run Archive Cycle Now</button>
                                           <button onclick="confirmClearAllData()" class="bg-red-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-900 transition">Clear ALL History</button>
-                                      </div>
-                                      <hr class="my-4 border-gray-200">
-                                      <div>
-                                          <h4 class="font-semibold text-gray-700 mb-1">Emergency Rescue PIN</h4>
-                                          <p class="text-xs text-gray-500 mb-2">Change this code after using it to unlock a user's device.</p>
-                                          <div class="flex gap-2">
-                                              <input type="text" id="admin-rescue-pin" class="p-2 border rounded-lg w-32 text-center font-mono font-bold tracking-widest bg-gray-50" maxlength="6" placeholder="0000">
-                                              <button onclick="saveRescuePin()" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">Update PIN</button>
-                                          </div>
                                       </div>
                                   </div>
                                   <div id="user-management" class="space-y-4 border p-4 rounded-lg bg-white">
